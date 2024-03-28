@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@solana/wallet-adapter-wallets": "^0.19.32",
+    "@web3-storage/w3up-client": "^12.5.0",
+    "grapesjs": "^0.21.9",
+    "grapesjs-blocks-basic": "^1.0.2",
+    "grapesjs-preset-webpage": "^1.0.3",
     "solana-wallets-vue": "^0.6.1",
     "vue": "^3.4.21"
   },
