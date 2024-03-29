@@ -16,7 +16,7 @@ pub async fn get_data_from_url(url: String) -> Result<ApiFeedData, CustomError> 
     let res = reqwest::get(url)
         .await
         .map_err(|_| CustomError::FetchError)?;
-    let api_feed_data = ApiFeedData { mile: 2_458 };
+    let api_feed_data = ApiFeedData { reach: 2_458 };
     Ok(api_feed_data)
 }
 

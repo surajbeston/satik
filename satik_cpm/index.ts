@@ -62,28 +62,28 @@ async function main() {
   );
   // [customOracleAccount] = await OracleAccount.load(switchboard, customOracleAccountPk);
   // [aggregatorAccount] = await AggregatorAccount.load(switchboard, aggregatorAccountPk);
-  [functionAccount] = await FunctionAccount.load(
-    switchboard,
-    functionAccountPk
-  );
-  [functionRoutineAccount] = await FunctionRoutineAccount.load(
-    switchboard,
-    functionRoutineAccountPk
-  );
+  // [functionAccount] = await FunctionAccount.load(
+  //   switchboard,
+  //   functionAccountPk
+  // );
+  // [functionRoutineAccount] = await FunctionRoutineAccount.load(
+  //   switchboard,
+  //   functionRoutineAccountPk
+  // );
 
-  //   [functionRoutineAccount] = await FunctionRoutineAccount.create(switchboard, {
-  //       schedule: "30 * * * * *",
-  //       functionAccount,
-  //   });
+  // [functionRoutineAccount] = await FunctionRoutineAccount.create(switchboard, {
+  //     schedule: "30 * * * * *",
+  //     functionAccount,
+  // });
 
-    // functionRoutineAccount.
+  // functionRoutineAccount.
 
   // [functionAccount] = await FunctionAccount.create(switchboard, {
-  //     attestationQueue: publicAttestationQueue,
-  //     container: "sauravniraula/api_feed",
-  //     containerRegistry: "dockerhub",
-  //     name: "API Feed",
-  //     mrEnclave: Uint8Array.from(Array(32).fill(0)),
+  //   attestationQueue: publicAttestationQueue,
+  //   container: "sauravniraula/api_feed",
+  //   containerRegistry: "dockerhub",
+  //   name: "API Feed",
+  //   mrEnclave: Uint8Array.from(Array(32).fill(0)),
   // });
 
   // console.log(functionAccount.publicKey.toBase58());

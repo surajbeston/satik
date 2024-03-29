@@ -10,5 +10,5 @@ pub struct SbApiFeedParams {
 
 #[derive(BorshDeserialize, BorshSerialize, Debug)]
 pub struct ApiFeedData {
-    pub mile: u32,
+    pub reach: u64,
 }
