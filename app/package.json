@@ -9,16 +9,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@silexlabs/grapesjs-fonts": "^1.0.15",
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@web3-storage/w3up-client": "^12.5.0",
     "grapesjs": "^0.21.9",
     "grapesjs-blocks-basic": "^1.0.2",
+    "grapesjs-navbar": "^1.0.2",
     "grapesjs-preset-webpage": "^1.0.3",
+    "js-encoding-utils": "^0.7.3",
     "solana-wallets-vue": "^0.6.1",
+    "tweetnacl": "^1.0.3",
     "vue": "^3.4.21"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
+    "prettier": "^3.2.5",
     "vite": "^5.2.0"
   }
 }
