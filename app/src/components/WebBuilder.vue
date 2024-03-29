@@ -15,7 +15,7 @@ import grjNavbar from "grapesjs-navbar";
 
 import "grapesjs/dist/css/grapes.min.css";
 // web3 storage
-import { createClient } from "/home/badu/workspace/satik/app/src/client.js";
+import { createClient } from "/home/badu/workspace/satik/app/src/helper/client";
 
 const editor = ref(null);
 
