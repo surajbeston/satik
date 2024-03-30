@@ -6,7 +6,7 @@ use super::payment_deal::PaymentDeal;
 pub struct Deal {
     pub brand_pk: Pubkey,
     pub creator_pk: Pubkey,
-    pub initial_amount: u32, // in SOL
+    pub initial_amount: u64, // in SOL
     pub payment_deals: Vec<PaymentDeal>,
     pub starts_on: i64,
     pub ends_on: Option<i64>,
@@ -20,7 +20,7 @@ pub struct Deal {
 
 impl Deal {
     pub const SEED: &'static [u8] = b"deal_seed";
-    pub const FIXED_SIZE: usize = 32 + 32 + 32 + 64 + 64 + 64 + 8;
+    pub const FIXED_SIZE: usize = 32 + 32 + 64 + 64 + 64 + 64 + 64 + 64 + 8;
 
     // pub fn creator_pks_size(&self) -> usize {
     //     self.creator_pks.len() * 32
@@ -45,7 +45,7 @@ impl Deal {
 
 #[derive(AnchorDeserialize, AnchorSerialize, Clone)]
 pub struct CreateDealData {
-    pub initial_amount: u32,
+    pub initial_amount: u64,
     pub starts_on: i64,
     pub ends_on: Option<i64>,
     pub payment_deals: Vec<PaymentDeal>,

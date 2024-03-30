@@ -12,8 +12,9 @@ pub struct ScheduleFeed<'info> {
     pub payer: Signer<'info>,
     pub deal: Account<'info, Deal>,
     #[account(executable, address = SWITCHBOARD_ATTESTATION_PROGRAM_ID)]
-    pub switchboard: AccountInfo<'info>,
-    pub switchboard_state: AccountLoader<'info, AttestationProgramState>,
+    /// CHECK: Not dangerous
+    pub switchboard_attestation: AccountInfo<'info>,
+    pub switchboard_attestation_state: AccountLoader<'info, AttestationProgramState>,
     pub switchboard_attestation_queue: AccountLoader<'info, AttestationQueueAccountData>,
     #[account(mut)]
     pub switchboard_function: AccountLoader<'info, FunctionAccountData>,
@@ -23,12 +24,14 @@ pub struct ScheduleFeed<'info> {
         owner = system_program.key(),
         // constraint = switchboard_request.data_len() == 0 && switchboard_request.lamports() == 0
       )]
+    /// CHECK: Not dangerous
     pub switchboard_routine: AccountInfo<'info>,
     #[account(
         mut,
         owner = system_program.key(),
         // constraint = switchboard_request_escrow.data_len() == 0 && switchboard_request_escrow.lamports() == 0
       )]
+    /// CHECK: Not dangerous
     pub switchboard_routine_escrow: AccountInfo<'info>,
     #[account(address = anchor_spl::token::spl_token::native_mint::ID)]
     pub switchboard_mint: Account<'info, Mint>,
@@ -44,7 +47,7 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
         function: ctx.accounts.switchboard_function.to_account_info(),
         function_authority: None,
         escrow: ctx.accounts.switchboard_routine_escrow.clone(),
-        state: ctx.accounts.switchboard_state.to_account_info(),
+        state: ctx.accounts.switchboard_attestation_state.to_account_info(),
         // escrow_wallet_authority: None,
         // escrow_wallet: ctx.accounts.switchboard_routine_escrow.clone(),
         // escrow_token_wallet: ctx.accounts.switchboard_routine_escrow.clone(),
@@ -68,7 +71,7 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
     // };
 
     routine_init.invoke(
-        ctx.accounts.switchboard.clone(),
+        ctx.accounts.switchboard_attestation.clone(),
         None,
         Some(to_vec(&params)?),
         None,

@@ -8,22 +8,37 @@ import {
   FunctionAccount,
   AttestationQueueAccount,
   FunctionRoutineAccount,
+  SwitchboardTestContext,
 } from "@switchboard-xyz/solana.js";
 import { NodeOracle } from "@switchboard-xyz/oracle";
 import { OracleJob } from "@switchboard-xyz/common";
 import { payerKeypair } from "./src_js/constants";
 import { base64, bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
+import * as anchor from "@coral-xyz/anchor";
+import { Satik } from "./target/types/satik";
+import { BN } from "bn.js";
 
 let switchboard: SwitchboardProgram;
 
 // const rpcUrl = "http://127.0.0.1:8899";
-const rpcUrl = clusterApiUrl("devnet");
-let connection = new Connection(rpcUrl);
+// const rpcUrl = clusterApiUrl("devnet");
+// let connection = new Connection(rpcUrl);
 
-let publicOracleQueue: QueueAccount;
-let publicOracleQueuePk = new PublicKey(
-  "uPeRMdfPmrPqgRWSrjAnAkH78RqAhe5kXoW6vBYRqFX"
+const provider = anchor.AnchorProvider.env();
+anchor.setProvider(provider);
+const program = anchor.workspace.Satik as anchor.Program<Satik>;
+
+const creatorKeypair = SwitchboardTestContext.loadKeypair(
+  "./keypairs/creator1.json"
 );
+const sbRequestKeypair = SwitchboardTestContext.loadKeypair(
+  "./keypairs/sb_request.json"
+);
+
+// let publicOracleQueue: QueueAccount;
+// let publicOracleQueuePk = new PublicKey(
+//   "uPeRMdfPmrPqgRWSrjAnAkH78RqAhe5kXoW6vBYRqFX"
+// );
 // let customQueueAccount: QueueAccount;
 // let customQueueAccountPk = new PublicKey("6WdSpVz6qFbYqwhQwGyJPQn1JsK5An682F3Ny7jSMkFq");
 
@@ -41,7 +56,7 @@ let publicAttestationQueuePk = new PublicKey(
 
 let functionAccount: FunctionAccount;
 let functionAccountPk = new PublicKey(
-  "AZimV4qg2uo9MHhrBqF26DqLau3txRGuXvTVMgwPU7VF"
+  "EYSCe3gCvMGnRUjKXHkqmpsShgwGdK4hye87VXu8G13c"
 );
 
 let functionRoutineAccount: FunctionRoutineAccount;
@@ -49,17 +64,34 @@ let functionRoutineAccountPk = new PublicKey(
   "3GUY3GnJ1hZMJLdt9bZPXcRfhaGST1daTFie3JQK9aFo"
 );
 
+let mrEnclave = Uint8Array.from(
+  bs58.decode("AroLcpbZ5DJyVboiWYbjyThucig2DpDzBPGn5Xu7QzeG")
+);
+// console.log(mrEnclave);
+
+const idSeed = Buffer.from("deal1");
+const [dealPDA] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from("deal_seed"),
+    idSeed,
+    payerKeypair.publicKey.toBytes(),
+    creatorKeypair.publicKey.toBytes(),
+  ],
+  program.programId
+);
+
 async function main() {
-  switchboard = await SwitchboardProgram.load(connection, payerKeypair);
-  [publicOracleQueue] = await QueueAccount.load(
-    switchboard,
-    publicOracleQueuePk
-  );
+  switchboard = await SwitchboardProgram.fromProvider(provider);
+  // [publicOracleQueue] = await QueueAccount.load(
+  //   switchboard,
+  //   publicOracleQueuePk
+  // );
   // [customQueueAccount] = await QueueAccount.load(switchboard, customQueueAccountPk);
   [publicAttestationQueue] = await AttestationQueueAccount.load(
     switchboard,
     publicAttestationQueuePk
   );
+
   // [customOracleAccount] = await OracleAccount.load(switchboard, customOracleAccountPk);
   // [aggregatorAccount] = await AggregatorAccount.load(switchboard, aggregatorAccountPk);
   // [functionAccount] = await FunctionAccount.load(
@@ -71,19 +103,65 @@ async function main() {
   //   functionRoutineAccountPk
   // );
 
+  // const tx = await program.methods
+  //   .createDeal({
+  //     idSeed,
+  //     initialAmount: 1000,
+  //     paymentDeals: [
+  //       {
+  //         startMile: 1000,
+  //         endMile: null,
+  //         cpm: 10,
+  //       },
+  //     ],
+  //     contentUrl: "https://jsonplaceholder.typicode.com/todos/1",
+  //     startsOn: new BN(Date.now() / 1000),
+  //     endsOn: null,
+  //     creatorPk: creatorKeypair.publicKey,
+  //   })
+  //   .accounts({
+  //     deal: dealPDA,
+  //     payer: payerKeypair.publicKey,
+  //   })
+  //   .rpc();
+
+  // console.log(tx);
+  // const fetchedDeal = await program.account.deal.fetch(dealPDA);
+  // console.log(fetchedDeal);
+
+  // const tx = await program.methods
+  //   .scheduleFeed()
+  //   .accounts({
+  //     deal: dealPDA,
+  //     payer: payerKeypair.publicKey,
+  //     switchboardAttestation: switchboard.attestationProgramId,
+  //     switchboardAttestationState:
+  //       switchboard.attestationProgramState.publicKey,
+  //     switchboardAttestationQueue: publicAttestationQueuePk,
+  //     switchboardFunction: functionAccountPk,
+  //     switchboardRoutine: sbRequestKeypair.publicKey,
+  //     switchboardRoutineEscrow: anchor.utils.token.associatedAddress({
+  //       mint: switchboard.mint.address,
+  //       owner: sbRequestKeypair.publicKey,
+  //     }),
+  //     switchboardMint: switchboard.mint.address,
+  //   })
+  //   .signers([sbRequestKeypair])
+  //   .rpc();
+
+  // console.log(tx);
+
   // [functionRoutineAccount] = await FunctionRoutineAccount.create(switchboard, {
   //     schedule: "30 * * * * *",
   //     functionAccount,
   // });
-
-  // functionRoutineAccount.
 
   // [functionAccount] = await FunctionAccount.create(switchboard, {
   //   attestationQueue: publicAttestationQueue,
   //   container: "sauravniraula/api_feed",
   //   containerRegistry: "dockerhub",
   //   name: "API Feed",
-  //   mrEnclave: Uint8Array.from(Array(32).fill(0)),
+  //   mrEnclave,
   // });
 
   // console.log(functionAccount.publicKey.toBase58());
