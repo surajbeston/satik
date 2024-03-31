@@ -1,4 +1,8 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, solana_program::clock};
+use std::str::FromStr;
+
+use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
+
 
 // use anchor_lang::solana_program::clock;
 
@@ -9,17 +13,20 @@ mod states;
 
 declare_id!("5yGpHM8VQdAcw4tPYe8aS7asnsxeJgd5mfzFABD441cB");
 
+
 #[program]
 pub mod satik {
+
     use super::*;
 
     pub fn initialize_brand(ctx: Context<InitializeBrand>, username: String, name: String, profile_image: String,  bio: String)  -> Result<()> {
-        let brand = &mut ctx.accounts.brand;
+        let brand: &mut Account<'_, states::Brand> = &mut ctx.accounts.brand;
         brand.name = name;
         brand.profile_image = profile_image;
         brand.username = username;
         brand.bio = bio;
         brand.created_by = ctx.accounts.signer.key();
+        brand.usdc_ata = ctx.accounts.usdc_ata.key();
 
         Ok(())
     }
@@ -31,9 +38,9 @@ pub mod satik {
         influencer.username = username;
         influencer.bio = bio;
         influencer.created_by = ctx.accounts.signer.key();
+        influencer.usdc_ata = ctx.accounts.usdc_ata.key();
         
         Ok(())
-
     }
 
     pub fn initialize_proposal(ctx: Context<InitializeProposal>, website: String, message: String) -> Result<()>{
@@ -43,6 +50,8 @@ pub mod satik {
         proposal.message = message;
         proposal.influencer_key = ctx.accounts.influencer.created_by;
         proposal.brand = ctx.accounts.brand.key();
+        proposal.influencer_ata = ctx.accounts.influencer.usdc_ata;
+        proposal.brand_ata = ctx.accounts.brand.usdc_ata;
         proposal.created_by = ctx.accounts.signer.key();
         proposal.accepted = false;
 
@@ -76,6 +85,46 @@ pub mod satik {
 
         Ok(())
     }
+
+    pub fn purchase(ctx: Context<InitializePurchase>) -> Result<()> {
+        // checking if product belongs to submitted proposal
+        require_keys_eq!(ctx.accounts.proposal.key(), ctx.accounts.product.proposal);
+        // checking if proposal is accepted by influencer
+        require_eq!(ctx.accounts.proposal.accepted, true);
+        // checking is submitted brand token account is brand's actual token account
+        require_keys_eq!(ctx.accounts.proposal.brand_ata, ctx.accounts.brand_ata.key());
+        // checking if submitted influencer token account is influencer's actual token account
+        require_keys_eq!(ctx.accounts.proposal.influencer_ata, ctx.accounts.influencer_ata.key());
+        let purchase =  &mut ctx.accounts.purchase;
+        let product = &mut ctx.accounts.product;
+        let proposal = &mut ctx.accounts.proposal;
+
+        purchase.paid_by = ctx.accounts.signer.key();
+        purchase.brand_receiver = proposal.brand;
+        purchase.influencer_receiver = proposal.influencer_key;
+        purchase.satik_receiver = Pubkey::from_str("ACxRSAhXU25zxuaTgEtGnxbg9dQG9A49BVRwskmwnYqQ").unwrap();
+        purchase.total_amount = product.total_amount;
+        purchase.satik_amount = product.satik_amount;
+        purchase.brand_amount = product.brand_amount;
+        purchase.purchase_datetime = Clock::get()?.unix_timestamp;
+        purchase.redeemed = false;
+
+        let cpi_accounts = SplTransfer {
+            from: ctx.accounts.customer_ata.to_account_info().clone(),
+            to: ctx.accounts.usdc_token_account.to_account_info().clone(),
+            authority:  ctx.accounts.customer_ata.to_account_info().clone()
+        };
+
+        let cpi_program = ctx.accounts.token_program;
+
+        token::transfer(
+            CpiContext::new(cpi_program.to_account_info(), cpi_accounts),
+            purchase.total_amount
+        )?;
+
+        Ok(())
+    }
+
 
 }
 

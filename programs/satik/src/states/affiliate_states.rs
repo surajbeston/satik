@@ -2,6 +2,10 @@ use anchor_lang::prelude::*;
 
 // use anchor_lang::prelude::Sysvar;
 
+use anchor_spl::associated_token::AssociatedToken;
+use anchor_spl::token::{Mint, Token, TokenAccount};
+
+
 #[account]
 #[derive(InitSpace)]
 pub struct Brand {
@@ -14,7 +18,8 @@ pub struct Brand {
     #[max_len(150)]
     pub profile_image: String,
     #[max_len(200)] 
-    pub bio: String
+    pub bio: String,
+    pub usdc_ata: Pubkey
 }
 
 #[account]
@@ -28,7 +33,8 @@ pub struct Influencer {
     pub profile_image: String,
     #[max_len(200)]
     pub bio: String,
-    pub created_by: Pubkey
+    pub created_by: Pubkey,
+    pub usdc_ata: Pubkey
 }
 
 #[account]
@@ -42,7 +48,9 @@ pub struct Proposal {
     pub message: String,
     pub datetime: u64,
     pub created_by: Pubkey,
-    pub accepted: bool
+    pub accepted: bool,
+    pub brand_ata: Pubkey,
+    pub influencer_ata: Pubkey
 }
 
 #[account]
@@ -57,5 +65,23 @@ pub struct Product {
     pub influencer_amount: u64,
     pub satik_amount: u64,
     pub brand_amount: u64
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct Purchase {
+    #[max_len(50)]
+    pub id: String,
+    pub paid_by: Pubkey,
+    pub product: Pubkey,
+    pub brand_receiver: Pubkey,
+    pub influencer_receiver: Pubkey,
+    pub satik_receiver: Pubkey,
+    pub total_amount: u64,
+    pub brand_amount: u64,
+    pub satik_amount: u64,
+    pub purchase_datetime: i64,
+    pub redeemed: bool
+
 }
 
