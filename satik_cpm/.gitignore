@@ -7,3 +7,4 @@ node_modules
 test-ledger
 .yarn
 src_js/constants.ts
+keypairs
