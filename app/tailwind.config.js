@@ -6,6 +6,7 @@ export default {
       fontFamily: {
         "inria-sans": ["Inria Sans", "sans-serif"],
         "playfair-display": ["Playfair Display", "serif"],
+        oswald: ["Oswald", "sans-serif"],
       },
       colors: {
         primary: {
