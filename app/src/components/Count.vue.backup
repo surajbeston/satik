@@ -1,0 +1,114 @@
+<template>
+    <div>
+        <div>Current Count: {{ currentCount }} </div>
+        <button @click="getCount">Get Count</button>
+        <button @click="fetchAccounts">Fetch Accounts</button>
+    </div>
+</template>
+
+<script setup>
+import { useWallet } from 'solana-wallets-vue';
+import { ref } from 'vue';
+import { useWorkspace, initWorkspace } from "../../plugins/useWorkspace.js";
+import {Keypair} from "@solana/web3.js";
+
+const currentCount = ref(0);
+
+async function getCount() {
+    const {publicKey} = useWallet();
+    const {program, connection} =  initWorkspace();
+    console.log(program.value)
+    console.log(connection)
+
+    const counterKey = Keypair.generate()
+
+    try{
+        const tx = await program.value.methods.initializeCounter().accounts({
+            counter: counterKey.publicKey
+        }).signers([counterKey]).rpc();
+        console.log(`Initialized transaction is: ${tx}`);
+    }
+    catch(err) {
+        console.log(err)
+    }
+
+    try{
+        var counter = await program.value.account.counter.fetch(
+            counterKey.publicKey
+        );
+        console.log(counter)
+    }
+    catch(err) {
+        console.log(err);
+    }
+
+    try{
+        const tx1 = await program.value.methods.sayHello().accounts({
+            counter: counterKey.publicKey
+        }).rpc();
+
+        console.log(`Counter incremented: $}`)
+    }
+    catch(err) {
+        console.log(err)
+    }
+
+    try{
+        const tx1 = await program.value.methods.sayHello().accounts({
+            counter: counterKey.publicKey
+        }).rpc();
+
+        console.log(`Counter incremented: $}`)
+    }
+    catch(err) {
+        console.log(err)
+    }
+
+    try{
+        var counter = await program.value.account.counter.fetch(
+            counterKey.publicKey
+        );
+        console.log(counter.count.toString())
+    }
+    catch(err) {
+        console.log(err);
+    }
+
+}
+
+
+async function fetchAccounts() {
+    const {publicKey} = useWallet();
+    const {program, connection} =  initWorkspace();
+    console.log(program.value)
+    console.log(connection)
+
+    const programId = program.value.programId;
+
+    const accounts = await connection.getProgramAccounts(programId)
+
+
+    var publicKeys = []
+
+    accounts.forEach(async account => {
+            // Extract account details
+        var publicKey = account.pubkey.toBase58();
+        
+        try{
+            var profile = await program.value.account.profile.fetch(
+                publicKey
+            );
+            console.log( `Count of ${publicKey} is ${profile.picture}`)
+        }
+        catch(err) {
+            console.log(err);
+        }
+
+        });
+
+    
+
+}
+
+
+</script>

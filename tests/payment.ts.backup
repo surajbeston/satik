@@ -1,0 +1,127 @@
+import * as anchor from "@coral-xyz/anchor";
+import { Program } from "@coral-xyz/anchor";
+import { Satik } from "../target/types/satik";
+import BN from "bn.js";
+import {getMint, getOrCreateAssociatedTokenAccount, transferChecked} from "@solana/spl-token";
+
+
+describe("satik", () => {
+  // Configure the client to use the local cluster.
+  anchor.setProvider(anchor.AnchorProvider.env());
+
+  const program = anchor.workspace.Satik as Program<Satik>;
+
+  // program.provider.connection.onLogs(program.programId, (logs) => {
+  //   for (var log of logs.logs) {
+  //     if(log.includes("Program log:")) {
+  //       log.replace("Program log: ", "");
+  //       console.log(log);
+  //     }
+  //   }
+  // })
+  
+
+  // it("Is initialized!", async () => {
+  //   // Add your test 
+
+  //   // const [payment] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("1")], program.programId);
+
+
+
+  //   const LAMPORTS_TO_SEND = 100;
+
+    
+  //   const senderSeed =[214,236,66,21,244,77,173,78,52,7,96,117,211,124,63,11,54,38,221,190,80,222,8,125,185,167,207,90,183,232,249,167,81,27,14,132,96,168,211,77,130,213,251,134,238,40,151,145,105,106,83,196,26,8,124,224,52,50,92,120,61,235,113,63]
+
+  //   const sender = anchor.web3.Keypair.fromSecretKey(Uint8Array.from(senderSeed));
+
+  //   const senderBalance = await program.provider.connection.getBalance(sender.publicKey);
+  //   console.log(`Sender Balance: `, senderBalance.toString());
+
+
+
+  //   const recipientSeed = [18,70,178,254,32,223,157,219,251,63,151,216,119,167,240,94,194,134,67,164,25,210,237,164,221,99,220,253,53,22,225,77,133,111,154,250,86,167,243,171,35,40,168,33,44,195,255,21,19,153,60,89,119,123,22,97,152,171,248,240,80,6,205,73]
+
+  //   const recipient = anchor.web3.Keypair.fromSecretKey(Uint8Array.from(recipientSeed));
+    
+  //   // await program.provider.connection.requestAirdrop(recipient.publicKey, 1000000000000000);
+
+  //   const recipientBalance = await program.provider.connection.getBalance(recipient.publicKey);
+  //   console.log(`Recipient Balance: `, recipientBalance.toString());
+
+  //   const id = anchor.web3.Keypair.generate();
+
+  //   const [payment] =   anchor.web3.PublicKey.findProgramAddressSync([ id.publicKey.toBuffer()], program.programId);
+
+  //   console.log(`Payment Address: `, payment.toBase58());
+  //   console.log(`Recipient Adderss: `, recipient.publicKey.toBase58());
+  //   console.log (`Sender Address: `, sender.publicKey.toBase58());
+
+
+
+  //   const tx = await program.methods.initialize(id.publicKey, new BN(LAMPORTS_TO_SEND))
+  //                           .accounts({
+  //                             payment: payment,
+  //                             recipient: recipient.publicKey,
+  //                             sender: sender.publicKey
+  //                           })
+  //                           .signers([sender])
+  //                           .rpc();
+  //   console.log("Your transaction signature", tx);
+
+  //   const recipientBalance2 = await program.provider.connection.getBalance(recipient.publicKey);
+  //   console.log(`After Recipient Balance: `, recipientBalance2.toString());
+  // });
+
+  it("transfer token", async () => {
+
+    const senderSeed =[214,236,66,21,244,77,173,78,52,7,96,117,211,124,63,11,54,38,221,190,80,222,8,125,185,167,207,90,183,232,249,167,81,27,14,132,96,168,211,77,130,213,251,134,238,40,151,145,105,106,83,196,26,8,124,224,52,50,92,120,61,235,113,63]
+    const senderKP = anchor.web3.Keypair.fromSecretKey(Uint8Array.from(senderSeed));
+
+    const recipientSeed = [18,70,178,254,32,223,157,219,251,63,151,216,119,167,240,94,194,134,67,164,25,210,237,164,221,99,220,253,53,22,225,77,133,111,154,250,86,167,243,171,35,40,168,33,44,195,255,21,19,153,60,89,119,123,22,97,152,171,248,240,80,6,205,73]
+    const recipientKP = anchor.web3.Keypair.fromSecretKey(Uint8Array.from(recipientSeed));
+
+    let mintAccount = await getMint(program.provider.connection, new anchor.web3.PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"));
+
+    console.log("Here is the mint account", mintAccount);
+
+    console.log("Sender Address: ", senderKP.publicKey.toBase58());
+    console.log("Receiver Address: ", recipientKP.publicKey.toBase58());
+    console.log("");
+
+    let senderTokenAccount = await getOrCreateAssociatedTokenAccount(
+      program.provider.connection, // connection
+      senderKP, // fee payer
+      mintAccount.address, // mint
+      senderKP.publicKey // owner,
+    );
+
+    console.log("Sender Token Account: ", senderTokenAccount.address.toBase58());
+
+    let recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
+      program.provider.connection, // connection
+      recipientKP, // fee payer
+      mintAccount.address, // mint
+      recipientKP.publicKey // owner,
+    );
+
+    console.log("Recipient Token Account: ", recipientTokenAccount.address.toBase58());
+    
+    let txhash = await transferChecked(
+      program.provider.connection, // connection
+      senderKP, // payer
+      senderTokenAccount.address, // from (should be a token account)
+      mintAccount.address, // mint
+      recipientTokenAccount.address, // to (should be a token account)
+      senderKP.publicKey, // from's owner
+      2, // amount, if your deciamls is 8, send 10^8 for 1 token
+      6 // decimals
+    );
+  
+
+    console.log(txhash);    
+
+  });
+
+
+});

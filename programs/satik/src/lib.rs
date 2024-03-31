@@ -1,121 +1,81 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::clock;
-use anchor_lang::system_program;
 
-use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
+// use anchor_lang::solana_program::clock;
 
+mod instructions;
+use instructions::affiliate_instructions::*;
 
-declare_id!("BcmqgRT4uiiCq4q64e4vGRyLRSRRV1na3aAkDaq7ABRf");
+mod states;
+
+declare_id!("5yGpHM8VQdAcw4tPYe8aS7asnsxeJgd5mfzFABD441cB");
 
 #[program]
 pub mod satik {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>, id: Pubkey, amount: u64) -> Result<()> {
-        let payment = &mut ctx.accounts.payment;
-        payment.id = id;
-        payment.amount = amount;
-
-        require_keys_eq!(ctx.accounts.signer.key(), ctx.accounts.sender.key());
-
-        msg!("Signer: {}", ctx.accounts.signer.key());
-
-        payment.timestamp = clock::Clock::get()?.unix_timestamp;
-
-        let cpi_context = CpiContext::new(
-            ctx.accounts.system_program.to_account_info(), 
-            system_program::Transfer {
-                from: ctx.accounts.sender.clone(),
-                to: ctx.accounts.recipient.clone(),
-            });
-        system_program::transfer(cpi_context, ctx.accounts.payment.amount)?;
+    pub fn initialize_brand(ctx: Context<InitializeBrand>, username: String, name: String, profile_image: String,  bio: String)  -> Result<()> {
+        let brand = &mut ctx.accounts.brand;
+        brand.name = name;
+        brand.profile_image = profile_image;
+        brand.username = username;
+        brand.bio = bio;
+        brand.created_by = ctx.accounts.signer.key();
 
         Ok(())
     }
 
-    pub fn pay_usdc(ctx: Context<PayUSDC>, id: Pubkey, amount: u64) -> Result<()> {
-        let payment = &mut ctx.accounts.payment;
-        payment.id = id;
-        payment.amount = amount;
-
-        require_keys_eq!(ctx.accounts.signer.key(), ctx.accounts.sender.key());
-
-        let sender = &ctx.accounts.sender;
-        let recipient = &ctx.accounts.recipient;
-        let sender_ata = &mut ctx.accounts.from_ata;
-        let recipient_ata = &mut ctx.accounts.to_ata;
-        let cpi_program = &ctx.accounts.token_program;
-
-        let cpi_accounts = SplTransfer {
-            from: sender_ata.to_account_info().clone(),
-            to: recipient_ata.to_account_info().clone(),
-            authority:  sender.to_account_info().clone()
-        };
-
-        token::transfer(
-            CpiContext::new(cpi_program.to_account_info(), cpi_accounts),
-            amount
-        )?;
-
-        Ok(())
+    pub fn initialize_influencer(ctx: Context<InitializeInfluencer>, username: String, name: String, profile_image: String,  bio: String)  -> Result<()> {
+        let influencer = &mut ctx.accounts.influencer;
+        influencer.name = name;
+        influencer.profile_image = profile_image;
+        influencer.username = username;
+        influencer.bio = bio;
+        influencer.created_by = ctx.accounts.signer.key();
         
+        Ok(())
+
     }
-    
+
+    pub fn initialize_proposal(ctx: Context<InitializeProposal>, website: String, message: String) -> Result<()>{
+        require_keys_eq!(ctx.accounts.brand.created_by, ctx.accounts.signer.key());
+        let proposal = &mut ctx.accounts.proposal;
+        proposal.website = website;
+        proposal.message = message;
+        proposal.influencer_key = ctx.accounts.influencer.created_by;
+        proposal.brand = ctx.accounts.brand.key();
+        proposal.created_by = ctx.accounts.signer.key();
+        proposal.accepted = false;
+
+        Ok(())
+    }
+
+    pub fn initialize_product(ctx: Context<InitializeProduct>, name: String, description: String, total_amount: u64, influencer_amount: u64) -> Result<()> {
+        require_keys_eq!(ctx.accounts.proposal.created_by, ctx.accounts.signer.key());
+
+        let product = &mut ctx.accounts.product;
+
+        let satik_amount = 0;
+
+        require_gte!(total_amount, satik_amount + influencer_amount);
+
+        product.name = name;
+        product.description = description;
+        product.total_amount = total_amount;
+        product.influencer_amount = influencer_amount;
+        product.satik_amount = satik_amount;
+        product.brand_amount = total_amount - influencer_amount - satik_amount;
+        product.proposal = ctx.accounts.proposal.key();
+
+        Ok(())
+    }
+
+    pub fn accept_proposal(ctx: Context<AcceptProposal>) -> Result<()> {
+        require_keys_eq!(ctx.accounts.signer.key(), ctx.accounts.proposal.influencer_key);
+        let proposal = &mut ctx.accounts.proposal;
+        proposal.accepted = true;
+
+        Ok(())
+    }
+
 }
-
-#[account]
-pub struct Payment {
-    id: Pubkey,
-    amount: u64,
-    timestamp: i64
-}
-
-
-#[derive(Accounts)]
-#[instruction(id: Pubkey )]
-pub struct Initialize<'info> {
-    #[account(init, payer = signer, space = 200, seeds=[id.to_bytes().as_ref()], bump)]
-    pub payment: Account<'info, Payment>,
-    /// CHECK: it is just used for receiving amount so, no checks required.
-    #[account(mut)]
-    pub recipient: AccountInfo<'info>,
-
-    /// CHECK: it is usef for sending amount
-    #[account(signer)]
-    pub sender: AccountInfo<'info>,
-
-    #[account(mut)]
-    pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>,
-}
-
-#[derive(Accounts)]
-#[instruction(id: Pubkey )]
-pub struct PayUSDC<'info> {
-    #[account(init, payer = signer, space = 200)]
-    pub payment: Account<'info, Payment>,
-    /// CHECK: it is just used for receiving amount so, no checks required.
-    #[account(mut)]
-    recipient: AccountInfo<'info>,
-
-    /// CHECK: it is useful for sending amount
-    #[account(signer)] 
-    sender: AccountInfo<'info>,
-
-    #[account(mut)]
-    pub from_ata: Account<'info, TokenAccount>,
-
-    #[account(mut)]
-    pub to_ata: Account<'info, TokenAccount>,
-
-    pub token_program: Program<'info, Token>,
-
-    #[account(mut)]
-    pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>,
-}
-
-
-
-
 

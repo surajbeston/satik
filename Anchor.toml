@@ -5,13 +5,13 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-satik = "BcmqgRT4uiiCq4q64e4vGRyLRSRRV1na3aAkDaq7ABRf"
+satik = "5yGpHM8VQdAcw4tPYe8aS7asnsxeJgd5mfzFABD441cB"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "Localnet"
 wallet = "/home/suraj/.config/solana/id.json"
 
 [scripts]

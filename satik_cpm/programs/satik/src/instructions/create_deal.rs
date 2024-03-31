@@ -39,3 +39,4 @@ pub fn handle_create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Res
 
     Ok(())
 }
+

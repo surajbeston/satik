@@ -1,0 +1,39 @@
+import * as anchor from "@coral-xyz/anchor";
+import { Program } from "@coral-xyz/anchor";
+import { Satik } from "../target/types/satik";
+
+
+anchor.setProvider(anchor.AnchorProvider.env());
+
+const program = anchor.workspace.Satik as Program<Satik>;
+
+async function createPrograms() {
+
+    const BRAND_USERNAME = (Math.random() + 1).toString(36).substring(7);
+    const [brandAddress] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(BRAND_USERNAME)], program.programId);
+
+    console.log("Address of brand is: ", brandAddress.toBase58());
+
+    const INFLUENCER_USERNAME = (Math.random() + 1).toString(36).substring(7);
+    const [influencerAddress] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(INFLUENCER_USERNAME)], program.programId);
+
+    console.log("Address of influencer is: ", influencerAddress.toBase58());
+
+    const tx = await program.methods.initializeBrand( BRAND_USERNAME,  'Not Brand', 'https://image.com/image.jpeg', "This my brand bio.")
+                                    .accounts({
+                                        brand: brandAddress
+                                    })
+                                    .rpc()
+    console.log("This is the transaction of brand: ", tx)
+
+    const tx1 = await program.methods
+                            .initializeInfluencer(INFLUENCER_USERNAME,'Not Influencer', 'https://image.com/image.image', "I'm not a real influencer -)")
+                            .accounts({
+                                influencer: influencerAddress
+                            })
+                            .rpc()
+    console.log("This is the transaction of influencer: ", tx1)
+                        
+}
+
+createPrograms()
