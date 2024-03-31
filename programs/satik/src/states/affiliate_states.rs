@@ -50,7 +50,8 @@ pub struct Proposal {
     pub created_by: Pubkey,
     pub accepted: bool,
     pub brand_ata: Pubkey,
-    pub influencer_ata: Pubkey
+    pub influencer_ata: Pubkey,
+    pub brand_created_by: Pubkey,
 }
 
 #[account]
@@ -77,11 +78,18 @@ pub struct Purchase {
     pub brand_receiver: Pubkey,
     pub influencer_receiver: Pubkey,
     pub satik_receiver: Pubkey,
+    pub brand_created_by: Pubkey,
+    pub escrow: Pubkey,
     pub total_amount: u64,
     pub brand_amount: u64,
     pub satik_amount: u64,
+    pub influencer_amount: u64,
     pub purchase_datetime: i64,
     pub redeemed: bool
-
 }
 
+#[account]
+#[derive(InitSpace)]
+pub struct RedeemDatetime {
+    pub redeemed_on: i64
+}

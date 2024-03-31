@@ -89,3 +89,22 @@ pub struct InitializePurchase<'info> {
     pub signer: Signer<'info>,
     pub system_program: Program<'info, System>
 }
+
+#[derive(Accounts)]
+pub struct RedeemPurchase<'info> {
+    #[account(init, payer = signer, space = 8 + RedeemDatetime::INIT_SPACE)]
+    pub redeem_datetime: Account<'info, RedeemDatetime>,
+    pub purchase: Account<'info, Purchase>,
+
+    pub brand_receiver: Account<'info, TokenAccount>,
+    pub influencer_receier: Account<'info, TokenAccount>,
+    pub satik_receiver: Account<'info, TokenAccount>,
+    pub cpi_program: Program<'info, System>,
+
+    pub escrow: Account<'info, TokenAccount>,
+    pub token_program: Program<'info, Token>,
+
+    #[account(mut)]
+    pub signer: Signer<'info>,
+    pub system_program: Program<'info, System>
+}

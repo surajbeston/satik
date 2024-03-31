@@ -50,6 +50,7 @@ pub mod satik {
         proposal.message = message;
         proposal.influencer_key = ctx.accounts.influencer.created_by;
         proposal.brand = ctx.accounts.brand.key();
+        proposal.brand_created_by = ctx.accounts.brand.created_by;
         proposal.influencer_ata = ctx.accounts.influencer.usdc_ata;
         proposal.brand_ata = ctx.accounts.brand.usdc_ata;
         proposal.created_by = ctx.accounts.signer.key();
@@ -100,12 +101,15 @@ pub mod satik {
         let proposal = &mut ctx.accounts.proposal;
 
         purchase.paid_by = ctx.accounts.signer.key();
+        purchase.brand_created_by = proposal.brand_created_by;
         purchase.brand_receiver = proposal.brand;
         purchase.influencer_receiver = proposal.influencer_key;
         purchase.satik_receiver = Pubkey::from_str("ACxRSAhXU25zxuaTgEtGnxbg9dQG9A49BVRwskmwnYqQ").unwrap();
         purchase.total_amount = product.total_amount;
         purchase.satik_amount = product.satik_amount;
         purchase.brand_amount = product.brand_amount;
+        purchase.influencer_amount = product.influencer_amount;
+        purchase.escrow = ctx.accounts.usdc_token_account.key();
         purchase.purchase_datetime = Clock::get()?.unix_timestamp;
         purchase.redeemed = false;
 
@@ -115,7 +119,7 @@ pub mod satik {
             authority:  ctx.accounts.customer_ata.to_account_info().clone()
         };
 
-        let cpi_program = ctx.accounts.token_program;
+        let cpi_program = &ctx.accounts.token_program;
 
         token::transfer(
             CpiContext::new(cpi_program.to_account_info(), cpi_accounts),
@@ -123,6 +127,58 @@ pub mod satik {
         )?;
 
         Ok(())
+    }
+
+    pub fn redeem_amount(ctx: Context<RedeemPurchase>) -> Result<()> {
+        require_keys_eq!(ctx.accounts.purchase.brand_created_by, ctx.accounts.signer.key());
+        require_keys_eq!(ctx.accounts.purchase.brand_receiver, ctx.accounts.brand_receiver.key());
+        require_keys_eq!(ctx.accounts.purchase.influencer_receiver, ctx.accounts.influencer_receier.key());
+        require_keys_eq!(ctx.accounts.purchase.satik_receiver, ctx.accounts.satik_receiver.key());
+        require_keys_eq!(ctx.accounts.purchase.escrow, ctx.accounts.escrow.key());
+        let redeem_datetime = &mut ctx.accounts.redeem_datetime;
+
+        let purchase = &ctx.accounts.purchase;
+
+        let cpi_program = &ctx.accounts.token_program;
+
+        let accounts_brand = SplTransfer {
+            from: ctx.accounts.escrow.to_account_info().clone(),
+            to: ctx.accounts.brand_receiver.to_account_info().clone(),
+            authority:  ctx.accounts.escrow.to_account_info().clone()
+        };
+
+        token::transfer(
+            CpiContext::new(cpi_program.to_account_info(), accounts_brand),
+            purchase.brand_amount
+        )?;
+
+        let accounts_influencer = SplTransfer {
+            from: ctx.accounts.escrow.to_account_info().clone(),
+            to: ctx.accounts.influencer_receier.to_account_info().clone(),
+            authority:  ctx.accounts.escrow.to_account_info().clone()
+        };
+
+        token::transfer(
+            CpiContext::new(cpi_program.to_account_info(), accounts_influencer),
+            purchase.influencer_amount
+        )?;
+
+        let accounts_satik = SplTransfer {
+            from: ctx.accounts.escrow.to_account_info().clone(),
+            to: ctx.accounts.satik_receiver.to_account_info().clone(),
+            authority:  ctx.accounts.escrow.to_account_info().clone()
+        };
+
+        token::transfer(
+            CpiContext::new(cpi_program.to_account_info(), accounts_satik),
+            purchase.influencer_amount
+        )?;
+
+        redeem_datetime.redeemed_on = Clock::get()?.unix_timestamp;
+
+
+        Ok(())
+
     }
 
 
