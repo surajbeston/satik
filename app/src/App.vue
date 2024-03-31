@@ -1,18 +1,13 @@
 <script setup>
-import WebBuilder from "./components/WebBuilder.vue";
+import WebBuilder from "./pages/WebBuilder.vue";
+import LandingPage from "./pages/LandingPage.vue";
 </script>
 
 <template>
-  <div class="wrapper">
-    <WebBuilder />
+  <div class="bg-primary min-h-screen text-neutral-0 font-playfair-display">
+    <!-- <WebBuilder /> -->
+    <LandingPage />
   </div>
 </template>
 
-<style scoped>
-.wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 95%;
-  background: #4e4e4e;
-}
-</style>
+<style scoped></style>

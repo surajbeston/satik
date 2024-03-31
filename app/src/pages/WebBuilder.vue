@@ -1,6 +1,6 @@
 <template>
   <div class="editor-container">
-    <div ref="editorEl" style="width: 100%" id="gjs"></div>
+    <div ref="editorEl" style="width: 100%; height: 90vh" id="gjs"></div>
     <button @click="getCode">Get Code</button>
   </div>
 </template>
