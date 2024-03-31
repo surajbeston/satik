@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 FROM switchboardlabs/sgx-function AS builder
 
-ARG CARGO_NAME=api_feed
+ARG CARGO_NAME=switchboard-function
 ENV CARGO_NAME=$CARGO_NAME
 
 WORKDIR /home/root/switchboard-function
