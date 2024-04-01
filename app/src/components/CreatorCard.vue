@@ -20,6 +20,7 @@
       adipisicing elit. Ipsam, corrupti?
     </p>
     <button
+      @click="$router.push(`/creator/${creator.id}`)"
       class="bg-secondary-30 py-2 rounded-xl mt-4 w-full hover:bg-secondary-40 duration-300"
     >
       View Profile

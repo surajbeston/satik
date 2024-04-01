@@ -1,14 +1,11 @@
 <template>
   <div>
-    <Wrapper>
-      <Header />
-      <!-- <DividerPattern /> -->
-      <HeroSection />
-      <!-- <HowItWork /> -->
-      <Features />
-      <CreatorSection />
-      <!-- <InfluencerSection /> -->
-    </Wrapper>
+    <!-- <DividerPattern /> -->
+    <HeroSection />
+    <!-- <HowItWork /> -->
+    <Features />
+    <CreatorSection />
+    <!-- <InfluencerSection /> -->
   </div>
 </template>
 

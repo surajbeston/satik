@@ -1,18 +1,17 @@
 <script setup>
-import WebBuilder from "./pages/WebBuilder.vue";
-import LandingPage from "./pages/LandingPage.vue";
-import CreatorPage from "./pages/CreatorPage.vue";
-import CreatorPofile from "./pages/CreatorProfile.vue";
-import ContractPage from "./pages/ContractPage.vue";
+import Header from "./components/Header.vue";
+import Wrapper from "./components/Wrapper.vue";
 </script>
 
 <template>
-  <div class="bg-primary min-h-screen text-neutral-0 font-playfair-display">
-    <!-- <WebBuilder /> -->
-    <!-- <LandingPage /> -->
-    <!-- <CreatorPage /> -->
-    <!-- <CreatorPofile /> -->
-    <ContractPage />
+  <div class="bg-primary min-h-screen text-neutral-0">
+    <Wrapper>
+      <Header />
+
+      <main>
+        <RouterView />
+      </main>
+    </Wrapper>
   </div>
 </template>
 
