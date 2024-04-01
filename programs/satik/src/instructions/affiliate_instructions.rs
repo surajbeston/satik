@@ -76,6 +76,7 @@ pub struct InitializePurchase<'info> {
     pub product: Account<'info, Product>,
     pub brand_ata: Account<'info, TokenAccount>,
     pub influencer_ata: Account<'info, TokenAccount>,
+    #[account(mut)]
     pub customer_ata: Account<'info, TokenAccount>,
 
     #[account(init, payer = signer, associated_token::mint = mint, associated_token::authority = purchase)]
@@ -84,7 +85,6 @@ pub struct InitializePurchase<'info> {
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub rent: Sysvar<'info, Rent>,
-
     #[account(mut)]
     pub signer: Signer<'info>,
     pub system_program: Program<'info, System>
@@ -96,15 +96,21 @@ pub struct RedeemPurchase<'info> {
     pub redeem_datetime: Account<'info, RedeemDatetime>,
     pub purchase: Account<'info, Purchase>,
 
+    #[account(mut)]
     pub brand_receiver: Account<'info, TokenAccount>,
-    pub influencer_receier: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub influencer_receiver: Account<'info, TokenAccount>,
+    #[account(mut)]
     pub satik_receiver: Account<'info, TokenAccount>,
-    pub cpi_program: Program<'info, System>,
 
+    #[account(mut)]
     pub escrow: Account<'info, TokenAccount>,
     pub token_program: Program<'info, Token>,
+    pub mint: Account<'info, Mint>,
 
     #[account(mut)]
     pub signer: Signer<'info>,
     pub system_program: Program<'info, System>
 }
+
+

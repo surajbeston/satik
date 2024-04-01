@@ -2,6 +2,7 @@ use anchor_lang::{prelude::*, solana_program::clock};
 use std::str::FromStr;
 
 use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
+use anchor_spl::token_interface::{TransferChecked, transfer_checked};
 
 
 // use anchor_lang::solana_program::clock;
@@ -16,6 +17,8 @@ declare_id!("5yGpHM8VQdAcw4tPYe8aS7asnsxeJgd5mfzFABD441cB");
 
 #[program]
 pub mod satik {
+
+    use std::any::Any;
 
     use super::*;
 
@@ -87,100 +90,138 @@ pub mod satik {
         Ok(())
     }
 
-    pub fn purchase(ctx: Context<InitializePurchase>) -> Result<()> {
-        // checking if product belongs to submitted proposal
-        require_keys_eq!(ctx.accounts.proposal.key(), ctx.accounts.product.proposal);
-        // checking if proposal is accepted by influencer
-        require_eq!(ctx.accounts.proposal.accepted, true);
-        // checking is submitted brand token account is brand's actual token account
-        require_keys_eq!(ctx.accounts.proposal.brand_ata, ctx.accounts.brand_ata.key());
-        // checking if submitted influencer token account is influencer's actual token account
-        require_keys_eq!(ctx.accounts.proposal.influencer_ata, ctx.accounts.influencer_ata.key());
+    pub fn purchase(ctx: Context<InitializePurchase>, id: String) -> Result<()> {
+        msg!("Public Key of signer {}", ctx.accounts.signer.key());
         let purchase =  &mut ctx.accounts.purchase;
+        purchase.id = id;
+
+        // checking if product belongs to submitted proposal
+
+        require_keys_eq!(ctx.accounts.proposal.key(), ctx.accounts.product.proposal, ConstraintErrors::UnexpectedProposalError);
+        // checking if proposal is accepted by influencer
+        require_eq!(ctx.accounts.proposal.accepted, true, ConstraintErrors::ProposalNotExpectedError);
+        // checking is submitted brand token account is brand's actual token account
+        require_keys_eq!(ctx.accounts.proposal.brand_ata, ctx.accounts.brand_ata.key(), ConstraintErrors::UnexpectedBrandATAError);
+        // checking if submitted influencer token account is influencer's actual token account
+        require_keys_eq!(ctx.accounts.proposal.influencer_ata, ctx.accounts.influencer_ata.key(), ConstraintErrors::UnexpectedInfluencerError);
+
+        // msg!("Reached here ---------");
+
         let product = &mut ctx.accounts.product;
         let proposal = &mut ctx.accounts.proposal;
 
         purchase.paid_by = ctx.accounts.signer.key();
-        purchase.brand_created_by = proposal.brand_created_by;
-        purchase.brand_receiver = proposal.brand;
-        purchase.influencer_receiver = proposal.influencer_key;
+        purchase.product = product.key();
+        
+        purchase.brand_receiver =  proposal.brand_ata;
+        purchase.influencer_receiver = proposal.influencer_ata;
         purchase.satik_receiver = Pubkey::from_str("ACxRSAhXU25zxuaTgEtGnxbg9dQG9A49BVRwskmwnYqQ").unwrap();
+        purchase.brand_created_by = proposal.brand_created_by;
+        purchase.escrow = ctx.accounts.usdc_token_account.key();
         purchase.total_amount = product.total_amount;
         purchase.satik_amount = product.satik_amount;
         purchase.brand_amount = product.brand_amount;
         purchase.influencer_amount = product.influencer_amount;
-        purchase.escrow = ctx.accounts.usdc_token_account.key();
         purchase.purchase_datetime = Clock::get()?.unix_timestamp;
         purchase.redeemed = false;
+
+        let signer = &ctx.accounts.signer;
 
         let cpi_accounts = SplTransfer {
             from: ctx.accounts.customer_ata.to_account_info().clone(),
             to: ctx.accounts.usdc_token_account.to_account_info().clone(),
-            authority:  ctx.accounts.customer_ata.to_account_info().clone()
+            authority: signer.to_account_info().clone()
         };
 
-        let cpi_program = &ctx.accounts.token_program;
+
+        let cpi_program = ctx.accounts.token_program.to_account_info();
 
         token::transfer(
-            CpiContext::new(cpi_program.to_account_info(), cpi_accounts),
-            purchase.total_amount
+            CpiContext::new(cpi_program, cpi_accounts), purchase.total_amount
         )?;
 
         Ok(())
     }
 
     pub fn redeem_amount(ctx: Context<RedeemPurchase>) -> Result<()> {
-        require_keys_eq!(ctx.accounts.purchase.brand_created_by, ctx.accounts.signer.key());
+        require_keys_eq!(ctx.accounts.purchase.brand_created_by, ctx.accounts.signer.key(), ConstraintErrors::UnauthorizedRedeemError);
         require_keys_eq!(ctx.accounts.purchase.brand_receiver, ctx.accounts.brand_receiver.key());
-        require_keys_eq!(ctx.accounts.purchase.influencer_receiver, ctx.accounts.influencer_receier.key());
-        require_keys_eq!(ctx.accounts.purchase.satik_receiver, ctx.accounts.satik_receiver.key());
+        require_keys_eq!(ctx.accounts.purchase.influencer_receiver, ctx.accounts.influencer_receiver.key());
+        // require_keys_eq!(ctx.accounts.purchase.satik_receiver, ctx.accounts.satik_receiver.key());
         require_keys_eq!(ctx.accounts.purchase.escrow, ctx.accounts.escrow.key());
         let redeem_datetime = &mut ctx.accounts.redeem_datetime;
 
         let purchase = &ctx.accounts.purchase;
+        redeem_datetime.redeemed_on = Clock::get()?.unix_timestamp;
 
         let cpi_program = &ctx.accounts.token_program;
 
-        let accounts_brand = SplTransfer {
+        // let accounts_brand = SplTransfer {
+        //     from: ctx.accounts.escrow.to_account_info().clone(),
+        //     to: ctx.accounts.brand_receiver.to_account_info().clone(),
+        //     authority:  ctx.accounts.purchase.to_account_info().clone()
+        // };
+
+        let accounts = TransferChecked {
             from: ctx.accounts.escrow.to_account_info().clone(),
             to: ctx.accounts.brand_receiver.to_account_info().clone(),
-            authority:  ctx.accounts.escrow.to_account_info().clone()
+            authority: ctx.accounts.purchase.to_account_info().clone(),
+            mint: ctx.accounts.mint.to_account_info()
         };
 
-        token::transfer(
-            CpiContext::new(cpi_program.to_account_info(), accounts_brand),
-            purchase.brand_amount
-        )?;
 
-        let accounts_influencer = SplTransfer {
-            from: ctx.accounts.escrow.to_account_info().clone(),
-            to: ctx.accounts.influencer_receier.to_account_info().clone(),
-            authority:  ctx.accounts.escrow.to_account_info().clone()
-        };
+        let seeds = &[
+            &purchase.id.as_bytes()[..],
+        ];
+    
+        let signer_seeds = &[&seeds[..]];
+    
+        let ctx = CpiContext::new_with_signer(
+            cpi_program.to_account_info(),
+            accounts,
+            signer_seeds
+        );
 
-        token::transfer(
-            CpiContext::new(cpi_program.to_account_info(), accounts_influencer),
-            purchase.influencer_amount
-        )?;
+        let _ = transfer_checked(ctx, 0, 6);
 
-        let accounts_satik = SplTransfer {
-            from: ctx.accounts.escrow.to_account_info().clone(),
-            to: ctx.accounts.satik_receiver.to_account_info().clone(),
-            authority:  ctx.accounts.escrow.to_account_info().clone()
-        };
+        // let accounts_influencer = SplTransfer {
+        //     from: ctx.accounts.escrow.to_account_info().clone(),
+        //     to: ctx.accounts.influencer_receiver.to_account_info().clone(),
+        //     authority:  ctx.accounts.purchase.to_account_info().clone()
+        // };
 
-        token::transfer(
-            CpiContext::new(cpi_program.to_account_info(), accounts_satik),
-            purchase.influencer_amount
-        )?;
+        // token::transfer(
+        //     CpiContext::new(cpi_program.to_account_info(), accounts_influencer),
+        //     purchase.influencer_amount
+        // )?;
 
-        redeem_datetime.redeemed_on = Clock::get()?.unix_timestamp;
+        // let accounts_satik = SplTransfer {
+        //     from: ctx.accounts.escrow.to_account_info().clone(),
+        //     to: ctx.accounts.satik_receiver.to_account_info().clone(),
+        //     authority:  ctx.accounts.purchase.to_account_info().clone()
+        // };
 
+        // token::transfer(
+        //     CpiContext::new(cpi_program.to_account_info(), accounts_satik),
+        //     purchase.influencer_amount
+        // )?;
 
         Ok(())
 
     }
-
-
 }
 
+#[error_code]
+pub enum ConstraintErrors {
+    #[msg("Given proposal is not same as given product's proposal")]
+    UnexpectedProposalError,
+    #[msg("Given brand_ata/brand_receiver is not same as proposal's")]
+    UnexpectedBrandATAError,
+    #[msg("Given proposal is not expected by influencer")]
+    ProposalNotExpectedError,
+    #[msg("Given influencer_ata/influencer_receiver is not same as proposal's")]
+    UnexpectedInfluencerError,
+
+    #[msg("Balance can only be redeemed by owner")]
+    UnauthorizedRedeemError,
+}
