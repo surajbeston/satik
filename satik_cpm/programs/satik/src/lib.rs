@@ -7,7 +7,7 @@ pub mod types;
 use instructions::*;
 use states::{ApiFeedData, CreateDealData};
 
-declare_id!("BkF89c2Cjm2KBvgWF9BQe8wTuPJ3LKtqNPZh1j38A2KZ");
+declare_id!("8Vr9DzSPk98B21qPmFba2mzb75kbTcmUF86YoBwmBxhp");
 
 #[program]
 pub mod satik {

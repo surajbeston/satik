@@ -29,19 +29,16 @@ describe("satik test", () => {
   it("create deal", async () => {
     await program.methods
       .createDeal({
-        idSeed,
-        initialAmount: 1000,
-        paymentDeals: [
-          {
-            startMile: 1000,
-            endMile: null,
-            cpm: 10,
-          },
-        ],
-        contentUrl: "https://jsonplaceholder.typicode.com/todos/1",
+        initialAmount: new BN(1000),
+        initialAmountOnReach: new BN(1000),
         startsOn: new BN(Date.now() / 1000),
+        startsOnReach: new BN(1000),
         endsOn: null,
+        endsOnReach: null,
+        cpm: new BN(1),
         creatorPk: creatorKeypair.publicKey,
+        contentUrl: "https://eoo6aio1mbtg4nl.m.pipedream.net",
+        idSeed,
       })
       .accounts({
         deal: dealPDA,
