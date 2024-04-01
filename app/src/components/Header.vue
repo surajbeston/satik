@@ -29,9 +29,9 @@
 </template>
 
 <script setup>
-import Wrapper from "../Wrapper.vue";
+import Wrapper from "./Wrapper.vue";
 import { ref } from "vue";
-import { navLinks } from "../../constant/index";
+import { navLinks } from "../constant/index";
 const activeNav = ref(navLinks[0].name);
 
 const navClicked = (nav) => {
