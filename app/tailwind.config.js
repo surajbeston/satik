@@ -5,8 +5,10 @@ export default {
     extend: {
       fontFamily: {
         "inria-sans": ["Inria Sans", "sans-serif"],
-        "playfair-display": ["Playfair Display", "serif"],
+
         oswald: ["Oswald", "sans-serif"],
+
+        "open-sans": ["Open Sans", "sans-serif"],
       },
       colors: {
         primary: {

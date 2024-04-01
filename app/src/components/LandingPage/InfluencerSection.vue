@@ -1,9 +1,9 @@
 <template>
-  <div class="py-8">
-    <h1 class="font-inria-sans font-semibold text-[20px] py-6">
+  <div class="py-8 influencer_section">
+    <h1 class="font-inria-sans font-semibold text-[24px] py-6">
       Influencer Spotlights
     </h1>
-    <div class="grid-container relative">
+    <div class="grid-container relative py-8">
       <!-- solana  logo -->
       <div
         class="absolute z-10 bg-primary-50 rounded-2xl p-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -36,7 +36,7 @@
               y="0px"
               width="30"
               height="30"
-              class="fill-primaryLight-40 hover:fill-primaryLight-70 cursor-pointer duration-300 opacity-30 group-hover:opacity-100 delay-500"
+              class="fill-primaryLight-40 cursor-pointer hover:fill-primaryLight-70 duration-200 opacity-30 group-hover:opacity-100 group-hover:delay-500"
               viewBox="0 0 30 30"
             >
               <path
@@ -44,12 +44,14 @@
               ></path>
             </svg>
           </div>
-          <p class="font-oswald font-normal text-neutral-10 text-base py-2">
+          <p
+            class="font-oswald font-normal text-neutral-10 text-base py-2 opacity-30 group-hover:opacity-100 delay-300"
+          >
             Content Creator - Youtube
           </p>
 
           <button
-            class="text-lg font-inria-sans bg-secondary-30 px-4 py-2 rounded-3xl font-semibold mt-4"
+            class="text-lg font-inria-sans hover:bg-secondary-20 bg-secondary-30 px-4 py-2 rounded-3xl font-bold mt-4 opacity-30 group-hover:opacity-100 delay-300"
           >
             Initiate Contract
           </button>
@@ -67,7 +69,16 @@
           alt="Influencer"
         />
       </div>
-      <div class="div4 rounded-3xl overflow-hidden">
+      <div class="div4 rounded-3xl overflow-hidden relative">
+        <div
+          class="absolute top-0 left-0 w-full h-full bg-black/60 p-4 flex justify-center items-center"
+        >
+          <button
+            class="text-xl font-bold capitalize font-oswald text-secondary-0 underline underline-offset-[6px] hover:text-secondary-20 duration-200"
+          >
+            see more
+          </button>
+        </div>
         <img
           src="https://framerusercontent.com/images/0UUOBBAtJfhMAFXVuuTILoRxKc.jpg?scale-down-to=1024"
           alt="Influencer"
@@ -80,6 +91,12 @@
 <script setup></script>
 
 <style scoped>
+/* .influencer_section {
+  cursor:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>👆</text></svg>")
+      16 0,
+    auto;
+} */
 .grid-container {
   width: 100%;
   height: 600px;
@@ -96,11 +113,11 @@
   grid-area: 3 / 1 / 6 / 3;
   background: #4e4e;
 }
-.div3 {
+.div4 {
   grid-area: 4 / 3 / 6 / 5;
   background: #4e4e4e;
 }
-.div4 {
+.div3 {
   grid-area: 1 / 3 / 4 / 5;
   background: #dddd;
 }
@@ -112,7 +129,7 @@
   height: 100%;
   width: 100%;
   border-radius: inherit;
-  cursor: pointer;
+
   transition: all 0.6s ease-in-out;
 }
 

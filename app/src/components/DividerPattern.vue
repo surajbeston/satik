@@ -11,7 +11,7 @@ defineProps({
     default: "150px",
   },
   bgUrl: {
-    default: '"/src/assets/patterns/pattern_1.svg"',
+    default: "/src/assets/patterns/pattern_1.svg",
   },
 });
 </script>

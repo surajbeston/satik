@@ -2,7 +2,7 @@
   <div class="h-[60vh] worldbg py-10 my-6">
     <div class="text-center w-[50%] mx-auto">
       <h1
-        class="text-[60px] text-neutral-0 font-bold leading-[70px] font-inria-sans"
+        class="text-[60px] text-neutral-0 font-bold leading-[70px] font-open-sans"
       >
         Decentralized Nexus for Creator-Brand Alliances
       </h1>
