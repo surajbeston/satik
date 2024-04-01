@@ -5,10 +5,10 @@
       <h1 class="text-3xl font-inria-sans my-6 text-secondary-0 font-semibold">
         Creators
       </h1>
-      <a
+      <RouterLink
         class="text-lg underline text-secondary-10 underline-offset-4 hover:text-secondary-30 font-medium duration-300"
-        href="/creators"
-        >See All</a
+        to="/creators"
+        >See All</RouterLink
       >
     </div>
 
