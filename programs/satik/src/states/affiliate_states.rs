@@ -2,9 +2,6 @@ use anchor_lang::prelude::*;
 
 // use anchor_lang::prelude::Sysvar;
 
-use anchor_spl::associated_token::AssociatedToken;
-use anchor_spl::token::{Mint, Token, TokenAccount};
-
 
 #[account]
 #[derive(InitSpace)]
@@ -51,7 +48,7 @@ pub struct Proposal {
     pub accepted: bool,
     pub brand_ata: Pubkey,
     pub influencer_ata: Pubkey,
-    pub brand_created_by: Pubkey,
+    pub brand_redeemer: Pubkey,
 }
 
 #[account]
@@ -85,6 +82,7 @@ pub struct Purchase {
     pub satik_amount: u64,
     pub influencer_amount: u64,
     pub purchase_datetime: i64,
+    pub redeemer: Pubkey,
     pub redeemed: bool
 }
 

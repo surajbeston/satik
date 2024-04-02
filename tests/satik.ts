@@ -25,14 +25,14 @@ describe("satik", () => {
 
     const program = anchor.workspace.Satik as Program<Satik>;
 
-    program.provider.connection.onLogs(program.programId, (logs) => {
-    for (var log of logs.logs) {
-      if(log.includes("Program log:")) {
-        log.replace("Program log: ", "");
-        console.log(log);
-      }
-    }
-  })
+  //   program.provider.connection.onLogs(program.programId, (logs) => {
+  //   for (var log of logs.logs) {
+  //     if(log.includes("Program log:")) {
+  //       log.replace("Program log: ", "");
+  //       console.log(log);
+  //     }
+  //   }
+  // })
 
     
 
@@ -117,7 +117,7 @@ describe("satik", () => {
 
 
         const proposalKeyPair = anchor.web3.Keypair.generate();
-        const tx2 = await program.methods.initializeProposal("website", "message")
+        const tx2 = await program.methods.initializeProposal("website", "message", payer.publicKey)
                                     .accounts({
                                         proposal: proposalKeyPair.publicKey,
                                         brand: brandAddress,
@@ -134,11 +134,10 @@ describe("satik", () => {
             throw new Error('Assertion failed: fetchedProposal.accepted should be false.');
         }
         
-        const products = [{"name": "Suraj Jha", "description": "This is suraj", "total_amount": 100, "influencer_amount": 30}]
+        const products = [{"name": "Suraj Jha", "description": "This is suraj", "total_amount": 100_000_000, "influencer_amount": 20_000_000}]
         const productKeyPair = anchor.web3.Keypair.generate();
         for(var product of products) {
-            
-            const tx3 = await program.methods.initializeProduct("product 1", "description", new BN(123), new BN(23))
+            const tx3 = await program.methods.initializeProduct("product 1", "description", new BN(product.total_amount), new BN(product.influencer_amount))
                                         .accounts({
                                             product: productKeyPair.publicKey,
                                             proposal: proposalKeyPair.publicKey
@@ -179,14 +178,14 @@ describe("satik", () => {
             mint,
             customer_ATA,
             payer.publicKey,
-            123
+            100_000_000
           )
 
         console.log("Transaction of minting: ", tx5);
 
         const purchaseId = Math.random().toString(36).slice(2);
 
-        const [purchaseAddress] =  anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(purchaseId)], program.programId);
+        const [purchaseAddress, bump] =  anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(purchaseId)], program.programId);
 
         const escrow = await getAssociatedTokenAddress(mint, purchaseAddress, true)
         
@@ -220,7 +219,9 @@ describe("satik", () => {
                                         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
                                     })
                                     .signers([payer])
-                                    .rpc();
+                                    .rpc({
+                                      skipPreflight: true
+                                    });
 
         console.log("Transaction of purchase is: ", tx4);
 
@@ -228,7 +229,22 @@ describe("satik", () => {
 
         let signer = payer;
 
-        const tx6 = await program.methods.redeemAmount()
+        // await program.provider.connection.requestAirdrop(purchaseAddress, LAMPORTS_PER_SOL);
+        // while (true){
+        //   const purchaseBalance = await program.provider.connection.getBalance(purchaseAddress)
+        //   console.log("Purchase Balance: ", purchaseBalance);
+        //   if (purchaseBalance > 3166800) break
+        // }
+
+        console.log("Brand Receiver", brandATA.toBase58())
+        console.log("Purchase Address", purchaseAddress.toBase58())
+        console.log("Escrow Address", escrow.toBase58())
+
+        console.log("Purchase id ", purchaseId);
+
+        console.log("Bump is: ", bump)
+
+        const tx6 = await program.methods.redeemAmount(bump)
                                         .accounts({
                                             redeemDatetime: redeemDatetimeAddress.publicKey,
                                             purchase: purchaseAddress,
@@ -240,7 +256,10 @@ describe("satik", () => {
                                             tokenProgram: TOKEN_PROGRAM_ID
                                         })
                                         .signers([redeemDatetimeAddress, payer])
-                                        .rpc()
+                                        .rpc({
+                                          skipPreflight:true
+                                        })  
+                                        
 
         console.log("Transaction of redeem is: ", tx6);
 

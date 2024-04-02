@@ -70,14 +70,16 @@ pub struct AcceptProposal<'info> {
 #[instruction(id: String)]
 pub struct InitializePurchase<'info> {
     #[account(init, payer = signer, space = 8 + Purchase::INIT_SPACE, seeds = [id.as_bytes().as_ref()], bump)]
-    pub purchase: Account<'info, Purchase>,
+    pub purchase: Box<Account<'info, Purchase>>,
 
-    pub proposal: Account<'info, Proposal>,
-    pub product: Account<'info, Product>,
-    pub brand_ata: Account<'info, TokenAccount>,
-    pub influencer_ata: Account<'info, TokenAccount>,
+    pub proposal: Box<Account<'info, Proposal>>,
+    pub product: Box<Account<'info, Product>>,
     #[account(mut)]
-    pub customer_ata: Account<'info, TokenAccount>,
+    pub brand_ata: Box<Account<'info, TokenAccount>>,
+    #[account(mut)]
+    pub influencer_ata: Box<Account<'info, TokenAccount>>,
+    #[account(mut)]
+    pub customer_ata: Box<Account<'info, TokenAccount>>,
 
     #[account(init, payer = signer, associated_token::mint = mint, associated_token::authority = purchase)]
     pub usdc_token_account: Account<'info, TokenAccount>,
@@ -94,6 +96,7 @@ pub struct InitializePurchase<'info> {
 pub struct RedeemPurchase<'info> {
     #[account(init, payer = signer, space = 8 + RedeemDatetime::INIT_SPACE)]
     pub redeem_datetime: Account<'info, RedeemDatetime>,
+    #[account(mut)]
     pub purchase: Account<'info, Purchase>,
 
     #[account(mut)]

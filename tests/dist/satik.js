@@ -43,24 +43,23 @@ var chai_1 = require("chai");
 describe("satik", function () {
     anchor.setProvider(anchor.AnchorProvider.env());
     var program = anchor.workspace.Satik;
-    program.provider.connection.onLogs(program.programId, function (logs) {
-        for (var _i = 0, _a = logs.logs; _i < _a.length; _i++) {
-            var log = _a[_i];
-            if (log.includes("Program log:")) {
-                log.replace("Program log: ", "");
-                console.log(log);
-            }
-        }
-    });
+    //   program.provider.connection.onLogs(program.programId, (logs) => {
+    //   for (var log of logs.logs) {
+    //     if(log.includes("Program log:")) {
+    //       log.replace("Program log: ", "");
+    //       console.log(log);
+    //     }
+    //   }
+    // })
     it("Initialize brand and influencer, create proposal and accept it", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var payer, mint, brandKP, brandATA, influencerKP, influencerATA, satikKP, satikATA, BRAND_USERNAME, brandAddress, INFLUENCER_USERNAME, influencerAddress, tx, brand, tx1, influencer, proposalKeyPair, tx2, fetchedProposal, products, productKeyPair, _i, products_1, product, tx3_1, tx3, customer_ATA, tx5, purchaseId, purchaseAddress, escrow, tx4, redeemDatetimeAddress, signer, tx6;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var payer, mint, brandKP, brandATA, influencerKP, influencerATA, satikKP, satikATA, BRAND_USERNAME, brandAddress, INFLUENCER_USERNAME, influencerAddress, tx, brand, tx1, influencer, proposalKeyPair, tx2, fetchedProposal, products, productKeyPair, _i, products_1, product, tx3_1, tx3, customer_ATA, tx5, purchaseId, _a, purchaseAddress, bump, escrow, tx4, redeemDatetimeAddress, signer, tx6;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     payer = anchor.Wallet.local().payer;
                     return [4 /*yield*/, spl_token_1.createMint(program.provider.connection, payer, payer.publicKey, null, 6)];
                 case 1:
-                    mint = _a.sent();
+                    mint = _b.sent();
                     console.log("-------------");
                     console.log("mint: ", mint.toBase58());
                     console.log("Token Program Id", spl_token_1.TOKEN_PROGRAM_ID);
@@ -68,17 +67,17 @@ describe("satik", function () {
                     brandKP = anchor.web3.Keypair.generate();
                     return [4 /*yield*/, spl_token_1.createAssociatedTokenAccount(program.provider.connection, payer, mint, brandKP.publicKey)];
                 case 2:
-                    brandATA = _a.sent();
+                    brandATA = _b.sent();
                     console.log("Brand ATA: ", brandATA.toBase58());
                     influencerKP = anchor.web3.Keypair.generate();
                     return [4 /*yield*/, spl_token_1.createAssociatedTokenAccount(program.provider.connection, payer, mint, influencerKP.publicKey)];
                 case 3:
-                    influencerATA = _a.sent();
+                    influencerATA = _b.sent();
                     console.log("Infuencer ATA: ", influencerATA.toBase58());
                     satikKP = anchor.web3.Keypair.generate();
                     return [4 /*yield*/, spl_token_1.createAssociatedTokenAccount(program.provider.connection, payer, mint, satikKP.publicKey)];
                 case 4:
-                    satikATA = _a.sent();
+                    satikATA = _b.sent();
                     console.log("Satik ATA: ", satikATA.toBase58());
                     BRAND_USERNAME = (Math.random() + 1).toString(36).substring(7);
                     brandAddress = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(BRAND_USERNAME)], program.programId)[0];
@@ -92,11 +91,11 @@ describe("satik", function () {
                         })
                             .rpc()];
                 case 5:
-                    tx = _a.sent();
+                    tx = _b.sent();
                     console.log("This is the transaction of brand: ", tx);
                     return [4 /*yield*/, program.account.brand.fetch(brandAddress)];
                 case 6:
-                    brand = _a.sent();
+                    brand = _b.sent();
                     chai_1.assert(brand.username, BRAND_USERNAME);
                     return [4 /*yield*/, program.methods
                             .initializeInfluencer(INFLUENCER_USERNAME, 'Not Influencer', 'https://image.com/image.image', "I'm not a real influencer -)")
@@ -106,14 +105,14 @@ describe("satik", function () {
                         })
                             .rpc()];
                 case 7:
-                    tx1 = _a.sent();
+                    tx1 = _b.sent();
                     console.log("This is the transaction of influencer: ", tx1);
                     return [4 /*yield*/, program.account.influencer.fetch(influencerAddress)];
                 case 8:
-                    influencer = _a.sent();
+                    influencer = _b.sent();
                     chai_1.assert(influencer, INFLUENCER_USERNAME);
                     proposalKeyPair = anchor.web3.Keypair.generate();
-                    return [4 /*yield*/, program.methods.initializeProposal("website", "message")
+                    return [4 /*yield*/, program.methods.initializeProposal("website", "message", payer.publicKey)
                             .accounts({
                             proposal: proposalKeyPair.publicKey,
                             brand: brandAddress,
@@ -122,23 +121,23 @@ describe("satik", function () {
                             .signers([proposalKeyPair])
                             .rpc()];
                 case 9:
-                    tx2 = _a.sent();
+                    tx2 = _b.sent();
                     console.log("This is the address of proposal: ", proposalKeyPair.publicKey.toBase58());
                     console.log("This is the transaction of proposal:", tx2);
                     return [4 /*yield*/, program.account.proposal.fetch(proposalKeyPair.publicKey)];
                 case 10:
-                    fetchedProposal = _a.sent();
+                    fetchedProposal = _b.sent();
                     if (fetchedProposal.accepted !== false) {
                         throw new Error('Assertion failed: fetchedProposal.accepted should be false.');
                     }
-                    products = [{ "name": "Suraj Jha", "description": "This is suraj", "total_amount": 100, "influencer_amount": 30 }];
+                    products = [{ "name": "Suraj Jha", "description": "This is suraj", "total_amount": 100000000, "influencer_amount": 20000000 }];
                     productKeyPair = anchor.web3.Keypair.generate();
                     _i = 0, products_1 = products;
-                    _a.label = 11;
+                    _b.label = 11;
                 case 11:
                     if (!(_i < products_1.length)) return [3 /*break*/, 14];
                     product = products_1[_i];
-                    return [4 /*yield*/, program.methods.initializeProduct("product 1", "description", new bn_js_1.BN(123), new bn_js_1.BN(23))
+                    return [4 /*yield*/, program.methods.initializeProduct("product 1", "description", new bn_js_1.BN(product.total_amount), new bn_js_1.BN(product.influencer_amount))
                             .accounts({
                             product: productKeyPair.publicKey,
                             proposal: proposalKeyPair.publicKey
@@ -146,10 +145,10 @@ describe("satik", function () {
                             .signers([productKeyPair])
                             .rpc()];
                 case 12:
-                    tx3_1 = _a.sent();
+                    tx3_1 = _b.sent();
                     console.log("This is the address of product: ", productKeyPair.publicKey.toBase58());
                     console.log("This is the transaction of product:", tx3_1);
-                    _a.label = 13;
+                    _b.label = 13;
                 case 13:
                     _i++;
                     return [3 /*break*/, 11];
@@ -159,28 +158,28 @@ describe("satik", function () {
                     })
                         .rpc()];
                 case 15:
-                    tx3 = _a.sent();
+                    tx3 = _b.sent();
                     console.log("Transaction while accepting proposal: ", tx3);
                     return [4 /*yield*/, program.account.proposal.fetch(proposalKeyPair.publicKey)];
                 case 16:
-                    fetchedProposal = _a.sent();
+                    fetchedProposal = _b.sent();
                     if (fetchedProposal.accepted !== true) {
                         throw new Error('Assertion failed: fetchedProposal.accepted should be false.');
                     }
                     console.log("Getting customer ATA...");
                     return [4 /*yield*/, spl_token_1.createAssociatedTokenAccount(program.provider.connection, payer, mint, payer.publicKey)];
                 case 17:
-                    customer_ATA = _a.sent();
+                    customer_ATA = _b.sent();
                     console.log("Customer ATA: ", customer_ATA.toBase58());
-                    return [4 /*yield*/, spl_token_1.mintTo(program.provider.connection, payer, mint, customer_ATA, payer.publicKey, 123)];
+                    return [4 /*yield*/, spl_token_1.mintTo(program.provider.connection, payer, mint, customer_ATA, payer.publicKey, 100000000)];
                 case 18:
-                    tx5 = _a.sent();
+                    tx5 = _b.sent();
                     console.log("Transaction of minting: ", tx5);
                     purchaseId = Math.random().toString(36).slice(2);
-                    purchaseAddress = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(purchaseId)], program.programId)[0];
+                    _a = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(purchaseId)], program.programId), purchaseAddress = _a[0], bump = _a[1];
                     return [4 /*yield*/, spl_token_1.getAssociatedTokenAddress(mint, purchaseAddress, true)];
                 case 19:
-                    escrow = _a.sent();
+                    escrow = _b.sent();
                     console.log("Purchase address is: ", purchaseAddress.toBase58());
                     console.log("Escrow ATA is: ", escrow.toBase58());
                     return [4 /*yield*/, program.methods.purchase(purchaseId)
@@ -198,13 +197,26 @@ describe("satik", function () {
                             rent: anchor.web3.SYSVAR_RENT_PUBKEY
                         })
                             .signers([payer])
-                            .rpc()];
+                            .rpc({
+                            skipPreflight: true
+                        })];
                 case 20:
-                    tx4 = _a.sent();
+                    tx4 = _b.sent();
                     console.log("Transaction of purchase is: ", tx4);
                     redeemDatetimeAddress = anchor.web3.Keypair.generate();
                     signer = payer;
-                    return [4 /*yield*/, program.methods.redeemAmount()
+                    // await program.provider.connection.requestAirdrop(purchaseAddress, LAMPORTS_PER_SOL);
+                    // while (true){
+                    //   const purchaseBalance = await program.provider.connection.getBalance(purchaseAddress)
+                    //   console.log("Purchase Balance: ", purchaseBalance);
+                    //   if (purchaseBalance > 3166800) break
+                    // }
+                    console.log("Brand Receiver", brandATA.toBase58());
+                    console.log("Purchase Address", purchaseAddress.toBase58());
+                    console.log("Escrow Address", escrow.toBase58());
+                    console.log("Purchase id ", purchaseId);
+                    console.log("Bump is: ", bump);
+                    return [4 /*yield*/, program.methods.redeemAmount(bump)
                             .accounts({
                             redeemDatetime: redeemDatetimeAddress.publicKey,
                             purchase: purchaseAddress,
@@ -216,9 +228,11 @@ describe("satik", function () {
                             tokenProgram: spl_token_1.TOKEN_PROGRAM_ID
                         })
                             .signers([redeemDatetimeAddress, payer])
-                            .rpc()];
+                            .rpc({
+                            skipPreflight: true
+                        })];
                 case 21:
-                    tx6 = _a.sent();
+                    tx6 = _b.sent();
                     console.log("Transaction of redeem is: ", tx6);
                     return [2 /*return*/];
             }
