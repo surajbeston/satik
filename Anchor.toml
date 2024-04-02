@@ -4,15 +4,19 @@
 seeds = false
 skip-lint = false
 
+[programs.devnet]
+satik = "8Vr9DzSPk98B21qPmFba2mzb75kbTcmUF86YoBwmBxhp"
+
 [programs.localnet]
-satik = "BcmqgRT4uiiCq4q64e4vGRyLRSRRV1na3aAkDaq7ABRf"
+satik = "B6W6zBMtZLAhvCcSncjvrqAYrB7D5VovCdoQEZDQzCVE"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
 cluster = "Devnet"
-wallet = "/home/suraj/.config/solana/id.json"
+wallet = "/home/viristo/.config/solana/id.json"
 
 [scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+index = "bun run tests/index.ts"
+test = "bun run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
