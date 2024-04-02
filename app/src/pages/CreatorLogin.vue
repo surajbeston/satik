@@ -16,7 +16,7 @@
         />
       </div>
       <div>
-        <label for="description">Description:</label>
+        <label for="description">Bio:</label>
         <textarea
           cols="30"
           rows="5"

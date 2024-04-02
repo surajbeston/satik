@@ -62,8 +62,6 @@
 </template>
 
 <script setup>
-import Header from "../components/Header.vue";
-import Wrapper from "../components/Wrapper.vue";
 import CreatorStat from "../components/creatorProfile/CreatorStat.vue";
 import CreatorContact from "../components/creatorProfile/CreatorContact.vue";
 

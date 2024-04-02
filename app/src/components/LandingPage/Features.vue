@@ -1,5 +1,6 @@
 <template>
-  <div class="py-12">
+  <div class="py-12 relative">
+    <DividerPattern height="190px" />
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -39,6 +40,7 @@
 </template>
 
 <script setup>
+import DividerPattern from "../DividerPattern.vue";
 const features = [
   {
     id: 1,

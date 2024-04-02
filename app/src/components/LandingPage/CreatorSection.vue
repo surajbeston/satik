@@ -1,5 +1,6 @@
 <template>
-  <div class="py-8">
+  <div class="py-8 relative">
+    <DividerPattern />
     <CreativeIcon />
     <div class="flex items-center justify-between">
       <h1 class="text-3xl font-inria-sans my-6 text-secondary-0 font-semibold">
@@ -26,6 +27,7 @@
 </template>
 
 <script setup>
+import DividerPattern from "../DividerPattern.vue";
 import CreatorCard from "../CreatorCard.vue";
 import CreativeIcon from "../icons/creativeIcon.vue";
 import { creators } from "../../constant/index";

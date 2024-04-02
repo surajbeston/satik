@@ -16,8 +16,6 @@
 </template>
 
 <script setup>
-import Header from "../components/Header.vue";
-import Wrapper from "../components/Wrapper.vue";
 import CreatorCard from "../components/CreatorCard.vue";
 import { creators } from "../constant/index";
 </script>

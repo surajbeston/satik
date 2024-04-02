@@ -1,7 +1,38 @@
 <template>
   <div class="editor-container">
-    <div ref="editorEl" style="width: 100%; height: 90vh" id="gjs"></div>
-    <button @click="getCode">Get Code</button>
+    <h3 class="text-xl font-bold">Instructions:</h3>
+    <ul style="list-style: disc" class="ml-6 pb-6">
+      <li class="text-base font-semibold text-neutral-20">
+        Drag and drop the component to build website from scratch
+      </li>
+      <li class="text-base font-semibold text-neutral-20">
+        Link your product to the button (like button, or card)
+      </li>
+      <li class="text-base font-semibold text-neutral-20">
+        When you finish just click on save and send the proposal to the
+        influencer
+      </li>
+    </ul>
+    <div
+      class="border-4 border-secondaryLight-10"
+      ref="editorEl"
+      style="width: 100%; height: 90vh"
+      id="gjs"
+    ></div>
+    <div class="w-full flex mt-10 py-8">
+      <button
+        class="w-full bg-primary-20 py-2 font-bold text-lg"
+        @click="getCode"
+      >
+        Save
+      </button>
+      <button
+        class="w-full bg-secondaryLight-20 font-bold text-lg"
+        @click="sendProposal"
+      >
+        Send Proposal
+      </button>
+    </div>
   </div>
 </template>
 
@@ -103,6 +134,10 @@ const getCode = async () => {
 
   const files = [new File([code], "index.html")];
   await createClient(files);
+};
+
+const sendProposal = () => {
+  console.log("sending proposal....");
 };
 </script>
 

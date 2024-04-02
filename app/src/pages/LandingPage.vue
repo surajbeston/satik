@@ -1,9 +1,9 @@
 <template>
   <div>
-    <!-- <DividerPattern /> -->
     <HeroSection />
     <!-- <HowItWork /> -->
     <Features />
+
     <CreatorSection />
     <!-- <InfluencerSection /> -->
   </div>
