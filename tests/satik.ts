@@ -130,7 +130,7 @@ describe("satik", () => {
 
         var fetchedProposal = await program.account.proposal.fetch(proposalKeyPair.publicKey);
         
-        if (fetchedProposal.accepted !== false) {
+        if (fetchedProposal.accepted !== false) { 
             throw new Error('Assertion failed: fetchedProposal.accepted should be false.');
         }
         
