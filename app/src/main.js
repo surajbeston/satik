@@ -1,23 +1,13 @@
-import { createApp } from 'vue'
-import './style.css'
-import './index.css'
+import { createApp } from "vue";
+import "./style.css";
+import "vue3-toastify/dist/index.css";
+import router from "./router/index";
+import Vue3Toastify from "vue3-toastify";
+import App from "./App.vue";
 
-import App from './App.vue'
-
-
-import SolanaWallets from "solana-wallets-vue";
-import "solana-wallets-vue/styles.css";
-
-import {
-  PhantomWalletAdapter
-} from "@solana/wallet-adapter-wallets";
-
-const walletOptions = {
-  wallets: [
-    new PhantomWalletAdapter(),
-  ],
-  autoConnect: true,
-};
-
-createApp(App).use(SolanaWallets, walletOptions).mount("#app");
-
+const app = createApp(App);
+app.use(router);
+app.use(Vue3Toastify, {
+  autoClose: 300,
+});
+app.mount("#app");

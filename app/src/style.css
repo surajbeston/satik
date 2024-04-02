@@ -1,79 +1,75 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --primary-90: #000f19;
+  --primary-80: #001e33;
+  --primary-70: #002d4c;
+  --primary-60: #003c66;
+  --primary-50: #004b80;
+  --primary-40: #005999;
+  --primary-30: #0068b3;
+  --primary-20: #0077cc;
+  --primary-10: #0086e6;
+  --primary-0: #0095ff;
+  --primary-light-90: #e6f4ff;
+  --primary-light-80: #cceaff;
+  --primary-light-70: #b3dfff;
+  --primary-light-60: #99d5ff;
+  --primary-light-50: #80caff;
+  --primary-light-40: #66bfff;
+  --primary-light-30: #4db5ff;
+  --primary-light-20: #33aaff;
+  --primary-light-10: #1aa0ff;
+  --primary-light-0: #0095ff;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --secondary-90: #190b00;
+  --secondary-80: #331600;
+  --secondary-70: #4c2200;
+  --secondary-60: #652d00;
+  --secondary-50: #7f3800;
+  --secondary-40: #984300;
+  --secondary-30: #b14e00;
+  --secondary-20: #ca5a00;
+  --secondary-10: #e46500;
+  --secondary-0: #fd7000;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --neutral-90: #191919;
+  --neutral-80: #333333;
+  --neutral-70: #4c4c4c;
+  --neutral-60: #666666;
+  --neutral-50: #808080;
+  --neutral-40: #999999;
+  --neutral-30: #b3b3b3;
+  --neutral-20: #cccccc;
+  --neutral-10: #e6e6e6;
+  --neutral-0: #ffffff;
+
+  --secondary-light-90: #fff1e6;
+  --secondary-light-80: #ffe2cc;
+  --secondary-light-70: #fed4b3;
+  --secondary-light-60: #fec699;
+  --secondary-light-50: #feb880;
+  --secondary-light-40: #fea966;
+  --secondary-light-30: #fe9b4d;
+  --secondary-light-20: #fd8d33;
+  --secondary-light-10: #fd7e1a;
+  --secondary-light-0: #fd7000;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* for nav link style */
 body {
+  font-family: "open sans", sans-serif;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
