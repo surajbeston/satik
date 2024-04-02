@@ -10,3 +10,4 @@ keypair.json
 .vscode
 src_js/constants.ts
 keypairs
+keypair.json

@@ -50,7 +50,7 @@ import { createHtml } from "../helper/htmlCreator";
 
 import "grapesjs/dist/css/grapes.min.css";
 // web3 storage
-import { createClient } from "/home/badu/workspace/satik/app/src/helper/client";
+import { createClient } from "../helper/client";
 
 const editor = ref(null);
 const editorEl = ref(null);
