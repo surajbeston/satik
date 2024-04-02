@@ -5,14 +5,11 @@ use switchboard_solana::prelude::*;
 
 use crate::states::Deal;
 use crate::states::SbApiFeedParams;
-use crate::states::UserPDA;
 
 #[derive(Accounts)]
 pub struct ScheduleFeed<'info> {
     #[account(mut, constraint = payer.key() == deal.brand_pk)]
     pub payer: Signer<'info>,
-    #[account(mut)]
-    pub paying_account: Account<'info, UserPDA>,
     pub deal: Account<'info, Deal>,
     #[account(executable, address = SWITCHBOARD_ATTESTATION_PROGRAM_ID)]
     /// CHECK: Not dangerous
@@ -37,7 +34,7 @@ pub struct ScheduleFeed<'info> {
 pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
     let request_init = FunctionRequestInitAndTrigger {
         request: ctx.accounts.switchboard_request.clone(),
-        authority: ctx.accounts.paying_account.to_account_info(),
+        authority: ctx.accounts.deal.to_account_info(),
         function: ctx.accounts.switchboard_function.to_account_info(),
         function_authority: None,
         escrow: ctx.accounts.switchboard_request_escrow.to_account_info(),
@@ -60,9 +57,10 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
 
     let payer_key = ctx.accounts.payer.key();
     let seeds = &[
-        UserPDA::SEED,
+        Deal::SEED,
+        &ctx.accounts.deal.id_seed,
         payer_key.as_ref(),
-        &[ctx.accounts.paying_account.bump],
+        &[ctx.accounts.deal.bump],
     ];
 
     request_init.invoke_signed(

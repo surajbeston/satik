@@ -71,7 +71,7 @@ let mrEnclave = parseRawMrEnclave(
 );
 // console.log(mrEnclave);
 
-const idSeed = Buffer.from("deal2");
+const idSeed = Buffer.from("deal1");
 const [dealPDA] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("deal_seed"),
@@ -79,11 +79,6 @@ const [dealPDA] = PublicKey.findProgramAddressSync(
     payerKeypair.publicKey.toBytes(),
     creatorKeypair.publicKey.toBytes(),
   ],
-  program.programId
-);
-
-const [userPDA] = PublicKey.findProgramAddressSync(
-  [Buffer.from("user_pda_seed"), payerKeypair.publicKey.toBytes()],
   program.programId
 );
 
@@ -112,23 +107,19 @@ async function main() {
 
   // const tx = await program.methods
   //   .createDeal({
-  //     idSeed,
   //     initialAmount: new BN(1000),
-  //     paymentDeals: [
-  //       {
-  //         startMile: 1000,
-  //         endMile: null,
-  //         cpm: 10,
-  //       },
-  //     ],
-  //     contentUrl: "https://eoo6aio1mbtg4nl.m.pipedream.net",
+  //     initialAmountOnReach: new BN(1000),
   //     startsOn: new BN(Date.now() / 1000),
+  //     startsOnReach: new BN(1000),
   //     endsOn: null,
+  //     endsOnReach: null,
+  //     cpm: new BN(1),
   //     creatorPk: creatorKeypair.publicKey,
+  //     contentUrl: "https://eoo6aio1mbtg4nl.m.pipedream.net",
+  //     idSeed,
   //   })
   //   .accounts({
   //     deal: dealPDA,
-  //     payingAccount: userPDA,
   //     payer: payerKeypair.publicKey,
   //   })
   //   .rpc();
@@ -141,7 +132,6 @@ async function main() {
     .scheduleFeed()
     .accounts({
       payer: payerKeypair.publicKey,
-      payingAccount: userPDA,
       deal: dealPDA,
       switchboardAttestation: switchboard.attestationProgramId,
       switchboardAttestationState:

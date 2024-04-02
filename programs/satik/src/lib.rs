@@ -4,19 +4,24 @@ use std::str::FromStr;
 use anchor_spl::token::{self, Transfer as SplTransfer};
 use anchor_spl::token_interface::{TransferChecked, transfer_checked};
 
+pub mod instructions;
+pub mod states;
+pub mod types;
+
+use instructions::*;
+use states::{ApiFeedData, CreateDealData};
 
 // use anchor_lang::solana_program::clock;
 
-mod instructions;
 use instructions::affiliate_instructions::*;
 
-mod states;
 
 declare_id!("5yGpHM8VQdAcw4tPYe8aS7asnsxeJgd5mfzFABD441cB");
 
 
 #[program]
 pub mod satik {
+
     use super::*;
 
     pub fn initialize_brand(ctx: Context<InitializeBrand>, username: String, name: String, profile_image: String,  bio: String)  -> Result<()> {
@@ -211,7 +216,20 @@ pub mod satik {
         Ok(())
 
     }
+
+    pub fn create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Result<()> {
+        handle_create_deal(ctx, data)
+    }
+
+    pub fn schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
+        handle_schedule_feed(ctx)
+    }
+
+    pub fn scheduled_callback(ctx: Context<ScheduledCallback>, data: ApiFeedData) -> Result<()> {
+        handle_scheduled_callback(ctx, data)
+    }
 }
+
 
 #[error_code]
 pub enum ConstraintErrors {
@@ -227,3 +245,4 @@ pub enum ConstraintErrors {
     #[msg("Balance can only be redeemed by owner")]
     UnauthorizedRedeemError,
 }
+    

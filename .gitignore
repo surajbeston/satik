@@ -8,3 +8,5 @@ test-ledger
 .yarn
 keypair.json
 .vscode
+src_js/constants.ts
+keypairs
