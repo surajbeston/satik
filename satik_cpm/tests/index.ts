@@ -13,10 +13,10 @@ import {
 } from "@switchboard-xyz/solana.js";
 import { NodeOracle } from "@switchboard-xyz/oracle";
 import { OracleJob, parseRawMrEnclave } from "@switchboard-xyz/common";
-import { payerKeypair } from "./src_js/constants";
+import { payerKeypair } from "../src_js/constants";
 import { base64, bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import * as anchor from "@coral-xyz/anchor";
-import { Satik } from "./target/types/satik";
+import { Satik } from "../target/types/satik";
 import { BN } from "bn.js";
 
 let switchboard: SwitchboardProgram;

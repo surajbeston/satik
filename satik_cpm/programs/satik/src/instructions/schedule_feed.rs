@@ -5,31 +5,28 @@ use switchboard_solana::prelude::*;
 
 use crate::states::Deal;
 use crate::states::SbApiFeedParams;
+use crate::states::UserPDA;
 
 #[derive(Accounts)]
 pub struct ScheduleFeed<'info> {
     #[account(mut, constraint = payer.key() == deal.brand_pk)]
     pub payer: Signer<'info>,
+    #[account(mut)]
+    pub paying_account: Account<'info, UserPDA>,
     pub deal: Account<'info, Deal>,
     #[account(executable, address = SWITCHBOARD_ATTESTATION_PROGRAM_ID)]
-    pub switchboard: AccountInfo<'info>,
-    pub switchboard_state: AccountLoader<'info, AttestationProgramState>,
+    /// CHECK: Not dangerous
+    pub switchboard_attestation: AccountInfo<'info>,
+    pub switchboard_attestation_state: AccountLoader<'info, AttestationProgramState>,
     pub switchboard_attestation_queue: AccountLoader<'info, AttestationQueueAccountData>,
     #[account(mut)]
     pub switchboard_function: AccountLoader<'info, FunctionAccountData>,
-    #[account(
-        mut,
-        signer,
-        owner = system_program.key(),
-        // constraint = switchboard_request.data_len() == 0 && switchboard_request.lamports() == 0
-      )]
-    pub switchboard_routine: AccountInfo<'info>,
-    #[account(
-        mut,
-        owner = system_program.key(),
-        // constraint = switchboard_request_escrow.data_len() == 0 && switchboard_request_escrow.lamports() == 0
-      )]
-    pub switchboard_routine_escrow: AccountInfo<'info>,
+    #[account(mut, signer)]
+    /// CHECK: Not dangerous
+    pub switchboard_request: AccountInfo<'info>,
+    #[account(mut)]
+    /// CHECK: Not dangerous
+    pub switchboard_request_escrow: AccountInfo<'info>,
     #[account(address = anchor_spl::token::spl_token::native_mint::ID)]
     pub switchboard_mint: Account<'info, Mint>,
     pub token_program: Program<'info, Token>,
@@ -38,16 +35,13 @@ pub struct ScheduleFeed<'info> {
 }
 
 pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
-    let routine_init = FunctionRequestInit {
-        request: ctx.accounts.switchboard_routine.clone(),
-        authority: ctx.accounts.payer.to_account_info(),
+    let request_init = FunctionRequestInitAndTrigger {
+        request: ctx.accounts.switchboard_request.clone(),
+        authority: ctx.accounts.paying_account.to_account_info(),
         function: ctx.accounts.switchboard_function.to_account_info(),
         function_authority: None,
-        escrow: ctx.accounts.switchboard_routine_escrow.clone(),
-        state: ctx.accounts.switchboard_state.to_account_info(),
-        // escrow_wallet_authority: None,
-        // escrow_wallet: ctx.accounts.switchboard_routine_escrow.clone(),
-        // escrow_token_wallet: ctx.accounts.switchboard_routine_escrow.clone(),
+        escrow: ctx.accounts.switchboard_request_escrow.to_account_info(),
+        state: ctx.accounts.switchboard_attestation_state.to_account_info(),
         mint: ctx.accounts.switchboard_mint.to_account_info(),
         attestation_queue: ctx.accounts.switchboard_attestation_queue.to_account_info(),
         payer: ctx.accounts.payer.to_account_info(),
@@ -58,20 +52,28 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
 
     let params = SbApiFeedParams {
         program_id: crate::id(),
+        deal_pk: ctx.accounts.deal.key(),
         url: ctx.accounts.deal.content_url.clone(),
     };
 
-    // let routine_init_params = FunctionRequestInitParams {
-    //     container_params: to_vec(&params)?,
-    //     max_container_params_len: None,
-    //     garbage_collection_slot: None,
-    // };
+    msg!(&ctx.accounts.deal.content_url);
 
-    routine_init.invoke(
-        ctx.accounts.switchboard.clone(),
+    let payer_key = ctx.accounts.payer.key();
+    let seeds = &[
+        UserPDA::SEED,
+        payer_key.as_ref(),
+        &[ctx.accounts.paying_account.bump],
+    ];
+
+    request_init.invoke_signed(
+        ctx.accounts.switchboard_attestation.clone(),
         None,
+        None,
+        Some(512),
         Some(to_vec(&params)?),
         None,
+        None,
+        &[seeds],
     )?;
 
     Ok(())
