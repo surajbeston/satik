@@ -12,8 +12,7 @@ import { getAssociatedTokenAddress,
     mintTo,
     getOrCreateAssociatedTokenAccount,
     createAssociatedTokenAccount,
-    transfer
-            } from '@solana/spl-token';
+    transfer } from '@solana/spl-token';
 
 import { BN } from 'bn.js';
 import { assert } from "chai";
