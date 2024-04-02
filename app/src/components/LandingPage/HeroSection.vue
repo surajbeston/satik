@@ -12,8 +12,8 @@
         impact and reach.
       </p>
     </div>
-    <div class="w-1/2">
-      <img src="../../assets//icons/icon.svg" alt="" />
+    <div class="w-1/2 h-[80vh]">
+      <img class="h-full" src="../../assets//icons/icons.svg" alt="" />
     </div>
   </div>
 </template>
