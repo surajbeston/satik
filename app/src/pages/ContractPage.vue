@@ -1,27 +1,41 @@
 <template>
-  <div>
-    <!-- creator card -->
-    <!-- <div class="flex gap-8 bg-primary-70 rounded-lg px-6 py-2">
-        <div class="overflow-hidden">
-          <img
-            class="w-[100px] h-[100px] rounded-full"
-            src="../assets/images/creator.jpg"
-            alt="creator"
-          />
-        </div>
-        <div>
-          <h2>Suraj Bahadur Jha</h2>
-          <p>Contract</p>
-        </div>
-      </div> -->
+  <div class="py-16">
     <div>
-      <h1>FILL IN THE DETAILS</h1>
-      <pre>user id{{ $route.params.id }}</pre>
-      <div class="bg-primary-80 p-2 shadow-2xl rounded-xl my-8">
-        <form action=" " class="border-2 border-primary-60 p-6 rounded-xl">
+      <h1 class="text-center text-4xl font-bold pb-4">FILL IN THE DETAILS</h1>
+
+      <div
+        class="bg-primary-80 p-2 shadow-2xl rounded-xl border border-primary-60 my-8"
+      >
+        <form
+          @submit.prevent="handleSubmit"
+          class="border-2 border-primary-60 p-6 rounded-xl"
+        >
           <div>
-            <label class="text-2xl block pb-6" for="">Add Products</label>
-            <ProductDetail />
+            <label class="text-2xl block pb-10" for="">Add Products:</label>
+            <div
+              class="py-10 border-b border-primary-40"
+              v-for="i in numberOfProducts"
+              :key="i"
+            >
+              <ProductDetail />
+            </div>
+          </div>
+          <div
+            class="w-[60%] mx-auto flex font-semibold justify-center items-center pt-8"
+          >
+            <button
+              @click="numberOfProducts++"
+              class="bg-primary-0 py-2 w-full"
+            >
+              Add Product
+            </button>
+            <button
+              @click="$router.push('/builder')"
+              type="submit"
+              class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto"
+            >
+              Initiate Proposal
+            </button>
           </div>
         </form>
       </div>
@@ -30,9 +44,13 @@
 </template>
 
 <script setup>
-import Header from "../components/Header.vue";
-import Wrapper from "../components/Wrapper.vue";
+import { ref } from "vue";
 import ProductDetail from "../components/ContractPage/productDetail.vue";
+const numberOfProducts = ref(1);
+
+const handleSubmit = (form) => {
+  console.log("called");
+};
 </script>
 
 <style scoped></style>
