@@ -362,9 +362,34 @@
           "isSigner": false
         },
         {
+          "name": "dealUsdcAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "brand",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "brandUsdcAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "influencer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "payer",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "systemProgram",
@@ -385,13 +410,8 @@
       "name": "scheduleFeed",
       "accounts": [
         {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
           "name": "deal",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -438,6 +458,11 @@
           "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
         },
         {
           "name": "systemProgram",
@@ -706,11 +731,15 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "brandPk",
+            "name": "brand",
             "type": "publicKey"
           },
           {
-            "name": "creatorPk",
+            "name": "influencer",
+            "type": "publicKey"
+          },
+          {
+            "name": "dealUsdcAta",
             "type": "publicKey"
           },
           {
@@ -739,19 +768,19 @@
           },
           {
             "name": "endsOn",
-            "type": {
-              "option": "i64"
-            }
+            "type": "i64"
           },
           {
             "name": "endsOnReach",
-            "type": {
-              "option": "u64"
-            }
+            "type": "u64"
           },
           {
             "name": "cpm",
             "type": "u64"
+          },
+          {
+            "name": "feedScheduled",
+            "type": "bool"
           },
           {
             "name": "lastPaidOn",
@@ -833,23 +862,15 @@
           },
           {
             "name": "endsOn",
-            "type": {
-              "option": "i64"
-            }
+            "type": "i64"
           },
           {
             "name": "endsOnReach",
-            "type": {
-              "option": "u64"
-            }
+            "type": "u64"
           },
           {
             "name": "cpm",
             "type": "u64"
-          },
-          {
-            "name": "creatorPk",
-            "type": "publicKey"
           },
           {
             "name": "contentUrl",
@@ -911,6 +932,6 @@
     }
   ],
   "metadata": {
-    "address": "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
+    "address": "7vgeVi2VoSyrRoZY8jAb2A34Moguor58cnvWze7D5ymz"
   }
 }

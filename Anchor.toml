@@ -5,17 +5,18 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-satik = "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
+satik = "7vgeVi2VoSyrRoZY8jAb2A34Moguor58cnvWze7D5ymz"
 
 [programs.localnet]
-satik = "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
+satik = "7vgeVi2VoSyrRoZY8jAb2A34Moguor58cnvWze7D5ymz"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
-wallet = "/home/suraj/projects/solana/satik/keypair.json"
+cluster = "Devnet"
+wallet = "/home/viristo/.config/solana/id.json"
 
 [scripts]
+index = "bun run src_js/index.ts"
 test = "bun run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

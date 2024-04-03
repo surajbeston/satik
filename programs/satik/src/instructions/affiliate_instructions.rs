@@ -4,7 +4,6 @@ use crate::states::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 
-
 #[derive(Accounts)]
 #[instruction(username: String)]
 pub struct InitializeBrand<'info> {
@@ -14,7 +13,7 @@ pub struct InitializeBrand<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -33,12 +32,11 @@ pub struct InitializeInfluencer<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
 
-
 #[derive(Accounts)]
-pub struct  InitializeProposal<'info> {
+pub struct InitializeProposal<'info> {
     #[account(init, payer = signer, space = 8 + Proposal::INIT_SPACE)]
     pub proposal: Account<'info, Proposal>,
 
@@ -47,7 +45,7 @@ pub struct  InitializeProposal<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -59,7 +57,7 @@ pub struct InitializeProduct<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -69,8 +67,7 @@ pub struct AcceptProposal<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
-
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -96,7 +93,7 @@ pub struct InitializePurchase<'info> {
     pub rent: Sysvar<'info, Rent>,
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -120,7 +117,5 @@ pub struct RedeemPurchase<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
-
-
