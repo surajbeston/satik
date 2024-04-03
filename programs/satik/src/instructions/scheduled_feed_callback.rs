@@ -28,8 +28,7 @@ pub fn handle_scheduled_feed_callback(
     if !deal.initial_amount_paid {
         if deal.initial_amount.is_none() {
             deal.initial_amount_paid = true;
-        }
-        if deal.initial_amount_on_reach.unwrap() < data.reach {
+        } else if deal.initial_amount_on_reach.unwrap() < data.reach {
             // ***** transfer initial_amount to creator pk
 
             deal.initial_amount_paid = true;
@@ -53,6 +52,10 @@ pub fn handle_scheduled_feed_callback(
     if deal.ends_on_reach < data.reach {
         reach_or_max_reach = deal.ends_on_reach;
     }
+    if deal.last_paid_on_reach.is_none() {
+        reach_or_max_reach = reach_or_max_reach - deal.starts_on_reach;
+    }
+
     let reach_to_be_paid_for = reach_or_max_reach - last_paid_on_reach;
     msg!("Reach to be paid for {}", reach_to_be_paid_for);
 
