@@ -38,6 +38,10 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
     //     ctx.accounts.deal.feed_scheduled == false,
     //     "Feed is already scheduled"
     // );
+    assert!(
+        ctx.accounts.deal.influencer_accepted,
+        "Deal is not yet accepted by Influencer",
+    );
     let request_init = FunctionRequestInitAndTrigger {
         request: ctx.accounts.switchboard_request.clone(),
         authority: ctx.accounts.deal.to_account_info(),
