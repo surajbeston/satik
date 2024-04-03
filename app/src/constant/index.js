@@ -27,7 +27,7 @@ export const creators = [
     userName: "Get Suraj Jha",
     profileImage:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    bio: "Youtube content creator",
+    bio: "lorem Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae, itaque. Minima ea iste temporibus maiores pariatur eos cupiditate, neque dolore quo qui numquam ratione deleniti, magni repellendus earum aspernatur asperiores!",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ export const creators = [
     userName: "sauravNiraula",
     profileImage:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    bio: "Youtube content creator",
+    bio: "lorem Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae, itaque. Minima ea iste temporibus maiores pariatur eos cupiditate, neque dolore quo qui numquam ratione deleniti, magni repellendus earum aspernatur asperiores!",
   },
   {
     id: 3,
@@ -43,7 +43,7 @@ export const creators = [
     userName: "avinashKumarSingh",
     profileImage:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    bio: "Youtube content creator",
+    bio: "lorem Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae, itaque. Minima ea iste temporibus maiores pariatur eos cupiditate, neque dolore quo qui numquam ratione deleniti, magni repellendus earum aspernatur asperiores!",
   },
   {
     id: 4,
@@ -51,7 +51,7 @@ export const creators = [
     userName: "sauravNiraula",
     profileImage:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    bio: "Youtube content creator",
+    bio: "lorem Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae, itaque. Minima ea iste temporibus maiores pariatur eos cupiditate, neque dolore quo qui numquam ratione deleniti, magni repellendus earum aspernatur asperiores!",
   },
   {
     id: 5,
@@ -59,7 +59,7 @@ export const creators = [
     userName: "Get Suraj Jha",
     profileImage:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    bio: "Youtube content creator",
+    bio: "lorem Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae, itaque. Minima ea iste temporibus maiores pariatur eos cupiditate, neque dolore quo qui numquam ratione deleniti, magni repellendus earum aspernatur asperiores!",
   },
   {
     id: 6,
@@ -67,6 +67,6 @@ export const creators = [
     userName: "avinashKumarSingh",
     profileImage:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-    bio: "Youtube content creator",
+    bio: "lorem Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae, itaque. Minima ea iste temporibus maiores pariatur eos cupiditate, neque dolore quo qui numquam ratione deleniti, magni repellendus earum aspernatur asperiores!",
   },
 ];

@@ -109,7 +109,7 @@
 import { onMounted, ref } from "vue";
 import { createClient } from "../helper/client";
 
-import { createInfluencerAccount, fetchAllInfluencers } from "../../anchor/utils";
+import { createInfluencerAccount, fetchAllBrands, fetchAllInfluencers } from "../../anchor/utils";
 
 import { toast } from "vue3-toastify";
 
@@ -186,9 +186,7 @@ const handleFileChange = async (event) => {
 
 onMounted(async () => {
   setTimeout(async () => {
-    console.log("here all");
     const influencers = await fetchAllInfluencers();
-    console.log(influencers);
     const {publicKey } = useWallet();
 
     // console.log(publicKey.value.toBase58())
@@ -198,9 +196,17 @@ onMounted(async () => {
       console.log (publicKey.value.toBase58())
       if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
         console.log("inside")
-        location.href = "/influencer/" + influencer.account.value;
+        location.href = "/influencer/" + influencer.account.username;
       }
       console.log ()
+    }
+
+    const brands = await fetchAllBrands();
+
+    for (var brand of brands) {
+      if(brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+        location.href = "/brand/" + brand.account.username;
+      }
     }
   }, 1000);
   

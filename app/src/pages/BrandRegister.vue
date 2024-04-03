@@ -6,7 +6,7 @@
     <div
       class="flex justify-between flex-col lg:flex-row py-12 bg-primary-70 border-2 border-primary-60 p-2 rounded-xl my-10"
     >
-      <form
+      <form @submit.prevent="createBrand"
         class="rounded-xl lg:w-1/2 order-2 lg:order-1 mx-auto w-full h-full p-6 border-2 border-primary-40"
       >
         <div>
@@ -47,6 +47,7 @@
         <div>
           <label class="block font-semibold text-xl" for="name">Name:</label>
           <input
+            v-model = "name"
             class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
             type="text"
             placeholder="Name"
@@ -59,6 +60,7 @@
             >Username:</label
           >
           <input
+            v-model="username"
             type="text"
             class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
             placeholder="username"
@@ -71,6 +73,7 @@
             >Bio:</label
           >
           <textarea
+            v-model="bio"
             class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
             cols="30"
             rows="5"
@@ -80,7 +83,7 @@
             name="description"
           />
         </div>
-        <button
+        <button 
           class="bg-secondaryLight-20 w-full py-2 rounded-xl hover:bg-secondaryLight-0 duration-300 text-xl font-bold border-none mt-8"
         >
           Create
@@ -101,7 +104,7 @@
 import { onMounted, ref } from "vue";
 import { createClient } from "../helper/client";
 
-import { createInfluencerAccount, fetchAllInfluencers } from "../../anchor/utils";
+import { createBrandAccount, createInfluencerAccount, fetchAllInfluencers, fetchAllBrands } from "../../anchor/utils";
 
 import { toast } from "vue3-toastify";
 
@@ -120,7 +123,7 @@ const bio = ref("");
 
 const sendingImage = ref(false);
 
-async function createInfluencer() {
+async function createBrand() {
   if (!sendingImage.value) {
     if (!bio.value || !username.value || !name.value || !profileImageURL) {
       toast("Bio, Username, Name and Profile Picture are required", {
@@ -132,14 +135,14 @@ async function createInfluencer() {
     sendingImage.value = true;
     toast("Creating Profile", { autoClose: 2000 });
     try {
-      await createInfluencerAccount(
+      await createBrandAccount(
         username.value,
         name.value,
         profileImageURL,
         bio.value
       );
       toast("Profile Created", { autoClose: 2000 });
-      location.href = "/influencer/" + username.value;
+      location.href = "/brand/" + username.value;
     } catch (error) {
       console.log(error)
       toast("Account creation failed. Try changing username.", {
@@ -176,11 +179,10 @@ const handleFileChange = async (event) => {
   sendingImage.value = false;
 };
 
+
 onMounted(async () => {
   setTimeout(async () => {
-    console.log("here all");
     const influencers = await fetchAllInfluencers();
-    console.log(influencers);
     const {publicKey } = useWallet();
 
     // console.log(publicKey.value.toBase58())
@@ -190,9 +192,17 @@ onMounted(async () => {
       console.log (publicKey.value.toBase58())
       if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
         console.log("inside")
-        location.href = "/influencer/" + influencer.account.value;
+        location.href = "/influencer/" + influencer.account.username;
       }
       console.log ()
+    }
+
+    const brands = await fetchAllBrands();
+
+    for (var brand of brands) {
+      if(brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+        location.href = "/brand/" + brand.account.username;
+      }
     }
   }, 1000);
   
