@@ -527,9 +527,29 @@
           "isSigner": false
         },
         {
+          "name": "dealUsdcAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "influencerUsdcAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "enclaveSigner",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
@@ -980,5 +1000,8 @@
       "name": "UnauthorizedRedeemError",
       "msg": "Balance can only be redeemed by owner"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
+  }
 }

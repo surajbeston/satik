@@ -65,6 +65,7 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
 
     msg!(&ctx.accounts.deal.content_url);
 
+    // seeds of deal account. (Deal has authority of this request)
     let seeds = &[
         Deal::SEED,
         &ctx.accounts.deal.id_seed,
