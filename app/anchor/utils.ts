@@ -30,7 +30,7 @@ type returnType = { wallet: AnchorWallet, connection: Connection, provider: Anch
 import { Buffer } from 'buffer'
 import { ComputedRef } from 'vue';
 
-const mintAddress = new PublicKey("Fp6A4mscDiw6r56kCfWhcQEn3Px2Kcob3BXkcUtToXfG");
+const mintAddress = new PublicKey("4ad9Yfhad6dwF7sqgh59uMsXTUXEeRNe7HgqFM9i4Yte");
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
 

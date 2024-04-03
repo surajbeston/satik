@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Home from "../pages/LandingPage.vue";
 import CreatorPage from "../pages/CreatorPage.vue";
-import CreatorProfile from "../pages/CreatorProfile.vue";
+import InfluencerProfile from "../pages/InfluencerProfile.vue";
 import ContractPage from "../pages/ContractPage.vue";
 import NotFound from "../pages/NotFound.vue";
 import Builder from "../pages/WebBuilder.vue";
@@ -25,14 +25,14 @@ const routes = [
     component: Home,
   },
   {
-    path: "/creators",
+    path: "/influencers",
     name: "Creators",
     component: CreatorPage,
   },
   {
-    path: "/creator/:id",
-    name: "CreatorProfile",
-    component: CreatorProfile,
+    path: "/influencer/:id",
+    name: "InfluencerProfile",
+    component: InfluencerProfile,
   },
   {
     path: "/contract/:id",

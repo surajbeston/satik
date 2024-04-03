@@ -8,6 +8,7 @@
     >
       <form
         class="rounded-xl lg:w-1/2 order-2 lg:order-1 mx-auto w-full h-full p-6 border-2 border-primary-40"
+        @submit.prevent="createInfluencer"
       >
         <div>
           <label class="block font-semibold text-xl" for="Profile"
@@ -47,6 +48,7 @@
         <div>
           <label class="block font-semibold text-xl" for="name">Name:</label>
           <input
+            v-model="name"
             class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
             type="text"
             placeholder="Name"
@@ -59,6 +61,7 @@
             >Username:</label
           >
           <input
+            v-model="username"
             type="text"
             class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
             placeholder="username"
@@ -71,6 +74,7 @@
             >Bio:</label
           >
           <textarea
+            v-model="bio"
             class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
             cols="30"
             rows="5"
@@ -81,7 +85,11 @@
           />
         </div>
         <button
-          class="bg-secondaryLight-20 w-full py-2 rounded-xl hover:bg-secondaryLight-0 duration-300 text-xl font-bold border-none mt-8"
+          class="disabled:opacity-75 bg-secondaryLight-20 w-full py-2 rounded-xl duration-300 text-xl font-bold border-none mt-8"
+          :class="{
+            'bg-secondary-40': sendingImage,
+            'hover:bg-secondaryLight-0': !sendingImage,
+          }"
         >
           Create
         </button>
@@ -101,15 +109,76 @@
 import { ref } from "vue";
 import { createClient } from "../helper/client";
 
+import { createInfluencerAccount } from "../../anchor/utils";
+
+import { toast } from "vue3-toastify";
+
 const profilePicture = ref(null);
 const profileHash = ref(null);
 
-const handleFileChange = async (event) => {
-  const file = event.target.files[0];
-  profilePicture.value = URL.createObjectURL(file);
-  profileHash.value = await createClient(file);
+var profileImageURL = "";
 
-  console.log(profileHash.value);
+const name = ref("");
+const username = ref("");
+const bio = ref("");
+
+// const { wallet, influencers };
+
+const sendingImage = ref(false);
+
+async function createInfluencer() {
+  if (!sendingImage.value) {
+    if (!bio.value || !username.value || !name.value || !profileImageURL) {
+      toast("Bio, Username, Name and Profile Picture are required", {
+        autoClose: 2000,
+        type: "error",
+      });
+      return;
+    }
+    sendingImage.value = true;
+    toast("Creating Profile", { autoClose: 2000 });
+    try {
+      await createInfluencerAccount(
+        username.value,
+        name.value,
+        profileImageURL,
+        bio.value
+      );
+      toast("Profile Created", { autoClose: 2000 });
+      location.href = "/influencer/" + username.value;
+    } catch (error) {
+      toast("Account creation failed. Try changing username.", {
+        autoClose: 2000,
+        type: "error",
+      });
+      username.value = "";
+    }
+    sendingImage.value = false;
+  }
+  else{
+    toast("Sending profile picture...", { autoClose: 2000, type: 'loading' });
+  }
+}
+
+const handleFileChange = async (event) => {
+  sendingImage.value = true;
+  toast("Uploading profile picture...", { autoClose: 2000 });
+  try {
+    const file = event.target.files[0];
+    profilePicture.value = URL.createObjectURL(file);
+    profileHash.value = await createClient(file);
+  } catch {
+    console.log(error);
+    toast("Something went wrong while uploading profile picture", {
+      autoClose: 3000,
+      type: "error",
+    });
+  }
+  toast("Profile picture uploaded", { autoClose: 2000, type: "success" });
+
+  profileImageURL = `https://${profileHash.value}.ipfs.w3s.link`;
+
+  sendingImage.value = false;
 };
 </script>
 
