@@ -99,14 +99,15 @@
 
 <script setup>
 import { ref } from "vue";
+import { createClient } from "../helper/client";
 
 const profilePicture = ref(null);
+const profileHash = ref(null);
 
-const handleFileChange = (event) => {
-  console.log("caled");
+const handleFileChange = async (event) => {
   const file = event.target.files[0];
   profilePicture.value = URL.createObjectURL(file);
-  console.log(profilePicture.value);
+  profileHash.value = await createClient(file);
 };
 </script>
 
