@@ -1,4 +1,3 @@
-
 .anchor
 .DS_Store
 target
@@ -11,3 +10,4 @@ keypair.json
 src_js/constants.ts
 keypairs
 keypair.json
+Anchor.toml
