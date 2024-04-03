@@ -58,7 +58,6 @@ const influencerKeypair = SwitchboardTestContext.loadKeypair(
 );
 
 const sbRequestKeypair = anchor.web3.Keypair.generate();
-console.log(sbRequestKeypair.publicKey.toBase58());
 
 // let publicOracleQueue: QueueAccount;
 // let publicOracleQueuePk = new PublicKey(
@@ -180,38 +179,39 @@ async function main() {
   //   payerKeypair,
   //   1000000000
   // );
-  const tx = program.methods
-    .initializeBrand(
-      brandUsername,
-      "Lenovo",
-      "https://assets.gadgets360cdn.com/pricee/assets/brand/og_lenovo-_logo.png",
-      "Lenovo is a great brand."
-    )
-    .accounts({
-      brand: brandPDA,
-      usdcAta: payerUsdcAccount.address,
-      signer: payerKeypair.publicKey,
-    })
-    .signers([payerKeypair])
-    .rpc();
+  // const tx = program.methods
+  //   .initializeBrand(
+  //     brandUsername,
+  //     "Lenovo",
+  //     "https://assets.gadgets360cdn.com/pricee/assets/brand/og_lenovo-_logo.png",
+  //     "Lenovo is a great brand."
+  //   )
+  //   .accounts({
+  //     brand: brandPDA,
+  //     usdcAta: payerUsdcAccount.address,
+  //     signer: payerKeypair.publicKey,
+  //   })
+  //   .signers([payerKeypair])
+  //   .rpc();
 
   // const fetchedBrand = await program.account.brand.fetch(brandPDA);
   // console.log(fetchedBrand);
 
-  const tx1 = program.methods
-    .initializeInfluencer(
-      influencerUsername,
-      "Swastima Khadka",
-      "https://media.themoviedb.org/t/p/w500/pt0Kdyix9VxS9vv1YJzq17jFCQ4.jpg",
-      "I love influencing people in DARKNESS towards LIGHT"
-    )
-    .accounts({
-      influencer: influencerPDA,
-      usdcAta: influencerUsdcAccount.address,
-      signer: influencerKeypair.publicKey,
-    })
-    .signers([influencerKeypair])
-    .rpc();
+  // const tx1 = program.methods
+  //   .initializeInfluencer(
+  //     influencerUsername,
+  //     "Swastima Khadka",
+  //     "https://media.themoviedb.org/t/p/w500/pt0Kdyix9VxS9vv1YJzq17jFCQ4.jpg",
+  //     "I love influencing people in DARKNESS towards LIGHT"
+  //   )
+  //   .accounts({
+  //     influencer: influencerPDA,
+  //     usdcAta: influencerUsdcAccount.address,
+  //     mint: mintKeypair.publicKey,
+  //     signer: influencerKeypair.publicKey,
+  //   })
+  //   .signers([influencerKeypair])
+  //   .rpc();
 
   // const fetchedInfluencer = await program.account.influencer.fetch(
   //   influencerPDA
@@ -239,6 +239,16 @@ async function main() {
   //     payer: payerKeypair.publicKey,
   //   })
   //   .signers([payerKeypair])
+  //   .rpc();
+
+  // const tx = await program.methods
+  //   .acceptDeal()
+  //   .accounts({
+  //     influencer: influencerPDA,
+  //     deal: dealPDA,
+  //     signer: influencerKeypair.publicKey,
+  //   })
+  //   .signers([influencerKeypair])
   //   .rpc();
 
   // console.log(tx);

@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 use crate::states::{ApiFeedData, Deal};
 
 #[derive(Accounts)]
-pub struct ScheduledCallback<'info> {
+pub struct ScheduledFeedCallback<'info> {
     #[account(mut)]
     pub deal: Account<'info, Deal>,
     // #[account(mut)]
@@ -16,7 +16,10 @@ pub struct ScheduledCallback<'info> {
     // pub system_program: Program<'info, System>,
 }
 
-pub fn handle_scheduled_callback(ctx: Context<ScheduledCallback>, data: ApiFeedData) -> Result<()> {
+pub fn handle_scheduled_feed_callback(
+    ctx: Context<ScheduledFeedCallback>,
+    data: ApiFeedData,
+) -> Result<()> {
     msg!("Received callback {:?}", data);
 
     let deal = &mut ctx.accounts.deal;
