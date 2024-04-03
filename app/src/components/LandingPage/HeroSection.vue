@@ -1,10 +1,10 @@
 <template>
   <div
-    class="h-[60vh] w-full flex justify-between items-center mt-16 mb-6 relative"
+    class="min-h-[60vh] w-full flex flex-col lg:flex-row justify-between items-center mt-16 mb-6 relative"
   >
-    <div class="w-1/2 mx-auto">
+    <div class="w-full lg:w-1/2 mx-auto">
       <h1
-        class="text-[50px] text-neutral-0 font-bold leading-[70px] font-open-sans"
+        class="text-[28px] md:text-[50px] text-neutral-0 font-bold font-open-sans"
       >
         Decentralized Nexus for Creator-Brand Alliances
       </h1>
@@ -14,7 +14,7 @@
         impact and reach.
       </p>
     </div>
-    <div class="w-1/2 h-[70vh]">
+    <div class="w-full lg:w-1/2 h-[70vh]">
       <img
         class="h-full w-full ml-auto mr-8"
         src="../../assets//icons/satik_icon.svg"

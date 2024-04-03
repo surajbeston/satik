@@ -5,7 +5,7 @@
         <div class="w-1/2 h-[700px]">
           <img
             class="h-full w-[90%] object-cover"
-            src="../assets/images/creator.jpg"
+            :src="influencer.profileImage"
             alt=""
           />
         </div>
@@ -17,21 +17,21 @@
             <h3
               class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10"
             >
-              About Me
+              Influencer Bio
             </h3>
             <p class="text-xl py-6 text-neutral-10 leading-8 font-normal">
               {{ influencer.bio }}
             </p>
 
-            <ul class="flex gap-4 flex-col py-6">
+            <!-- <ul class="flex gap-4 flex-col py-6">
               <CreatorContact
                 v-for="contact in contacts"
                 :key="contact.id"
                 :contact="contact"
               />
-            </ul>
+            </ul> -->
             <button
-              @click="$router.push(`/contract/${$route.params.id}`)"
+              @click="$router.push(`/contract/${publicKey}`)"
               class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
             >
               Initiate Contract
@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div class="bg-primary-80 flex gap-6 p-8 my-8">
+      <!-- <div class="bg-primary-80 flex gap-6 p-8 my-8">
         <CreatorStat
           :stat="{ number: '80K', description: 'Average Followers' }"
         />
@@ -51,7 +51,7 @@
           :stat="{ number: '87%', description: 'Engagement Rate' }"
           :border="false"
         />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -63,43 +63,42 @@ import CreatorContact from "../components/creatorProfile/CreatorContact.vue";
 
 import { fetchInfluencerByUsername } from '../../anchor/utils'
 
-const contacts = [
-  {
-    id: 1,
-    iconUrl: "/src/assets/icons/call.svg",
-    contactText: "+91 1234567890",
-  },
-  {
-    id: 2,
-    iconUrl: "/src/assets/icons/mail.svg",
-    contactText: "nGnFj@example.com",
-  },
-  {
-    id: 3,
-    iconUrl: "/src/assets/icons/location.svg",
-    contactText: "Mumbai, India",
-  },
-];
+// const contacts = [
+//   {
+//     id: 1,
+//     iconUrl: "/src/assets/icons/call.svg",
+//     contactText: "+91 1234567890",
+//   },
+//   {
+//     id: 2,
+//     iconUrl: "/src/assets/icons/mail.svg",
+//     contactText: "nGnFj@example.com",
+//   },
+//   {
+//     id: 3,
+//     iconUrl: "/src/assets/icons/location.svg",
+//     contactText: "Mumbai, India",
+//   },
+// ];
 import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
+import { PublicKey } from '@solana/web3.js';
 
 const router = useRouter();
 const route = useRoute();
 
 
-function getInfluencer() {
-  fetchInfluencerByUsername()
-}
+const publicKey = ref("");
 
 const influencer = ref({name: "", username: "", bio: "", profileImage: ""})
 
 onMounted(() => {
   console.log(route.params)
   setTimeout(async () => {
-
     var influencerObj = await fetchInfluencerByUsername(route.params.id);
-    console.log(influencerObj);
+    console.log(influencerObj)
     influencer.value = influencerObj.account;
+    publicKey.value = influencerObj.publicKey.toBase58();
   }, 1000);
   
 })

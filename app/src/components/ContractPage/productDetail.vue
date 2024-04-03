@@ -1,7 +1,7 @@
 <template>
-  <div class="flex gap-10">
+  <div class="flex flex-col lg:flex-row gap-10">
     <div
-      class="border-2 border-primary-30 w-[20%] cursor-pointer rounded-xl relative overflow-hidden"
+      class="border-2 border-primary-30 w-full lg:w-[20%] min-h-[300px] cursor-pointer rounded-xl relative overflow-hidden"
     >
       <div class="w-full h-full" v-if="!productImage">
         <input
@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="w-[50%]">
+    <div class="w-full lg:w-[50%]">
       <div>
         <label class="block pb-4 text-xl font-semibold" for="productName">
           Name:</label
@@ -47,6 +47,7 @@
           placeholder="Product Name"
         />
       </div>
+
       <div class="my-6">
         <label class="block pb-4 text-xl font-semibold" for="price">
           Total Price:</label
@@ -58,6 +59,21 @@
           name="price"
           id="price"
           placeholder="Product Total price"
+        />
+      </div>
+
+      <div>
+        <label class="block pb-4 text-xl font-semibold" for="InfluencerName">
+          Influencer Amount:</label
+        >
+        <input
+          :value="influencerAmount"
+          @input="handleAmountChange"
+          class="w-full bg-transparent font-bold border-primary-50 shadow-[#021E32] shadow-lg border-2 rounded-2xl py-3 px-6 outline-none placeholder:text-primary-40 placeholder:font-bold"
+          type="number"
+          name="InfluencerName"
+          id="InfluencerName"
+          placeholder="Influencer amount"
         />
       </div>
 
@@ -80,10 +96,11 @@
         />
       </div>
     </div>
-    <div class="self-center w-[30%]">
+    <div class="self-center w-full lg:w-[30%]">
       <h2 class="text-4xl font-bold">Profit Distribution:</h2>
       <p class="text-xl py-3">
-        <span class="text-primary-20 font-bold">2%</span> would be
+        <span class="text-primary-20 font-bold">{{ influencerAmount }}</span>
+        would be
         <span class="text-primary-20 font-bold">Influencer</span>
         and <span class="text-primary-20 font-bold">1%</span> would be<span
           class="text-primary-20 font-bold"
@@ -95,7 +112,7 @@
       <div>
         <h3 class="font-semibold text-neutral-20 text-xl py-1">
           Influencer Amount:
-          <span class="text-neutral-0">{{ totalAmount * 0.02 }}</span>
+          <span class="text-neutral-0">{{ influencerAmount }}</span>
         </h3>
       </div>
       <div>
@@ -108,7 +125,7 @@
         <h3 class="font-semibold text-xl py-1 text-neutral-20">
           Brand Receive :
           <span class="text-neutral-0">{{
-            totalAmount - totalAmount * 0.02 - totalAmount * 0.01
+            totalAmount - totalAmount * 0.01 - influencerAmount
           }}</span>
         </h3>
       </div>
@@ -118,16 +135,43 @@
 
 <script setup>
 import { ref } from "vue";
+import { createClient } from "../../helper/client.js";
+import { toast } from "vue3-toastify";
+
+const profileHash = ref(null);
 
 const productImage = ref(null);
 const produtName = ref("");
+const influencerAmount = ref(null);
 const totalAmount = ref("");
 const productDescription = ref("");
 
-const onFileSelected = (event) => {
+const onFileSelected = async (event) => {
   const file = event.target.files[0];
   productImage.value = URL.createObjectURL(file);
+  profileHash.value = await createClient(file);
+  console.log(profileHash.value);
+};
+
+const handleAmountChange = (event) => {
+  influencerAmount.value = event.target.value;
+
+  if (influencerAmount.value > totalAmount.value) {
+    toast("Influencer amount should be less than total amount", {
+      autoClose: 2000,
+      type: "error",
+    });
+    event.target.classList.add("border-red");
+    influencerAmount.value = totalAmount.value * 0.1;
+  } else {
+    event.target.classList.remove("border-red");
+    influencerAmount.value = event.target.value;
+  }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.border-red {
+  border-color: brown;
+}
+</style>
