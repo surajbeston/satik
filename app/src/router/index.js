@@ -5,19 +5,19 @@ import CreatorProfile from "../pages/CreatorProfile.vue";
 import ContractPage from "../pages/ContractPage.vue";
 import NotFound from "../pages/NotFound.vue";
 import Builder from "../pages/WebBuilder.vue";
-import CreatorLogin from "../pages/CreatorLogin.vue";
-import BrandLogin from "../pages/BrandLogin.vue";
+import InfluencerRegister from "../pages/InfluencerRegister.vue";
+import BrandRegister from "../pages/BrandRegister.vue";
 
 const routes = [
   {
-    path: "/creator/register",
-    name: "creator register",
-    component: CreatorLogin,
+    path: "/influencer/register",
+    name: "influencer register",
+    component: InfluencerRegister,
   },
   {
     path: "/brand/register",
     name: "brand register",
-    component: BrandLogin,
+    component: BrandRegister,
   },
   {
     path: "/",

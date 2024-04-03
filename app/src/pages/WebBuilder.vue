@@ -132,8 +132,9 @@ const getCode = async () => {
   //   combine css to the html file
   const code = createHtml(html, cssCode, products);
 
-  const files = [new File([code], "index.html")];
-  await createClient(files);
+  // const files = [new File([code], "index.html")];
+  const blob = new Blob([code], { type: "text/html" });
+  await createClient(blob);
 };
 
 const sendProposal = () => {
