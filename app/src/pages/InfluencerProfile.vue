@@ -96,11 +96,10 @@ onMounted(() => {
   console.log(route.params)
   setTimeout(async () => {
     var influencerObj = await fetchInfluencerByUsername(route.params.id);
-    console.log(influencerObj)
+    console.log(influencerObj);
     influencer.value = influencerObj.account;
     publicKey.value = influencerObj.publicKey.toBase58();
   }, 1000);
-  
 })
 
 </script>

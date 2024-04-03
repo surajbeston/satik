@@ -980,5 +980,8 @@
       "name": "UnauthorizedRedeemError",
       "msg": "Balance can only be redeemed by owner"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
+  }
 }

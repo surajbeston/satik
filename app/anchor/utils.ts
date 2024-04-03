@@ -55,9 +55,45 @@ export async function createInfluencerAccount(username: String, name: String, pr
 
 }
 
+
+export async function createBrandAccount(username: String, name: String, profile_image: String, bio: String) {
+    const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(username)], program.value.programId);
+    const { publicKey } = useWallet();
+    const brandATA = await getAssociatedTokenAddress(mintAddress, publicKey.value);
+
+    const tx = await program.value.methods.initializeBrand(username, name, profile_image, bio)
+        .accounts({
+            usdcAta: brandATA,
+            brand: brandAddress,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            mint: mintAddress,
+            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        })
+        .rpc();
+    console.log(tx);
+
+}
+
+
+
 export async function fetchAllInfluencers() {
     const influencers = await program.value.account.influencer.all();
     return influencers;
+}
+
+export async function fetchBrandByUsername(username: string) {
+    const  brands = await fetchAllBrands();
+
+    for (var brand of brands){   
+        console.log(brand)     
+        if (brand.account.username == username) return brand;
+    }   
+}
+
+export async function fetchAllBrands() {
+    const brands = await program.value.account.brand.all();
+    return brands;
 }
 
 export async function fetchInfluencerByUsername(username: string) {
