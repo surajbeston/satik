@@ -3,12 +3,10 @@ import { useAnchorWallet, useWallet } from "solana-wallets-vue";
 import { Connection, clusterApiUrl, PublicKey } from "@solana/web3.js";
 import { AnchorProvider, Program } from "@project-serum/anchor";
 
-
 import idl from "../../target/idl/satik.json";
 
 const preflightCommitment = "processed";
 const commitment = "confirmed";
-
 
 const programID = new PublicKey(idl.metadata.address);
 
@@ -26,9 +24,9 @@ const walletOptions = {
 initWallet(walletOptions);
 const { publicKey, sendTransaction } = useWallet();
 
- function initWorkspace()  {
+function initWorkspace() {
   const wallet = useAnchorWallet();
-  const connection = new Connection('http://localhost:8899', commitment);
+  const connection = new Connection(clusterApiUrl("devnet"), commitment);
   const provider = computed(
     () =>
       new AnchorProvider(connection, wallet.value, {
@@ -38,15 +36,12 @@ const { publicKey, sendTransaction } = useWallet();
   );
   const program = computed(() => new Program(idl, programID, provider.value));
 
-
-  
   return {
     wallet,
     connection,
     provider,
-    program
+    program,
   };
-};
-
+}
 
 export default initWorkspace;

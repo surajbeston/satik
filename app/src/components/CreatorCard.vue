@@ -1,5 +1,5 @@
 <template>
-  <div class="max-md:mx-auto bg-primary-80 p-6 rounded-xl">
+  <div class="max-md:mx-auto bg-primary-80 p-6 rounded-xl w-full">
     <!-- {{ creator }} -->
     <div class="rounded-full w-[200px] mx-auto h-[200px] overflow-hidden">
       <img
@@ -17,7 +17,7 @@
       </p>
     </div>
     <p class="text-base line-clamp-3 text-neutral-10">
-      {{ creator.bio }} 
+      {{ creator.bio }}
     </p>
     <button
       @click="$router.push(`/creator/${creator.username}`)"
