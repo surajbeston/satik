@@ -69,16 +69,16 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
         &[ctx.accounts.deal.bump],
     ];
 
-    // request_init.invoke_signed(
-    //     ctx.accounts.switchboard_attestation.clone(),
-    //     None,
-    //     None,
-    //     Some(512),
-    //     Some(to_vec(&params)?),
-    //     None,
-    //     None,
-    //     &[seeds],
-    // )?;
+    request_init.invoke_signed(
+        ctx.accounts.switchboard_attestation.clone(),
+        None,
+        None,
+        Some(512),
+        Some(to_vec(&params)?),
+        None,
+        None,
+        &[seeds],
+    )?;
 
     ctx.accounts.deal.feed_scheduled = true;
 
