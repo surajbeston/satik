@@ -22,16 +22,15 @@
     <h1 class="font-inria-sans text-secondary-0 font-semibold text-3xl">
       Unboxed Perks of Satik
     </h1>
-    <div class="flex flex-wrap gap-x-6 gap-y-12 justify-between py-10">
-      <div
-        class="font-titillium-web w-[25%]"
-        v-for="feature in features"
-        :key="feature.id"
-      >
+    <div
+      style="grid-template-columns: repeat(auto-fill, minmax(400px, 1fr))"
+      class="grid gap-x-6 gap-y-12 py-10"
+    >
+      <div class="" v-for="feature in features" :key="feature.id">
         <h2 class="font-semibold text-2xl py-2 text-primary-20">
           {{ feature.title }}
         </h2>
-        <p class="text-neutral-20 font-titillium-web">
+        <p class="text-neutral-20">
           {{ feature.subtitle }}
         </p>
       </div>

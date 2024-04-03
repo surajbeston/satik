@@ -1,6 +1,8 @@
 <template>
-  <div class="h-[60vh] flex worldbg py-10 items-center my-6 relative">
-    <div class="w-[50%] mx-auto">
+  <div
+    class="h-[60vh] w-full flex justify-between items-center mt-16 mb-6 relative"
+  >
+    <div class="w-1/2 mx-auto">
       <h1
         class="text-[50px] text-neutral-0 font-bold leading-[70px] font-open-sans"
       >
@@ -12,8 +14,12 @@
         impact and reach.
       </p>
     </div>
-    <div class="w-1/2 h-[80vh]">
-      <img class="h-full" src="../../assets//icons/icons.svg" alt="" />
+    <div class="w-1/2 h-[70vh]">
+      <img
+        class="h-full w-full ml-auto mr-8"
+        src="../../assets//icons/satik_icon.svg"
+        alt="Satik icon"
+      />
     </div>
   </div>
 </template>
