@@ -11,7 +11,7 @@
         </div>
         <div class="w-1/2">
           <h1 class="text-5xl pt-2 pb-6 font-bold text-neutral-10">
-            Suraj Bahadur Jha,userId->{{ $route.params.id }}
+            {{ influencer.name }}
           </h1>
           <div class="py-9">
             <h3
@@ -20,12 +20,7 @@
               About Me
             </h3>
             <p class="text-xl py-6 text-neutral-10 leading-8 font-normal">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Reprehenderit earum nulla debitis sit, magnam modi placeat porro
-              officia, ipsum similique expedita quas, deleniti dolores possimus
-              veritatis. Illum iusto blanditiis quibusdam? Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. A maxime voluptate distinctio
-              vero est.
+              {{ influencer.bio }}
             </p>
 
             <ul class="flex gap-4 flex-col py-6">
@@ -62,8 +57,11 @@
 </template>
 
 <script setup>
+import {ref} from 'vue';
 import CreatorStat from "../components/creatorProfile/CreatorStat.vue";
 import CreatorContact from "../components/creatorProfile/CreatorContact.vue";
+
+import { fetchInfluencerByUsername } from '../../anchor/utils'
 
 const contacts = [
   {
@@ -83,9 +81,29 @@ const contacts = [
   },
 ];
 import { useRoute, useRouter } from "vue-router";
+import { onMounted } from "vue";
 
 const router = useRouter();
 const route = useRoute();
+
+
+function getInfluencer() {
+  fetchInfluencerByUsername()
+}
+
+const influencer = ref({name: "", username: "", bio: "", profileImage: ""})
+
+onMounted(() => {
+  console.log(route.params)
+  setTimeout(async () => {
+
+    var influencerObj = await fetchInfluencerByUsername(route.params.id);
+    console.log(influencerObj);
+    influencer.value = influencerObj.account;
+  }, 1000);
+  
+})
+
 </script>
 
 <style scoped></style>
