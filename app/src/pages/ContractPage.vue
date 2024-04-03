@@ -11,9 +11,11 @@
           class="border-2 border-primary-60 p-6 rounded-xl"
         >
           <div>
-            <label class="text-2xl block pb-10" for="">Add Products:</label>
+            <label class="text-2xl block pb-5 lg:pb-10" for=""
+              >Add Products:</label
+            >
             <div
-              class="py-10 border-b border-primary-40"
+              class="py-5 lg:py-10 border-b border-primary-40"
               v-for="i in numberOfProducts"
               :key="i"
             >
@@ -21,7 +23,7 @@
             </div>
           </div>
           <div
-            class="w-[60%] mx-auto flex font-semibold justify-center items-center pt-8"
+            class="w-full lg:w-[60%] mx-auto flex flex-col gap-4 md:flex-row font-semibold justify-center items-center pt-8"
           >
             <button
               @click="numberOfProducts++"

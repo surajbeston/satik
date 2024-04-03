@@ -23,10 +23,9 @@
       Unboxed Perks of Satik
     </h1>
     <div
-      style="grid-template-columns: repeat(auto-fill, minmax(400px, 1fr))"
-      class="grid gap-x-6 gap-y-12 py-10"
+      class="grid gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-3 py-10 w-full"
     >
-      <div class="" v-for="feature in features" :key="feature.id">
+      <div class="max-w-full" v-for="feature in features" :key="feature.id">
         <h2 class="font-semibold text-2xl py-2 text-primary-20">
           {{ feature.title }}
         </h2>

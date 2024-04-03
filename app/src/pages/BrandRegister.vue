@@ -16,7 +16,7 @@
           <div
             class="w-full flex justify-center items-center h-[200px] cursor-pointer border-2 border-primary-30 rounded-xl my-3 relative"
           >
-            <div v-if="!profilePicture">
+            <div class="w-full h-full" v-if="!profilePicture">
               <img
                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-65"
                 src="../assets/icons/plus.svg"
