@@ -132,8 +132,14 @@ const getCode = async () => {
   //   combine css to the html file
   const code = createHtml(html, cssCode, products);
 
-  const files = [new File([code], "index.html")];
-  await createClient(files);
+  // const files = [new File([code], "index.html")];
+  const blob = new Blob([code], { type: "text/html" });
+  const cid = await createClient(blob);
+  const url = `https://${cid}.ipfs.w3s.link`;
+  const link = document.createElement("a");
+  link.target = "_blank";
+  link.href = url;
+  link.click();
 };
 
 const sendProposal = () => {

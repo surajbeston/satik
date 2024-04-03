@@ -8,8 +8,8 @@
     <div class="grid grid-cols-4 grid-rows-auto gap-4 py-4">
       <CreatorCard
         v-for="creator in creators"
-        :creator="creator"
-        :key="creator.id"
+        :creator="creator.account"
+        :key="creator.username"
       />
     </div>
   </div>
@@ -17,7 +17,20 @@
 
 <script setup>
 import CreatorCard from "../components/CreatorCard.vue";
-import { creators } from "../constant/index";
+
+import {fetchAllInfluencers} from '../../anchor/utils';
+
+import {ref, onMounted} from "vue";
+
+const creators = ref([])
+
+
+onMounted(async () => {
+  creators.value = await fetchAllInfluencers();
+  console.log(creators.value);
+})
+
+
 </script>
 
 <style scoped></style>

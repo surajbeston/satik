@@ -7,8 +7,6 @@ import { StoreMemory } from "@web3-storage/w3up-client/stores/memory";
 import jseu from "js-encoding-utils";
 
 export async function createClient(files) {
-  console.log(files);
-
   const principal = Signer.parse(import.meta.env.VITE_PRIVATE_KEY);
 
   const store = new StoreMemory();
@@ -24,13 +22,16 @@ export async function createClient(files) {
 
   await client.setCurrentSpace(space.did());
 
-  const directoryCid = await client.uploadDirectory(files);
-  const url = `https://${directoryCid.toString()}.ipfs.w3s.link`;
-  const link = document.createElement("a");
-  link.target = "_blank";
-  link.href = url;
-  link.click();
-  console.log("done");
+  // const directoryCid = await client.uploadDirectory(files);
+  const fileCid = await client.uploadFile(files);
+
+  return fileCid.toString();
+  // const url = `https://${fileCid.toString()}.ipfs.w3s.link`;
+  // const link = document.createElement("a");
+  // link.target = "_blank";
+  // link.href = url;
+  // link.click();
+  // console.log("done");
 }
 
 async function parseProof(data) {

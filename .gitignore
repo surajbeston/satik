@@ -1,6 +1,11 @@
 .anchor
 .DS_Store
-target
+target/debug
+target/deploy
+target/release
+target/sbf-solana-solana
+target/types
+target/.rustc_info.json
 **/*.rs.bk
 node_modules
 test-ledger
@@ -10,4 +15,9 @@ keypair.json
 src_js/constants.ts
 keypairs
 keypair.json
+<<<<<<< HEAD
 Anchor.toml
+=======
+__azurite_db_queue__.json
+__azurite_db_queue_extent__.json
+>>>>>>> f9501d3d7d024d8ba34960e3842de7fe2469c286

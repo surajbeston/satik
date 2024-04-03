@@ -18,5 +18,4 @@ cluster = "Devnet"
 wallet = "/home/viristo/.config/solana/id.json"
 
 [scripts]
-index = "bun run tests/index.ts"
 test = "bun run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
