@@ -1,7 +1,7 @@
 <template>
   <div
     :style="`height: ${height}; background-image: url(${bgUrl});`"
-    class="pattern-container absolute inset-0 w-full h-full"
+    class="pattern-container absolute inset-0 w-full h-full z-0"
   ></div>
 </template>
 

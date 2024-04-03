@@ -2,7 +2,7 @@
   <div class="py-8 relative">
     <DividerPattern  />
     <CreativeIcon />
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between relative z-10">
       <h1 class="text-3xl font-inria-sans my-6 text-secondary-0 font-semibold">
         Creators
       </h1>

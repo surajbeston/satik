@@ -1,5 +1,5 @@
 <template>
-  <div>Brand login</div>
+  <div></div>
 </template>
 
 <script setup></script>
