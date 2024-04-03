@@ -19,7 +19,7 @@
         src="../assets/icons/cross.svg"
         alt="close"
       />
-      <ul class="flex gap-12 flex-col lg:flex-row py-8">
+      <ul class="flex gap-12 flex-col justify-center lg:flex-row py-8">
         <li class="sm:hidden">
           <wallet-multi-button dark></wallet-multi-button>
         </li>

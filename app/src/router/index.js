@@ -6,6 +6,7 @@ import ContractPage from "../pages/ContractPage.vue";
 import NotFound from "../pages/NotFound.vue";
 import Builder from "../pages/WebBuilder.vue";
 import InfluencerRegister from "../pages/InfluencerRegister.vue";
+import BrandPage from "../pages/BrandPage.vue";
 import BrandRegister from "../pages/BrandRegister.vue";
 
 const routes = [
@@ -19,6 +20,7 @@ const routes = [
     name: "brand register",
     component: BrandRegister,
   },
+
   {
     path: "/",
     name: "Home",
@@ -26,8 +28,13 @@ const routes = [
   },
   {
     path: "/influencers",
-    name: "Creators",
+    name: "influencers",
     component: CreatorPage,
+  },
+  {
+    path: "/brands",
+    name: "Brands",
+    component: BrandPage,
   },
   {
     path: "/influencer/:id",

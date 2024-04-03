@@ -8,7 +8,6 @@ import idl from "../../target/idl/satik.json";
 const preflightCommitment = "processed";
 const commitment = "confirmed";
 
-
 const programID = new PublicKey(idl.metadata.address);
 
 import { initWallet } from "solana-wallets-vue";
@@ -25,7 +24,7 @@ const walletOptions = {
 initWallet(walletOptions);
 const { publicKey, sendTransaction } = useWallet();
 
- function initWorkspace()  {
+function initWorkspace() {
   const wallet = useAnchorWallet();
   const connection = new Connection(clusterApiUrl("devnet"), commitment);
   const provider = computed(
@@ -37,15 +36,12 @@ const { publicKey, sendTransaction } = useWallet();
   );
   const program = computed(() => new Program(idl, programID, provider.value));
 
-
-  
   return {
     wallet,
     connection,
     provider,
-    program
+    program,
   };
-};
-
+}
 
 export default initWorkspace;

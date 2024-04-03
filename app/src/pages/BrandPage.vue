@@ -1,17 +1,10 @@
 <template>
-  <div class="relative py-8">
-    <DividerPattern />
-    <img class="w-12 h-12" src="../../assets/icons/branding.png" alt="brand" />
-    <div class="flex items-center justify-between relative z-10 my-5">
-      <h1 class="text-3xl font-inria-sans text-secondary-0 font-semibold">
-        Brands
-      </h1>
-      <RouterLink
-        class="text-lg underline text-secondary-10 underline-offset-4 hover:text-secondary-30 font-medium duration-300"
-        to="/"
-        >See all
-      </RouterLink>
-    </div>
+  <div>
+    <h1
+      class="text-5xl text-center font-inria-sans font-semibold my-6 py-6 text-secondary-0"
+    >
+      All Brands
+    </h1>
     <div class="flex justify-end relative">
       <input
         :value="brandSearch"
@@ -32,27 +25,25 @@
       />
     </div>
     <div
-      style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"
-      class="grid gap-4 justify-center items-stretch py-6 min-h-[470px]"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-rows-auto gap-4 py-4"
     >
       <BrandCard
-        v-for="brand in brands.slice(0, 4)"
-        :key="brand.usename"
+        v-for="brand in brands"
         :brand="brand.account"
+        :key="brand.username"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import DividerPattern from "../DividerPattern.vue";
-import BrandCard from "../BrandCard.vue";
+import { fetchAllBrands } from "../../anchor/utils";
 
-import { onMounted, ref } from "vue";
-import { fetchAllBrands } from "../../../anchor/utils";
-const brandSearch = ref("");
+import { ref, onMounted } from "vue";
+import BrandCard from "../components/BrandCard.vue";
 
 const brands = ref([]);
+const brandSearch = ref("");
 
 onMounted(async () => {
   brands.value = await fetchAllBrands();
