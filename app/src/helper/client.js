@@ -24,12 +24,14 @@ export async function createClient(files) {
 
   // const directoryCid = await client.uploadDirectory(files);
   const fileCid = await client.uploadFile(files);
-  const url = `https://${fileCid.toString()}.ipfs.w3s.link`;
-  const link = document.createElement("a");
-  link.target = "_blank";
-  link.href = url;
-  link.click();
-  console.log("done");
+
+  return fileCid.toString();
+  // const url = `https://${fileCid.toString()}.ipfs.w3s.link`;
+  // const link = document.createElement("a");
+  // link.target = "_blank";
+  // link.href = url;
+  // link.click();
+  // console.log("done");
 }
 
 async function parseProof(data) {

@@ -107,11 +107,9 @@ const profileHash = ref(null);
 const handleFileChange = async (event) => {
   const file = event.target.files[0];
   profilePicture.value = URL.createObjectURL(file);
-  const fileCid = await createClient(file);
-  console.log(fileCid);
-  profileHash.value = fileCid.toString();
+  profileHash.value = await createClient(file);
+
   console.log(profileHash.value);
-  console.log(profilePicture.value);
 };
 </script>
 
