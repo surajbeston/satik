@@ -16,7 +16,7 @@ use states::{ApiFeedData, CreateDealData};
 use instructions::affiliate_instructions::*;
 
 
-declare_id!("5yGpHM8VQdAcw4tPYe8aS7asnsxeJgd5mfzFABD441cB");
+declare_id!("C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU");
 
 
 #[program]

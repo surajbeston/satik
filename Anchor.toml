@@ -5,10 +5,10 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-satik = "8Vr9DzSPk98B21qPmFba2mzb75kbTcmUF86YoBwmBxhp"
+satik = "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
 
 [programs.localnet]
-satik = "5yGpHM8VQdAcw4tPYe8aS7asnsxeJgd5mfzFABD441cB"
+satik = "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
 
 [registry]
 url = "https://api.apr.dev"
@@ -18,5 +18,4 @@ cluster = "Localnet"
 wallet = "/home/suraj/projects/solana/satik/keypair.json"
 
 [scripts]
-index = "bun run tests/index.ts"
 test = "bun run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

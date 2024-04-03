@@ -10,11 +10,12 @@
         "@solana/spl-token": "^0.4.3",
         "@solana/wallet-adapter-wallets": "^0.19.32",
         "@solana/web3.js": "^1.91.1",
-        "bn.js": "^5.2.1",
-        "solana-wallets-vue": "^0.6.1",
-        "vue": "^3.4.21",
         "@switchboard-xyz/oracle": "^2.1.13",
-        "@switchboard-xyz/solana.js": "^3.2.5"
+        "@switchboard-xyz/solana.js": "^3.2.5",
+        "bn.js": "^5.2.1",
+        "bun": "^1.1.0",
+        "solana-wallets-vue": "^0.6.1",
+        "vue": "^3.4.21"
     },
     "devDependencies": {
         "@types/bn.js": "^5.1.0",

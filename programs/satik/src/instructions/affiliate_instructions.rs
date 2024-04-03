@@ -22,7 +22,14 @@ pub struct InitializeBrand<'info> {
 pub struct InitializeInfluencer<'info> {
     #[account(init, payer = signer, space = 8 + Influencer::INIT_SPACE, seeds=[username.as_bytes().as_ref()], bump)]
     pub influencer: Account<'info, Influencer>,
+
+    #[account(init_if_needed, payer = signer, associated_token::mint = mint, associated_token::authority = signer)]
     pub usdc_ata: Account<'info, TokenAccount>,
+    pub mint: Account<'info, Mint>,
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub rent: Sysvar<'info, Rent>,
+
 
     #[account(mut)]
     pub signer: Signer<'info>,

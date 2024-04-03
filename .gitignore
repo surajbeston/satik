@@ -11,3 +11,5 @@ keypair.json
 src_js/constants.ts
 keypairs
 keypair.json
+__azurite_db_queue__.json
+__azurite_db_queue_extent__.json
