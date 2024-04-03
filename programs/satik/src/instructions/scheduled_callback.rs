@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+// use anchor_spl::token_interface::TokenAccount;
 
 use crate::states::{ApiFeedData, Deal};
 
@@ -6,6 +7,10 @@ use crate::states::{ApiFeedData, Deal};
 pub struct ScheduledCallback<'info> {
     #[account(mut)]
     pub deal: Account<'info, Deal>,
+    // #[account(mut)]
+    // pub deal_usdc_ata: Account<'info, TokenAccount>,
+    // #[account(mut)]
+    // pub influencer_usdc_ata: Account<'info, TokenAccount>,
     pub enclave_signer: Signer<'info>,
     // pub token_program: Program<'info, Token>,
     // pub system_program: Program<'info, System>,

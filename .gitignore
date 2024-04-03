@@ -15,9 +15,5 @@ keypair.json
 src_js/constants.ts
 keypairs
 keypair.json
-<<<<<<< HEAD
-Anchor.toml
-=======
 __azurite_db_queue__.json
 __azurite_db_queue_extent__.json
->>>>>>> f9501d3d7d024d8ba34960e3842de7fe2469c286

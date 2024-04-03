@@ -13,7 +13,7 @@ use states::{ApiFeedData, CreateDealData};
 
 use instructions::affiliate_instructions::*;
 
-declare_id!("83FvGohXr2jykhvbacKPvgeCpTGjanmC2vVjgWHZgEcS");
+declare_id!("7vgeVi2VoSyrRoZY8jAb2A34Moguor58cnvWze7D5ymz");
 
 #[program]
 pub mod satik {
