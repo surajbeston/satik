@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+// use anchor_spl::token_interface::TokenAccount;
 
 use crate::states::{ApiFeedData, Deal};
 
@@ -6,6 +7,10 @@ use crate::states::{ApiFeedData, Deal};
 pub struct ScheduledCallback<'info> {
     #[account(mut)]
     pub deal: Account<'info, Deal>,
+    // #[account(mut)]
+    // pub deal_usdc_ata: Account<'info, TokenAccount>,
+    // #[account(mut)]
+    // pub influencer_usdc_ata: Account<'info, TokenAccount>,
     pub enclave_signer: Signer<'info>,
     // pub token_program: Program<'info, Token>,
     // pub system_program: Program<'info, System>,
@@ -34,16 +39,16 @@ pub fn handle_scheduled_callback(ctx: Context<ScheduledCallback>, data: ApiFeedD
 
     let meet_condition_for_cpm_payment: bool = deal.starts_on < current_time
         && deal.starts_on_reach < data.reach
-        && (deal.ends_on.is_none() || (deal.ends_on.unwrap() > current_time))
-        && (deal.ends_on_reach.is_none() || (deal.ends_on_reach.unwrap() > last_paid_on_reach));
+        && (deal.ends_on > current_time)
+        && (deal.ends_on_reach > last_paid_on_reach);
 
     if !meet_condition_for_cpm_payment {
         return Ok(());
     }
 
     let mut reach_or_max_reach: u64 = data.reach;
-    if deal.ends_on_reach.is_some() && deal.ends_on_reach.unwrap() < data.reach {
-        reach_or_max_reach = deal.ends_on_reach.unwrap();
+    if deal.ends_on_reach < data.reach {
+        reach_or_max_reach = deal.ends_on_reach;
     }
     let reach_to_be_paid_for = reach_or_max_reach - last_paid_on_reach;
     msg!("Reach to be paid for {}", reach_to_be_paid_for);

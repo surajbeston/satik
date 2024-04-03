@@ -62,6 +62,7 @@ export async function fetchAllInfluencers() {
 
 export async function fetchInfluencerByUsername(username: string) {
     const  influencers = await fetchAllInfluencers();
+    console.log(influencers)
     for (var influencer of influencers){   
         console.log(influencer)     
         if (influencer.account.username == username) return influencer;

@@ -8,8 +8,7 @@ use crate::states::SbApiFeedParams;
 
 #[derive(Accounts)]
 pub struct ScheduleFeed<'info> {
-    #[account(mut, constraint = payer.key() == deal.brand_pk)]
-    pub payer: Signer<'info>,
+    #[account(mut)]
     pub deal: Account<'info, Deal>,
     #[account(executable, address = SWITCHBOARD_ATTESTATION_PROGRAM_ID)]
     /// CHECK: Not dangerous
@@ -26,12 +25,19 @@ pub struct ScheduleFeed<'info> {
     pub switchboard_request_escrow: AccountInfo<'info>,
     #[account(address = anchor_spl::token::spl_token::native_mint::ID)]
     pub switchboard_mint: Account<'info, Mint>,
+
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
+    #[account(mut)]
+    pub payer: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
 
 pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
+    // assert!(
+    //     ctx.accounts.deal.feed_scheduled == false,
+    //     "Feed is already scheduled"
+    // );
     let request_init = FunctionRequestInitAndTrigger {
         request: ctx.accounts.switchboard_request.clone(),
         authority: ctx.accounts.deal.to_account_info(),
@@ -55,11 +61,11 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
 
     msg!(&ctx.accounts.deal.content_url);
 
-    let payer_key = ctx.accounts.payer.key();
     let seeds = &[
         Deal::SEED,
         &ctx.accounts.deal.id_seed,
-        payer_key.as_ref(),
+        ctx.accounts.deal.brand.as_ref(),
+        ctx.accounts.deal.influencer.as_ref(),
         &[ctx.accounts.deal.bump],
     ];
 
@@ -73,6 +79,8 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
         None,
         &[seeds],
     )?;
+
+    ctx.accounts.deal.feed_scheduled = true;
 
     Ok(())
 }
