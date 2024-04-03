@@ -12,6 +12,26 @@
         },
         {
           "name": "usdcAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         },
@@ -407,6 +427,32 @@
       ]
     },
     {
+      "name": "acceptDeal",
+      "accounts": [
+        {
+          "name": "influencer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "deal",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "scheduleFeed",
       "accounts": [
         {
@@ -473,7 +519,7 @@
       "args": []
     },
     {
-      "name": "scheduledCallback",
+      "name": "scheduledFeedCallback",
       "accounts": [
         {
           "name": "deal",
@@ -755,10 +801,6 @@
             }
           },
           {
-            "name": "initialAmountPaid",
-            "type": "bool"
-          },
-          {
             "name": "startsOn",
             "type": "i64"
           },
@@ -779,10 +821,6 @@
             "type": "u64"
           },
           {
-            "name": "feedScheduled",
-            "type": "bool"
-          },
-          {
             "name": "lastPaidOn",
             "type": {
               "option": "i64"
@@ -797,6 +835,18 @@
           {
             "name": "contentUrl",
             "type": "string"
+          },
+          {
+            "name": "initialAmountPaid",
+            "type": "bool"
+          },
+          {
+            "name": "feedScheduled",
+            "type": "bool"
+          },
+          {
+            "name": "influencerAccepted",
+            "type": "bool"
           },
           {
             "name": "idSeed",
@@ -930,8 +980,5 @@
       "name": "UnauthorizedRedeemError",
       "msg": "Balance can only be redeemed by owner"
     }
-  ],
-  "metadata": {
-    "address": "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
-  }
+  ]
 }

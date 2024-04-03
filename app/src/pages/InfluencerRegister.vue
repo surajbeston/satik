@@ -106,12 +106,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { createClient } from "../helper/client";
 
-import { createInfluencerAccount } from "../../anchor/utils";
+import { createInfluencerAccount, fetchAllInfluencers } from "../../anchor/utils";
 
 import { toast } from "vue3-toastify";
+
+import { useWallet } from "solana-wallets-vue";
 
 const profilePicture = ref(null);
 const profileHash = ref(null);
@@ -181,6 +183,29 @@ const handleFileChange = async (event) => {
 
   sendingImage.value = false;
 };
+
+onMounted(async () => {
+  setTimeout(async () => {
+    console.log("here all");
+    const influencers = await fetchAllInfluencers();
+    console.log(influencers);
+    const {publicKey } = useWallet();
+
+    // console.log(publicKey.value.toBase58())
+
+    for (var influencer of influencers) {
+      console.log(influencer.account.createdBy.toBase58())
+      console.log (publicKey.value.toBase58())
+      if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+        console.log("inside")
+        location.href = "/influencer/" + influencer.account.value;
+      }
+      console.log ()
+    }
+  }, 1000);
+  
+  
+})
 </script>
 
 <style scoped></style>

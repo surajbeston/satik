@@ -267,12 +267,19 @@ pub mod satik {
         handle_create_deal(ctx, data)
     }
 
+    pub fn accept_deal(ctx: Context<AcceptDeal>) -> Result<()> {
+        handle_accept_deal(ctx)
+    }
+
     pub fn schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
         handle_schedule_feed(ctx)
     }
 
-    pub fn scheduled_callback(ctx: Context<ScheduledCallback>, data: ApiFeedData) -> Result<()> {
-        handle_scheduled_callback(ctx, data)
+    pub fn scheduled_feed_callback(
+        ctx: Context<ScheduledFeedCallback>,
+        data: ApiFeedData,
+    ) -> Result<()> {
+        handle_scheduled_feed_callback(ctx, data)
     }
 }
 

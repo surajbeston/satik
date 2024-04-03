@@ -98,17 +98,106 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { createClient } from "../helper/client";
+
+import { createInfluencerAccount, fetchAllInfluencers } from "../../anchor/utils";
+
+import { toast } from "vue3-toastify";
+
+import { useWallet } from "solana-wallets-vue";
 
 const profilePicture = ref(null);
 const profileHash = ref(null);
 
+var profileImageURL = "";
+
+const name = ref("");
+const username = ref("");
+const bio = ref("");
+
+// const { wallet, influencers };
+
+const sendingImage = ref(false);
+
+async function createInfluencer() {
+  if (!sendingImage.value) {
+    if (!bio.value || !username.value || !name.value || !profileImageURL) {
+      toast("Bio, Username, Name and Profile Picture are required", {
+        autoClose: 2000,
+        type: "error",
+      });
+      return;
+    }
+    sendingImage.value = true;
+    toast("Creating Profile", { autoClose: 2000 });
+    try {
+      await createInfluencerAccount(
+        username.value,
+        name.value,
+        profileImageURL,
+        bio.value
+      );
+      toast("Profile Created", { autoClose: 2000 });
+      location.href = "/influencer/" + username.value;
+    } catch (error) {
+      console.log(error)
+      toast("Account creation failed. Try changing username.", {
+        autoClose: 2000,
+        type: "error",
+      });
+      username.value = "";
+    }
+    sendingImage.value = false;
+  }
+  else{
+    toast("Sending profile picture...", { autoClose: 2000, type: 'loading' });
+  }
+}
+
 const handleFileChange = async (event) => {
-  const file = event.target.files[0];
-  profilePicture.value = URL.createObjectURL(file);
-  profileHash.value = await createClient(file);
+  sendingImage.value = true;
+  toast("Uploading profile picture...", { autoClose: 2000 });
+  try {
+    const file = event.target.files[0];
+    profilePicture.value = URL.createObjectURL(file);
+    profileHash.value = await createClient(file);
+  } catch {
+    console.log(error);
+    toast("Something went wrong while uploading profile picture", {
+      autoClose: 3000,
+      type: "error",
+    });
+  }
+  toast("Profile picture uploaded", { autoClose: 2000, type: "success" });
+
+  profileImageURL = `https://${profileHash.value}.ipfs.w3s.link`;
+
+  sendingImage.value = false;
 };
+
+onMounted(async () => {
+  setTimeout(async () => {
+    console.log("here all");
+    const influencers = await fetchAllInfluencers();
+    console.log(influencers);
+    const {publicKey } = useWallet();
+
+    // console.log(publicKey.value.toBase58())
+
+    for (var influencer of influencers) {
+      console.log(influencer.account.createdBy.toBase58())
+      console.log (publicKey.value.toBase58())
+      if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+        console.log("inside")
+        location.href = "/influencer/" + influencer.account.value;
+      }
+      console.log ()
+    }
+  }, 1000);
+  
+  
+})
 </script>
 
 <style scoped></style>
