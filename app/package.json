@@ -27,6 +27,7 @@
     "grapesjs-navbar": "^1.0.2",
     "grapesjs-preset-webpage": "^1.0.3",
     "js-encoding-utils": "^0.7.3",
+    "primevue": "^3.51.0",
     "solana-wallets-vue": "^0.6.1",
     "tweetnacl": "^1.0.3",
     "vue": "^3.4.21",
