@@ -18,6 +18,7 @@ pub struct Deal {
     pub initial_amount_paid: bool,
     pub feed_scheduled: bool,
     pub influencer_accepted: bool,
+    pub deal_ended: bool,
     pub id_seed: Vec<u8>,
     pub bump: u8,
 }
@@ -25,7 +26,7 @@ pub struct Deal {
 impl Deal {
     pub const SEED: &'static [u8] = b"deal_seed";
     pub const FIXED_SIZE: usize =
-        32 + 32 + 32 + 64 + 64 + 8 + 8 + 8 + 64 + 64 + 64 + 64 + 64 + 64 + 64 + 8;
+        32 + 32 + 32 + 64 + 64 + 8 + 8 + 8 + 8 + 64 + 64 + 64 + 64 + 64 + 64 + 64 + 8;
 
     pub fn id_seed_size(&self) -> usize {
         self.id_seed.len() * 8

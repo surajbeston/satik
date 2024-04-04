@@ -11,6 +11,8 @@ pub struct ScheduledFeedCallback<'info> {
     pub deal_usdc_ata: Account<'info, TokenAccount>,
     #[account(mut)]
     pub influencer_usdc_ata: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub brand_usdc_ata: Account<'info, TokenAccount>,
     // ******* check if signer is function
     pub enclave_signer: Signer<'info>,
     pub token_program: Program<'info, Token>,
@@ -39,6 +41,22 @@ pub fn handle_scheduled_feed_callback(
     ];
 
     let signer_seeds = &[&seeds[..]];
+
+    // if deal is ended return usdc to brand ATA
+    if deal.deal_ended {
+        token::transfer(
+            CpiContext::new_with_signer(
+                ctx.accounts.token_program.to_account_info(),
+                Transfer {
+                    from: ctx.accounts.deal_usdc_ata.to_account_info(),
+                    to: ctx.accounts.brand_usdc_ata.to_account_info(),
+                    authority: deal.to_account_info(),
+                },
+                signer_seeds,
+            ),
+            ctx.accounts.deal_usdc_ata.amount,
+        )?;
+    }
 
     // handle initial amount
     // check if initial amount is paid
@@ -90,6 +108,7 @@ pub fn handle_scheduled_feed_callback(
     // check if current reach exceeded deal max reach
     if deal.ends_on_reach < data.reach {
         reach_or_max_reach = deal.ends_on_reach;
+        deal.deal_ended = true;
     }
 
     // if last_paid_on_reach is none its set to starts_on_reach
@@ -111,6 +130,10 @@ pub fn handle_scheduled_feed_callback(
         ),
         reach_to_be_paid_for * deal.cpm,
     )?;
+
+    if deal.ends_on < current_time {
+        deal.deal_ended = true;
+    }
 
     deal.last_paid_on = Some(current_time);
     deal.last_paid_on_reach = Some(data.reach);
