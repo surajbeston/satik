@@ -1,25 +1,40 @@
 <template>
-  <div class="editor-container mx-auto">
-    <h3 class="text-xl font-bold">Instructions:</h3>
-    <ul style="list-style: disc" class="ml-6 pb-6">
-      <li class="text-base font-semibold text-neutral-20">
-        Drag and drop the component to build website from scratch
-      </li>
-      <li class="text-base font-semibold text-neutral-20">
-        Link your product to the button (like button, or card)
-      </li>
-      <li class="text-base font-semibold text-neutral-20">
-        When you finish just click on save and send the proposal to the
-        influencer
-      </li>
-    </ul>
+  <div class="editor-container mx-auto relative">
+    <!-- modal -->
+    <div
+      v-if="showModal"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-black/70 h-screen w-screen flex justify-center items-center"
+    >
+      <div class="p-6 bg-primary-60 rounded-xl shadow-2xl w-[500px] h-[400px]">
+        <img
+          @click="showModal = false"
+          class="w-4 h-4 mr-0 ml-auto cursor-pointer"
+          src="../assets/icons/cross.svg"
+          alt="close"
+        />
+        <h3 class="text-2xl font-bold">Instructions:</h3>
+        <ul style="list-style: disc" class="ml-6 pb-6 space-y-3 py-4">
+          <li class="text-lg font-semibold text-neutral-10">
+            Drag and drop the component to build website from scratch
+          </li>
+          <li class="text-lg font-semibold text-neutral-10">
+            Link your product to the button (like button, or card)
+          </li>
+          <li class="text-lg font-semibold text-neutral-10">
+            When you finish just click on save and send the proposal to the
+            influencer
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- modal end -->
     <div
       class="border-4 border-secondaryLight-10"
       ref="editorEl"
       style="width: 100%; height: 90vh"
       id="gjs"
     ></div>
-    <div class="w-full flex mt-10 py-8">
+    <div class="w-full flex py-8">
       <button
         class="w-full bg-primary-20 py-2 font-bold text-lg"
         @click="getCode"
@@ -42,7 +57,7 @@ import { onMounted, ref } from "vue";
 // grapes and grapes plugins
 import grapesjs from "grapesjs";
 import grapesjsblocks from "grapesjs-blocks-basic";
-import BN from 'bn.js'
+import BN from "bn.js";
 
 import { store } from "../store.js";
 
@@ -54,13 +69,17 @@ import { createHtml } from "../helper/htmlCreator";
 import "grapesjs/dist/css/grapes.min.css";
 // web3 storage
 import { createClient } from "../helper/client";
-import { initializeProposal, initializeProduct, fetchAllBrands, fetchAllInfluencers } from "../../anchor/utils";
-import {  useWallet } from "solana-wallets-vue";
-import {PublicKey} from '@solana/web3.js';
+import {
+  initializeProposal,
+  initializeProduct,
+  fetchAllBrands,
+  fetchAllInfluencers,
+} from "../../anchor/utils";
+import { useWallet } from "solana-wallets-vue";
+import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
-
-import {useRoute} from 'vue-router';
+import { useRoute } from "vue-router";
 
 const route = useRoute();
 
@@ -68,6 +87,7 @@ const editor = ref(null);
 const editorEl = ref(null);
 const selectedProduct = ref(null);
 const products = ref([]);
+const showModal = ref(true);
 
 onMounted(async () => {
   const data = localStorage.getItem("products");
@@ -150,13 +170,23 @@ async function sendProposal() {
   const influencerAddressString = localStorage.getItem("influencerAddress");
   const influencerAddress = new PublicKey(influencerAddressString);
   toast("Sending Proposal", { autoClose: 2000 });
-  const proposalAddress = await initializeProposal( "gh", influencerAddress, brandAddress);
+  const proposalAddress = await initializeProposal(
+    "gh",
+    influencerAddress,
+    brandAddress
+  );
   for (var product of products.value) {
-    let productAddress = await initializeProduct(product.productName, product.productDescription, new BN(product.totalAmount), new BN(product.influencerAmount), proposalAddress);
+    let productAddress = await initializeProduct(
+      product.productName,
+      product.productDescription,
+      new BN(product.totalAmount),
+      new BN(product.influencerAmount),
+      proposalAddress
+    );
     product.productAddress = productAddress;
     console.log("Product Address: ", productAddress.toBase58());
   }
-  toast("Proposal successfully sent.", {autoClose: 2000});
+  toast("Proposal successfully sent.", { autoClose: 2000 });
   console.log(proposalAddress.toBase58());
 }
 
@@ -178,7 +208,6 @@ const getCode = async () => {
   link.href = url;
   link.click();
 };
-
 </script>
 
 <style>
