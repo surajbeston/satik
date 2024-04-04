@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col lg:flex-row gap-10">
-    {{ product  }}
     <div class="border-2 border-primary-30 w-full lg:w-[20%] min-h-[300px] cursor-pointer rounded-xl relative overflow-hidden">
       <div class="w-full h-full" v-if="!product.productImage">
         <input
