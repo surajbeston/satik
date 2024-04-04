@@ -36,17 +36,11 @@
             >
               Initiate Contract
             </button>
-<<<<<<< HEAD
-
-            <button @click="handleAcceptProposal">
-              Accept Proposal
-=======
             <button
               @click="$router.push(`/cpm-contract/${publicKey}`)"
               class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
             >
               Initiate CPM Contract
->>>>>>> 85f03fb19d7550b5e86869a85deeb78f96ad475e
             </button>
           </div>
         </div>
@@ -62,11 +56,7 @@ import { ref } from "vue";
 import InfluencerStat from "../components/influencerProfile/InfluencerStat.vue";
 import InfluencerContract from "../components/influencerProfile/InfluencerContract.vue";
 
-<<<<<<< HEAD
 import { fetchInfluencerByUsername, acceptProposal } from '../../anchor/utils'
-=======
-import { fetchInfluencerByUsername } from "../../anchor/utils";
->>>>>>> 85f03fb19d7550b5e86869a85deeb78f96ad475e
 
 // const contacts = [
 //   {
@@ -87,12 +77,8 @@ import { fetchInfluencerByUsername } from "../../anchor/utils";
 // ];
 import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
-<<<<<<< HEAD
 import { PublicKey } from '@solana/web3.js';
 import { program } from '@coral-xyz/anchor/dist/cjs/native/system';
-=======
-import { PublicKey } from "@solana/web3.js";
->>>>>>> 85f03fb19d7550b5e86869a85deeb78f96ad475e
 
 const router = useRouter();
 const route = useRoute();

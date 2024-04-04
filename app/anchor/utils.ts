@@ -80,21 +80,7 @@ export async function createInfluencerAccount(
   console.log(tx);
 }
 
-export async function createBrandAccount(
-  username: String,
-  name: String,
-  profile_image: String,
-  bio: String
-) {
-  const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from(username)],
-    program.value.programId
-  );
-  const { publicKey } = useWallet();
-  const brandATA = await getAssociatedTokenAddress(
-    mintAddress,
-    publicKey.value
-  );
+
 
 export async function createBrandAccount(username: String, name: String, profile_image: String, bio: String) {
     const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(username)], program.value.programId);
@@ -142,7 +128,7 @@ export async function acceptProposal(proposalAddresString: string) {
 export async function initializeProduct(name: String, description: String, totalAmount: number, influencerAmount: number, proposalAddress: PublicKey) {
     const product = Keypair.generate();
 
-    const tx = await program.value.methods.initializeProduct(name, description, totalAmount, influencerAmount)
+    const tx = await program.value.methods.initializeProduct(name, description, totalAmount * 10 ** 6, influencerAmount * 10 ** 6)
                                           .accounts({
                                             product: product.publicKey,
                                             proposal: proposalAddress
