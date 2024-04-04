@@ -4,20 +4,16 @@ export const navLinks = [
     id: 1,
     path: "/",
   },
+
   {
-    name: "Vision",
-    id: 2,
-    path: "/vision",
-  },
-  {
-    name: "Creators",
-    id: 3,
-    path: "/creators",
-  },
-  {
-    name: "Our Team",
+    name: "Influencers",
     id: 4,
-    path: "/team",
+    path: "/influencers",
+  },
+  {
+    name: "Brands",
+    id: 3,
+    path: "/brands",
   },
 ];
 export const creators = [

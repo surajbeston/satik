@@ -15,7 +15,7 @@ url = "https://api.apr.dev"
 
 [provider]
 cluster = "Devnet"
-wallet = "/home/suraj/.config/solana/id.json"
+wallet = "/home/viristo/.config/solana/id.json"
 
 [scripts]
 index = "bun run src_js/index.ts"

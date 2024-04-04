@@ -80,6 +80,21 @@ export async function createInfluencerAccount(
   console.log(tx);
 }
 
+export async function createBrandAccount(
+  username: String,
+  name: String,
+  profile_image: String,
+  bio: String
+) {
+  const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from(username)],
+    program.value.programId
+  );
+  const { publicKey } = useWallet();
+  const brandATA = await getAssociatedTokenAddress(
+    mintAddress,
+    publicKey.value
+  );
 
 export async function createBrandAccount(username: String, name: String, profile_image: String, bio: String) {
     const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(username)], program.value.programId);
@@ -147,12 +162,11 @@ export async function fetchAllBrands() {
 }
 
 export async function fetchBrandByUsername(username: string) {
-    const  brands = await fetchAllBrands();
+  const brands = await fetchAllBrands();
 
-    for (var brand of brands){   
-        console.log(brand)     
-        if (brand.account.username == username) return brand;
-    }   
+  for (var brand of brands) {
+    if (brand.account.username == username) return brand;
+  }
 }
 
 export async function fetchInfluencerByUsername(username: string) {
@@ -163,4 +177,3 @@ export async function fetchInfluencerByUsername(username: string) {
     if (influencer.account.username == username) return influencer;
   }
 }
-

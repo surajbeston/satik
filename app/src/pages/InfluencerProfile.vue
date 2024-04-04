@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div class="w-[80%] mx-auto py-16">
-      <div class="flex gap-10 pb-8">
-        <div class="w-1/2 h-[700px]">
+    <div class="w-full sm:w-[90%] xl:w-[80%] mx-auto py-16">
+      <div class="flex flex-col lg:flex-row gap-10 pb-8">
+        <div class="w-full lg:w-1/2 h-[700px] max-md:mx-auto">
           <img
-            class="h-full w-[90%] object-cover"
+            class="h-full w-full lg:w-[90%] object-cover"
             :src="influencer.profileImage"
             alt=""
           />
         </div>
-        <div class="w-1/2">
+        <div class="w-full lg:w-1/2">
           <h1 class="text-5xl pt-2 pb-6 font-bold text-neutral-10">
             {{ influencer.name }}
           </h1>
@@ -36,36 +36,37 @@
             >
               Initiate Contract
             </button>
+<<<<<<< HEAD
 
             <button @click="handleAcceptProposal">
               Accept Proposal
+=======
+            <button
+              @click="$router.push(`/cpm-contract/${publicKey}`)"
+              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
+            >
+              Initiate CPM Contract
+>>>>>>> 85f03fb19d7550b5e86869a85deeb78f96ad475e
             </button>
           </div>
         </div>
       </div>
-      <!-- <div class="bg-primary-80 flex gap-6 p-8 my-8">
-        <CreatorStat
-          :stat="{ number: '80K', description: 'Average Followers' }"
-        />
-        <CreatorStat :stat="{ number: '8.5K', description: 'Average Reach' }" />
-        <CreatorStat
-          :stat="{ number: '78K', description: 'Average Impression' }"
-        />
-        <CreatorStat
-          :stat="{ number: '87%', description: 'Engagement Rate' }"
-          :border="false"
-        />
-      </div> -->
+
+      <!-- <InfluencerStat :stat="{ number: '8.5K', description: 'Average Reach' }" /> -->
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue';
-import CreatorStat from "../components/creatorProfile/CreatorStat.vue";
-import CreatorContact from "../components/creatorProfile/CreatorContact.vue";
+import { ref } from "vue";
+import InfluencerStat from "../components/influencerProfile/InfluencerStat.vue";
+import InfluencerContract from "../components/influencerProfile/InfluencerContract.vue";
 
+<<<<<<< HEAD
 import { fetchInfluencerByUsername, acceptProposal } from '../../anchor/utils'
+=======
+import { fetchInfluencerByUsername } from "../../anchor/utils";
+>>>>>>> 85f03fb19d7550b5e86869a85deeb78f96ad475e
 
 // const contacts = [
 //   {
@@ -86,19 +87,22 @@ import { fetchInfluencerByUsername, acceptProposal } from '../../anchor/utils'
 // ];
 import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
+<<<<<<< HEAD
 import { PublicKey } from '@solana/web3.js';
 import { program } from '@coral-xyz/anchor/dist/cjs/native/system';
+=======
+import { PublicKey } from "@solana/web3.js";
+>>>>>>> 85f03fb19d7550b5e86869a85deeb78f96ad475e
 
 const router = useRouter();
 const route = useRoute();
 
-
 const publicKey = ref("");
 
-const influencer = ref({name: "", username: "", bio: "", profileImage: ""})
+const influencer = ref({ name: "", username: "", bio: "", profileImage: "" });
 
 onMounted(() => {
-  console.log(route.params)
+  console.log(route.params);
   setTimeout(async () => {
     var influencerObj = await fetchInfluencerByUsername(route.params.id);
     console.log(influencerObj.account.createdBy.toBase58());

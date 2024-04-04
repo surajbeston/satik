@@ -1,16 +1,18 @@
-import 'buffer';
+import "buffer";
 import { createApp } from "vue";
-import "./style.css";
 import "vue3-toastify/dist/index.css";
 import router from "./router/index";
 import Vue3Toastify from "vue3-toastify";
 import App from "./App.vue";
 import SolanaWallets from "solana-wallets-vue";
 import "solana-wallets-vue/styles.css";
-import { Buffer } from 'buffer'
+import { Buffer } from "buffer";
 import { initWallet } from "solana-wallets-vue";
 
-
+// prime vue
+import PrimeVue from "primevue/config";
+import "primevue/resources/themes/aura-dark-green/theme.css";
+import "./style.css";
 
 // import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
@@ -30,10 +32,11 @@ const walletOptions = {
 initWallet(walletOptions);
 
 const app = createApp(App);
+
 app.use(router);
+app.use(PrimeVue);
 app.use(Vue3Toastify, {
   autoClose: 300,
 });
-app.use(SolanaWallets, walletOptions)
+app.use(SolanaWallets, walletOptions);
 app.mount("#app");
-

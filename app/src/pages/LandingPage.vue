@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div class="relative">
     <HeroSection />
     <!-- <HowItWork /> -->
     <Features />
 
     <CreatorSection />
     <BrandSection />
+    <Footer />
 
     <!-- <InfluencerSection /> -->
   </div>
@@ -13,8 +14,9 @@
 
 <script setup>
 import Header from "../components/Header.vue";
+import Footer from "../components/Footer.vue";
 import HowItWork from "../components/LandingPage/HowItWork.vue";
-import CreatorSection from "../components/LandingPage/CreatorSection.vue";
+import CreatorSection from "../components/LandingPage/InfluencerSection.vue";
 import BrandSection from "../components/LandingPage/BrandSection.vue";
 import Features from "../components/LandingPage/Features.vue";
 import HeroSection from "../components/LandingPage/HeroSection.vue";

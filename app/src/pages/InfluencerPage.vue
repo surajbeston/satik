@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="min-h-screen">
     <h1
       class="text-5xl text-center font-inria-sans font-semibold my-6 py-6 text-secondary-0"
     >
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import CreatorCard from "../components/CreatorCard.vue";
+import CreatorCard from "../components/InfluencerCard.vue";
 
 import { fetchAllInfluencers } from "../../anchor/utils";
 

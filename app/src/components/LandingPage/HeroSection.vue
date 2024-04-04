@@ -1,8 +1,8 @@
 <template>
   <div
-    class="min-h-[60vh] w-full flex flex-col lg:flex-row justify-between items-center mt-16 mb-6 relative"
+    class="min-h-[60vh] w-full flex gap-4 flex-col lg:flex-row justify-between items-center mt-16 mb-6 relative"
   >
-    <div class="w-full lg:w-1/2 mx-auto">
+    <div class="w-full lg:w-1/2 mx-auto text-center lg:text-start">
       <h1
         class="text-[28px] md:text-[50px] text-neutral-0 font-bold font-open-sans"
       >
@@ -14,10 +14,10 @@
         impact and reach.
       </p>
     </div>
-    <div class="w-full lg:w-1/2 h-[70vh]">
+    <div class="w-full lg:w-1/2 h-[40vh] sm:h-[70vh]">
       <img
-        class="h-full w-full ml-auto mr-8"
-        src="../../assets//icons/satik_icon.svg"
+        class="h-full mx-auto lg:ml-auto lg:mr-0"
+        src="../../assets//icons/new.svg"
         alt="Satik icon"
       />
     </div>

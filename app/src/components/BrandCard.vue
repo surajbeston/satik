@@ -1,7 +1,7 @@
 <template>
   <div class="max-md:mx-auto bg-primary-80 p-6 rounded-xl w-full">
     <div
-      class="rounded-xl mx-auto overflow-hidden shadow-xl shadow-primary-60 mb-4 min-h-[190px]"
+      class="rounded-xl mx-auto overflow-hidden shadow-xl shadow-primary-60 mb-4 w-full h-[200px]"
     >
       <img
         class="h-full w-full object-cover"
@@ -17,11 +17,11 @@
         {{ brand.username }}
       </p>
     </div>
-    <p class="text-base line-clamp-3 text-neutral-10">
+    <p class="text-base line-clamp-3 text-neutral-10 min-h-[72px]">
       {{ brand.bio }}
     </p>
     <button
-      @click="$router.push(`/creator/${brand.username}`)"
+      @click="$router.push(`/brand/${brand.username}`)"
       class="bg-secondary-30 py-2 rounded-xl mt-4 w-full hover:bg-secondary-40 duration-300"
     >
       View Profile

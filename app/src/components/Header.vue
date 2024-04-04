@@ -24,13 +24,13 @@
           <wallet-multi-button dark></wallet-multi-button>
         </li>
         <li
-          class="text-lg font-normal cursor-pointer hover:text-secondary-0 duration-300"
+          class="text-xl font-normal cursor-pointer font-open-sans tracking-wider hover:text-secondary-0 duration-300"
           v-for="link in navLinks"
           :key="link.id"
         >
           <RouterLink
             @click="showNav = false"
-            activeClass="text-secondary-0 underline underline-offset-4 decoration-secondary-0"
+            activeClass="text-secondary-0 underline underline-offset-4  decoration-secondary-0"
             :to="link.path"
           >
             {{ link.name }}

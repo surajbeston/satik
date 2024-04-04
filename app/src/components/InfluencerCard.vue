@@ -16,7 +16,7 @@
         {{ creator.username }}
       </p>
     </div>
-    <p class="text-base line-clamp-3 text-neutral-10">
+    <p class="text-base line-clamp-3 text-neutral-10 min-h-[72px]">
       {{ creator.bio }}
     </p>
     <button

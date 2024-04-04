@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-container">
+  <div class="editor-container mx-auto">
     <h3 class="text-xl font-bold">Instructions:</h3>
     <ul style="list-style: disc" class="ml-6 pb-6">
       <li class="text-base font-semibold text-neutral-20">
@@ -187,6 +187,7 @@ const getCode = async () => {
 }
 .editor-container {
   width: 1200px;
+  margin: 0 auto;
 }
 .product_container {
   width: 170px;
