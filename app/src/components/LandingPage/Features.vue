@@ -1,5 +1,5 @@
 <template>
-  <div class="py-12 relative">
+  <div class="py-20 relative">
     <DividerPattern height="190px" />
     <svg
       xmlns="http://www.w3.org/2000/svg"
