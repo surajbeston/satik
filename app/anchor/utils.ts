@@ -98,7 +98,8 @@ export async function fetchInfluencerByUsername(username: string) {
 
 export async function fetchBrandByUsername(username: string) {
   const brands = await fetchAllBrands();
+  console.log(brands);
   for (var brand of brands) {
-    if (brand.account.username == username) return brand;
+    if (brand.account.username === username) return brand;
   }
 }

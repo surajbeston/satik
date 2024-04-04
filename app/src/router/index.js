@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Home from "../pages/LandingPage.vue";
-import CreatorPage from "../pages/CreatorPage.vue";
+import InfluencerPage from "../pages/InfluencerPage.vue";
 import InfluencerProfile from "../pages/InfluencerProfile.vue";
 import ContractPage from "../pages/ContractPage.vue";
 import NotFound from "../pages/NotFound.vue";
@@ -8,6 +8,7 @@ import Builder from "../pages/WebBuilder.vue";
 import InfluencerRegister from "../pages/InfluencerRegister.vue";
 import BrandPage from "../pages/BrandPage.vue";
 import BrandRegister from "../pages/BrandRegister.vue";
+import BrandProfile from "../pages/BrandProfile.vue";
 
 const routes = [
   {
@@ -29,12 +30,17 @@ const routes = [
   {
     path: "/influencers",
     name: "influencers",
-    component: CreatorPage,
+    component: InfluencerPage,
   },
   {
     path: "/brands",
     name: "Brands",
     component: BrandPage,
+  },
+  {
+    path: "/brand/:id",
+    name: "Brand profile",
+    component: BrandProfile,
   },
   {
     path: "/influencer/:id",

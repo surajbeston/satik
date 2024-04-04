@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import CreatorCard from "../components/CreatorCard.vue";
+import CreatorCard from "../components/InfluencerCard.vue";
 
 import { fetchAllInfluencers } from "../../anchor/utils";
 

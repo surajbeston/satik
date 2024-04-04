@@ -16,11 +16,11 @@
         {{ creator.username }}
       </p>
     </div>
-    <p class="text-base line-clamp-3 text-neutral-10">
+    <p class="text-base line-clamp-3 text-neutral-10 min-h-[72px]">
       {{ creator.bio }}
     </p>
     <button
-      @click="$router.push(`/creator/${creator.username}`)"
+      @click="$router.push(`/influencer/${creator.username}`)"
       class="bg-secondary-30 py-2 rounded-xl mt-4 w-full hover:bg-secondary-40 duration-300"
     >
       View Profile

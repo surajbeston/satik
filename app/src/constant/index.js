@@ -10,9 +10,9 @@ export const navLinks = [
     path: "/vision",
   },
   {
-    name: "Creators",
+    name: "Influencers",
     id: 3,
-    path: "/creators",
+    path: "/influencers",
   },
   {
     name: "Our Team",
