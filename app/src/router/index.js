@@ -3,6 +3,7 @@ import Home from "../pages/LandingPage.vue";
 import InfluencerPage from "../pages/InfluencerPage.vue";
 import InfluencerProfile from "../pages/InfluencerProfile.vue";
 import ContractPage from "../pages/ContractPage.vue";
+import CpmContract from "../pages/CpmContract.vue";
 import NotFound from "../pages/NotFound.vue";
 import Builder from "../pages/WebBuilder.vue";
 import InfluencerRegister from "../pages/InfluencerRegister.vue";
@@ -46,6 +47,11 @@ const routes = [
     path: "/influencer/:id",
     name: "InfluencerProfile",
     component: InfluencerProfile,
+  },
+  {
+    path: "/cpm-contract/:id",
+    name: "CPM Contract",
+    component: CpmContract,
   },
   {
     path: "/contract/:id",

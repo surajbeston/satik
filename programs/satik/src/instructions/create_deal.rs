@@ -67,6 +67,7 @@ pub fn handle_create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Res
     ctx.accounts.deal.ends_on_reach = data.ends_on_reach;
     ctx.accounts.deal.cpm = data.cpm;
     ctx.accounts.deal.feed_scheduled = false;
+    ctx.accounts.deal.deal_ended = false;
     ctx.accounts.deal.content_url = data.content_url;
     ctx.accounts.deal.id_seed = data.id_seed;
     ctx.accounts.deal.bump = ctx.bumps.deal;

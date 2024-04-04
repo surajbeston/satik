@@ -3,39 +3,21 @@
     <div>
       <h1 class="text-center text-4xl font-bold pb-4">FILL IN THE DETAILS</h1>
 
-      <div
-        class="bg-primary-80 p-2 shadow-2xl rounded-xl border border-primary-60 my-8"
-      >
-        <form
-          @submit.prevent="handleSubmit"
-          class="border-2 border-primary-60 p-6 rounded-xl"
-        >
+      <div class="p-2 shadow-2xl rounded-xl border border-primary-60 my-8">
+        <form @submit.prevent="handleSubmit" class="border-2 border-primary-60 p-6 rounded-xl">
           <div>
-            <label class="text-2xl block pb-5 lg:pb-10" for=""
-              >Add Products:</label
-            >
-            <div
-              class="py-5 lg:py-10 border-b border-primary-40"
-              v-for="i in numberOfProducts"
-              :key="i"
-            >
+            <label class="text-2xl block pb-5 lg:pb-10" for="">Add Products:</label>
+            <div class="py-5 lg:py-10 border-b border-primary-40" v-for="i in numberOfProducts" :key="i">
               <ProductDetail />
             </div>
           </div>
           <div
-            class="w-full lg:w-[60%] mx-auto flex flex-col gap-4 md:flex-row font-semibold justify-center items-center pt-8"
-          >
-            <button
-              @click="numberOfProducts++"
-              class="bg-primary-0 py-2 w-full"
-            >
+            class="w-full lg:w-[60%] mx-auto flex flex-col gap-4 md:flex-row font-semibold justify-center items-center pt-8">
+            <button @click="numberOfProducts++" class="bg-primary-0 py-2 w-full">
               Add Product
             </button>
-            <button
-              @click="$router.push('/builder')"
-              type="submit"
-              class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto"
-            >
+            <button @click="$router.push('/builder')" type="submit"
+              class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto">
               Initiate Proposal
             </button>
           </div>

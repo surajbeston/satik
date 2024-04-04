@@ -3,20 +3,14 @@
     <div class="w-[80%] mx-auto py-16">
       <div class="flex gap-10 pb-8">
         <div class="w-1/2 h-[700px]">
-          <img
-            class="h-full w-[90%] object-cover"
-            :src="influencer.profileImage"
-            alt=""
-          />
+          <img class="h-full w-[90%] object-cover" :src="influencer.profileImage" alt="" />
         </div>
         <div class="w-1/2">
           <h1 class="text-5xl pt-2 pb-6 font-bold text-neutral-10">
             {{ influencer.name }}
           </h1>
           <div class="py-9">
-            <h3
-              class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10"
-            >
+            <h3 class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10">
               Influencer Bio
             </h3>
             <p class="text-xl py-6 text-neutral-10 leading-8 font-normal">
@@ -30,11 +24,13 @@
                 :contact="contact"
               />
             </ul> -->
-            <button
-              @click="$router.push(`/contract/${publicKey}`)"
-              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
-            >
+            <button @click="$router.push(`/contract/${publicKey}`)"
+              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300">
               Initiate Contract
+            </button>
+            <button @click="$router.push(`/cpm-contract/${publicKey}`)"
+              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300">
+              Initiate CPM Contract
             </button>
           </div>
         </div>
