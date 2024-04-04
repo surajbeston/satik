@@ -78,27 +78,35 @@ export async function createInfluencerAccount(
   console.log(tx);
 }
 
+export async function createBrandAccount(
+  username: String,
+  name: String,
+  profile_image: String,
+  bio: String
+) {
+  const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from(username)],
+    program.value.programId
+  );
+  const { publicKey } = useWallet();
+  const brandATA = await getAssociatedTokenAddress(
+    mintAddress,
+    publicKey.value
+  );
 
-export async function createBrandAccount(username: String, name: String, profile_image: String, bio: String) {
-    const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(username)], program.value.programId);
-    const { publicKey } = useWallet();
-    const brandATA = await getAssociatedTokenAddress(mintAddress, publicKey.value);
-
-    const tx = await program.value.methods.initializeBrand(username, name, profile_image, bio)
-        .accounts({
-            usdcAta: brandATA,
-            brand: brandAddress,
-            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            mint: mintAddress,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        })
-        .rpc();
-    console.log(tx);
-
+  const tx = await program.value.methods
+    .initializeBrand(username, name, profile_image, bio)
+    .accounts({
+      usdcAta: brandATA,
+      brand: brandAddress,
+      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      mint: mintAddress,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+    })
+    .rpc();
+  console.log(tx);
 }
-
-
 
 export async function fetchAllInfluencers() {
   const influencers = await program.value.account.influencer.all();
@@ -110,17 +118,11 @@ export async function fetchAllBrands() {
 }
 
 export async function fetchBrandByUsername(username: string) {
-    const  brands = await fetchAllBrands();
+  const brands = await fetchAllBrands();
 
-    for (var brand of brands){   
-        console.log(brand)     
-        if (brand.account.username == username) return brand;
-    }   
-}
-
-export async function fetchAllBrands() {
-    const brands = await program.value.account.brand.all();
-    return brands;
+  for (var brand of brands) {
+    if (brand.account.username == username) return brand;
+  }
 }
 
 export async function fetchInfluencerByUsername(username: string) {
@@ -129,13 +131,5 @@ export async function fetchInfluencerByUsername(username: string) {
   for (var influencer of influencers) {
     console.log(influencer);
     if (influencer.account.username == username) return influencer;
-  }
-}
-
-export async function fetchBrandByUsername(username: string) {
-  const brands = await fetchAllBrands();
-  console.log(brands);
-  for (var brand of brands) {
-    if (brand.account.username === username) return brand;
   }
 }

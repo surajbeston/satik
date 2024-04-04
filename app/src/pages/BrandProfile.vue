@@ -54,11 +54,9 @@ const route = useRoute();
 const brand = ref({});
 
 const brandDetails = async () => {
-  console.log(route.params.id);
   const brandObj = await fetchBrandByUsername(route.params.id);
-  console.log("barnd", brandObj);
+
   brand.value = brandObj.account;
-  console.log(brand.value);
 };
 brandDetails();
 </script>
