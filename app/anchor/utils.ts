@@ -47,6 +47,8 @@ const mintAddress = new PublicKey(
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
 
+console.log("rent", anchor.web3.SYSVAR_RENT_PUBKEY.toBase58())
+
 export async function createInfluencerAccount(
   username: String,
   name: String,
@@ -95,10 +97,45 @@ export async function createBrandAccount(username: String, name: String, profile
         })
         .rpc();
     console.log(tx);
-
 }
 
+export async function initializeProposal(message: String, influencerAddress: PublicKey, brandAddress: PublicKey) {
+    const proposal = new anchor.web3.Keypair();
+    const {publicKey} = useWallet();
 
+    const tx = await program.value.methods.initializeProposal(message, publicKey.value)
+                                .accounts({
+                                    proposal: proposal.publicKey,
+                                    brand: brandAddress,
+                                    influencer: influencerAddress
+                                })
+                                .signers([proposal])
+                                .rpc()
+    return proposal.publicKey;
+}
+
+export async function acceptProposal(proposalAddresString: string) {
+    const proposal = new PublicKey(proposalAddresString);
+    const tx =  await program.value.methods.acceptProposal()
+                      .accounts({
+                        proposal: proposal
+                      })
+                      .rpc()
+    console.log(tx)
+}
+
+export async function initializeProduct(name: String, description: String, totalAmount: number, influencerAmount: number, proposalAddress: PublicKey) {
+    const product = Keypair.generate();
+
+    const tx = await program.value.methods.initializeProduct(name, description, totalAmount, influencerAmount)
+                                          .accounts({
+                                            product: product.publicKey,
+                                            proposal: proposalAddress
+                                          })
+                                          .signers([product])
+                                          .rpc()
+    return product.publicKey;
+}
 
 export async function fetchAllInfluencers() {
   const influencers = await program.value.account.influencer.all();
@@ -118,11 +155,6 @@ export async function fetchBrandByUsername(username: string) {
     }   
 }
 
-export async function fetchAllBrands() {
-    const brands = await program.value.account.brand.all();
-    return brands;
-}
-
 export async function fetchInfluencerByUsername(username: string) {
   const influencers = await fetchAllInfluencers();
   console.log(influencers);
@@ -132,9 +164,3 @@ export async function fetchInfluencerByUsername(username: string) {
   }
 }
 
-export async function fetchBrandByUsername(username: string) {
-  const brands = await fetchAllBrands();
-  for (var brand of brands) {
-    if (brand.account.username == username) return brand;
-  }
-}

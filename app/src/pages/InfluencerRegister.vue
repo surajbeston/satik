@@ -1,5 +1,5 @@
 <template>
-  <div class="py-12">
+  <div v-show="showInfluencer" class="py-12">
     <h1 class="text-4xl text-center font-bold uppercase text-secondaryLight-0">
       Create influencer Account
     </h1>
@@ -124,6 +124,8 @@ const name = ref("");
 const username = ref("");
 const bio = ref("");
 
+const showInfluencer = ref(false)
+
 // const { wallet, influencers };
 
 const sendingImage = ref(false);
@@ -208,6 +210,7 @@ onMounted(async () => {
         location.href = "/brand/" + brand.account.username;
       }
     }
+    showInfluencer.value = true;
   }, 1000);
   
   

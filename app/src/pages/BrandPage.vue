@@ -13,7 +13,7 @@
         placeholder="Search brands"
         class="w-[300px] px-4 py-2 rounded-xl outline-none bg-primary-80 mr-0 ml-auto"
       />
-      <img
+      <!-- <img
         v-if="brandSearch"
         @click="
           brandSearch = '';
@@ -22,7 +22,7 @@
         class="absolute right-3 top-[11px] h-4 w-4 cursor-pointer"
         src="../../assets/icons/cross.svg"
         alt="empty"
-      />
+      /> -->
     </div>
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-rows-auto gap-4 py-4"

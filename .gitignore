@@ -17,7 +17,6 @@ keypairs
 keypair.json
 __azurite_db_queue__.json
 __azurite_db_queue_extent__.json
-<<<<<<< HEAD
+__azurite_db_table__.json
 app/.env
-=======
->>>>>>> 2c4ece1ecefe204bed25693b9ad10293161b5477
+payment-client/node_modules

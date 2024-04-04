@@ -20,7 +20,7 @@
       {{ creator.bio }}
     </p>
     <button
-      @click="$router.push(`/creator/${creator.username}`)"
+      @click="$router.push(`/influencer/${creator.username}`)"
       class="bg-secondary-30 py-2 rounded-xl mt-4 w-full hover:bg-secondary-40 duration-300"
     >
       View Profile

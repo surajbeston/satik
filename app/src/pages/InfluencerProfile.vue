@@ -36,6 +36,10 @@
             >
               Initiate Contract
             </button>
+
+            <button @click="handleAcceptProposal">
+              Accept Proposal
+            </button>
           </div>
         </div>
       </div>
@@ -61,7 +65,7 @@ import {ref} from 'vue';
 import CreatorStat from "../components/creatorProfile/CreatorStat.vue";
 import CreatorContact from "../components/creatorProfile/CreatorContact.vue";
 
-import { fetchInfluencerByUsername } from '../../anchor/utils'
+import { fetchInfluencerByUsername, acceptProposal } from '../../anchor/utils'
 
 // const contacts = [
 //   {
@@ -83,6 +87,7 @@ import { fetchInfluencerByUsername } from '../../anchor/utils'
 import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
 import { PublicKey } from '@solana/web3.js';
+import { program } from '@coral-xyz/anchor/dist/cjs/native/system';
 
 const router = useRouter();
 const route = useRoute();
@@ -96,11 +101,15 @@ onMounted(() => {
   console.log(route.params)
   setTimeout(async () => {
     var influencerObj = await fetchInfluencerByUsername(route.params.id);
-    console.log(influencerObj);
+    console.log(influencerObj.account.createdBy.toBase58());
     influencer.value = influencerObj.account;
     publicKey.value = influencerObj.publicKey.toBase58();
   }, 1000);
 })
+
+async function handleAcceptProposal() {
+  await acceptProposal("CvPBxZKDPH6C8pWUNfVqA5C3qtuMKh7vYF3ssPnLXRK4");
+}
 
 </script>
 

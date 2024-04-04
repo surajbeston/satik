@@ -54,6 +54,15 @@ pub struct InitializeProposal<'info> {
 }
 
 #[derive(Accounts)]
+pub struct AddWebpage<'info> {
+    pub proposal: Account<'info, Proposal>,
+
+    #[account(mut)]
+    pub signer: Signer<'info>,
+    pub system_program: Program<'info, System>
+}
+
+#[derive(Accounts)]
 pub struct InitializeProduct<'info> {
     #[account(init, payer = signer, space = 8 + Product::INIT_SPACE)]
     pub product: Account<'info, Product>,
@@ -87,7 +96,7 @@ pub struct InitializePurchase<'info> {
     pub brand_ata: Box<Account<'info, TokenAccount>>,
     #[account(mut)]
     pub influencer_ata: Box<Account<'info, TokenAccount>>,
-    #[account(mut)]
+    #[account(init_if_needed, payer = signer, associated_token::mint = mint, associated_token::authority = signer)]
     pub customer_ata: Box<Account<'info, TokenAccount>>,
 
     #[account(init, payer = signer, associated_token::mint = mint, associated_token::authority = purchase)]
@@ -124,3 +133,5 @@ pub struct RedeemPurchase<'info> {
     pub signer: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
+
+
