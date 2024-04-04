@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div class="w-[80%] mx-auto py-16">
-      <div class="flex gap-10 pb-8">
-        <div class="w-1/2 h-[700px]">
+    <div class="w-full sm:w-[90%] xl:w-[80%] mx-auto py-16">
+      <div class="flex flex-col lg:flex-row gap-10 pb-8">
+        <div class="w-full lg:w-1/2 h-[700px] max-md:mx-auto">
           <img
-            class="h-full w-[90%] object-cover"
+            class="h-full w-full lg:w-[90%] object-cover"
             :src="brand.profileImage"
             alt=""
           />
         </div>
-        <div class="w-1/2">
+        <div class="w-full lg:w-1/2">
           <h1 class="text-5xl pt-2 pb-6 font-bold text-neutral-10">
             {{ brand.name }}
           </h1>
