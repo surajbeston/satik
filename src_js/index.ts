@@ -99,7 +99,7 @@ const [influencerPDA] = PublicKey.findProgramAddressSync(
   program.programId
 );
 
-const idSeed = Buffer.from("deal1");
+const idSeed = Buffer.from("deal2");
 const [dealPDA] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("deal_seed"),
@@ -220,8 +220,8 @@ async function main() {
 
   // const tx = await program.methods
   //   .createDeal({
-  //     initialAmount: new BN(1000),
-  //     initialAmountOnReach: new BN(1000),
+  //     initialAmount: new BN(1000000),
+  //     initialAmountOnReach: new BN(500),
   //     startsOn: new BN(Date.now() / 1000),
   //     startsOnReach: new BN(1000),
   //     endsOn: new BN(Date.now() / 1000 + 1000000),
@@ -273,6 +273,19 @@ async function main() {
   //     payer: payerKeypair.publicKey,
   //   })
   //   .signers([sbRequestKeypair, payerKeypair])
+  //   .rpc();
+
+  // const tx = await program.methods
+  //   .scheduledFeedCallback({
+  //     reach: new BN(1200),
+  //   })
+  //   .accounts({
+  //     deal: dealPDA,
+  //     dealUsdcAta: dealUsdcAccount.address,
+  //     influencerUsdcAta: influencerUsdcAccount.address,
+  //     enclaveSigner: payerKeypair.publicKey,
+  //   })
+  //   .signers([payerKeypair])
   //   .rpc();
 
   // console.log(tx);

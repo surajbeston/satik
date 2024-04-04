@@ -40,7 +40,7 @@ pub fn handle_create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Res
     msg!("Brand USDC amount {}", ctx.accounts.brand_usdc_ata.amount);
 
     assert!(
-        ctx.accounts.brand_usdc_ata.amount >= total_amount_to_pay_to_influencer,
+        ctx.accounts.brand_usdc_ata.amount > total_amount_to_pay_to_influencer,
         "Insufficient USDC amount",
     );
 
@@ -65,6 +65,7 @@ pub fn handle_create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Res
     ctx.accounts.deal.starts_on_reach = data.starts_on_reach;
     ctx.accounts.deal.ends_on = data.ends_on;
     ctx.accounts.deal.ends_on_reach = data.ends_on_reach;
+    ctx.accounts.deal.cpm = data.cpm;
     ctx.accounts.deal.feed_scheduled = false;
     ctx.accounts.deal.content_url = data.content_url;
     ctx.accounts.deal.id_seed = data.id_seed;
