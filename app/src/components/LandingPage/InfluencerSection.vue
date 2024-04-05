@@ -8,7 +8,7 @@
       </h1>
       <RouterLink
         class="text-lg underline text-secondary-10 underline-offset-4 hover:text-secondary-30 font-medium duration-300"
-        to="/creators"
+        to="/influencers"
         >See all</RouterLink
       >
     </div>
