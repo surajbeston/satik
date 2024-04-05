@@ -84,6 +84,30 @@
             name="description"
           />
         </div>
+        <div>
+          <label class="block font-semibold text-xl" for="followers"
+            >Total Followers:</label
+          >
+          <input
+            class="w-full bg-transparent border-primary-50 font-bold shadow-lg border-2 rounded-2xl py-2 px-6 outline-none placeholder:text-primary-40 placeholder:font-bold mt-3"
+            type="number"
+            name="followers"
+            id="followers"
+            placeholder=" eg: 1000"
+          />
+        </div>
+        <div class="mt-8">
+          <label class="block font-semibold text-xl" for="social-link"
+            >Primary social media:</label
+          >
+          <input
+            class="w-full bg-transparent border-primary-50 font-bold shadow-lg border-2 rounded-2xl py-2 px-6 outline-none placeholder:text-primary-40 placeholder:font-bold mt-3"
+            type="text"
+            name="social-link"
+            id="social-link"
+            placeholder="social link"
+          />
+        </div>
         <button
           class="disabled:opacity-75 bg-secondaryLight-20 w-full py-2 rounded-xl duration-300 text-xl font-bold border-none mt-8"
           :class="{
