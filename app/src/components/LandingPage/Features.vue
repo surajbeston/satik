@@ -44,7 +44,7 @@ const features = [
     id: 1,
     title: "Real-Time Payments",
     subtitle:
-      "Get paid as your content performs. Every retweet, every share—KA-CHING!",
+      "Influencers get paid for views and purchases on the fly. No more waiting for the brands to pay you.",
   },
   {
     id: 2,
@@ -55,7 +55,7 @@ const features = [
   {
     id: 3,
     title: "Dual Front Renumeration",
-    subtitle: "Get paid for bringing visibility AND making the sales!",
+    subtitle: "Infuencers get paid for both views and purchases.",
   },
   {
     id: 4,
