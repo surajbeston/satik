@@ -11,7 +11,7 @@
     </div>
     <nav
       :class="{ '!translate-x-0': showNav }"
-      class="max-lg:fixed right-0 top-0 max-lg:p-6 max-lg:h-screen w-[60vw] sm:w-[40vw] !min-w-[120px] duration-500 z-10 max-lg:bg-primary-70 lg:block max-lg:translate-x-full"
+      class="max-lg:fixed right-0 top-0 max-lg:p-6 max-lg:h-screen w-[60vw] sm:w-[40vw] !min-w-[120px] duration-500 z-20 max-lg:bg-primary-70 lg:block max-lg:translate-x-full"
     >
       <img
         @click="showNav = !showNav"
