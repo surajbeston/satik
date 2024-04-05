@@ -109,7 +109,11 @@
 import { onMounted, ref } from "vue";
 import { createClient } from "../helper/client";
 
-import { createInfluencerAccount, fetchAllBrands, fetchAllInfluencers } from "../../anchor/utils";
+import {
+  createInfluencerAccount,
+  fetchAllBrands,
+  fetchAllInfluencers,
+} from "../../anchor/utils";
 
 import { toast } from "vue3-toastify";
 
@@ -124,7 +128,7 @@ const name = ref("");
 const username = ref("");
 const bio = ref("");
 
-const showInfluencer = ref(false)
+const showInfluencer = ref(false);
 
 // const { wallet, influencers };
 
@@ -151,7 +155,7 @@ async function createInfluencer() {
       toast("Profile Created", { autoClose: 2000 });
       location.href = "/influencer/" + username.value;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast("Account creation failed. Try changing username.", {
         autoClose: 2000,
         type: "error",
@@ -159,9 +163,8 @@ async function createInfluencer() {
       username.value = "";
     }
     sendingImage.value = false;
-  }
-  else{
-    toast("Sending profile picture...", { autoClose: 2000, type: 'loading' });
+  } else {
+    toast("Sending profile picture...", { autoClose: 2000, type: "loading" });
   }
 }
 
@@ -189,32 +192,32 @@ const handleFileChange = async (event) => {
 onMounted(async () => {
   setTimeout(async () => {
     const influencers = await fetchAllInfluencers();
-    const {publicKey } = useWallet();
+    const { publicKey } = useWallet();
 
     // console.log(publicKey.value.toBase58())
 
     for (var influencer of influencers) {
-      console.log(influencer.account.createdBy.toBase58())
-      console.log (publicKey.value.toBase58())
-      if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
-        console.log("inside")
+      console.log(influencer.account.createdBy.toBase58());
+      console.log(publicKey.value.toBase58());
+      if (
+        influencer.account.createdBy.toBase58() == publicKey.value.toBase58()
+      ) {
+        console.log("inside");
         location.href = "/influencer/" + influencer.account.username;
       }
-      console.log ()
+      console.log();
     }
 
     const brands = await fetchAllBrands();
 
     for (var brand of brands) {
-      if(brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+      if (brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
         location.href = "/brand/" + brand.account.username;
       }
     }
     showInfluencer.value = true;
   }, 1000);
-  
-  
-})
+});
 </script>
 
 <style scoped></style>

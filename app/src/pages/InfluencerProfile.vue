@@ -5,7 +5,9 @@
         <div class="w-full lg:w-1/2 h-[700px] max-md:mx-auto">
           <img
             class="h-full w-full lg:w-[90%] object-cover"
-            :src="influencer.profileImage ? influencer.profileImage : defaultProfile"
+            :src="
+              influencer.profileImage ? influencer.profileImage : defaultProfile
+            "
             alt=""
           />
         </div>
@@ -47,33 +49,129 @@
         </div>
       </div>
       <div>
-        <h3 class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10">
+        <h3
+          class="border-b pb-2 border-secondaryLight-0 text-3xl font-semibold text-neutral-10"
+        >
           Proposals
         </h3>
-        <div v-for="proposal in proposals" :key="proposal" class="flex gap-6 mt-5 border-zinc-100 border p-3">
-          <div class = "flex flex-col gap-2">
-            <p>
-              Brand: <a :href ="`/brand/${proposal.account.brand.username}`" target="_blank">{{ proposal.account.brand.name }}</a>
-            </p>
-            <p>Message: {{ proposal.account.message }}</p>
-            <p>Webpage: {{ proposal.account.website }}</p>
-            <p>Datetime Sent: {{ proposal.account.datetime }}</p>
-            <div v-if="proposal.products">
-              <p>Products:</p>
-              <div class="borber border-white-10 p-2" v-for="product in proposal.products" :key="product">
-                <p>Name: {{ product.account.name }}</p>
-                <p>Description: {{ product.account.description }}</p>
-                <p>Total Amount: {{ product.account.totalAmount }}</p>
-                <p>Influencer Amount: {{ product.account.influencerAmount }}</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <template v-if="proposals.length !== 0">
+            <div
+              v-for="proposal in proposals"
+              :key="proposal"
+              class="mt-10 border-zinc-700 shadow-lg shadow-[#2c3438d0] rounded-xl border p-6"
+            >
+              <div class="flex flex-col md:flex-row gap-8 pb-8">
+                <div
+                  @click="
+                    $router.push(`/brand/${proposal.account.brand.username}`)
+                  "
+                  class="w-full md:w-auto"
+                >
+                  <img
+                    class="w-full md:w-[200px] max-h-[300px] rounded-xl h-full"
+                    :src="proposal.account.brand.profileImage"
+                    :alt="proposal.account.brand.name"
+                  />
+                </div>
+                <div class="space-y-3 w-full md:w-auto">
+                  <p
+                    @click="
+                      $router.push(`/brand/${proposal.account.brand.username}`)
+                    "
+                    class="text-2xl font-bold cursor-pointer text-secondaryLight-30 underline underline-offset-4"
+                  >
+                    {{ proposal.account.brand.name }}
+                  </p>
+                  <p class="text-lg text-neutral-10">
+                    {{ proposal.account.brand.bio }}
+                  </p>
+                  <p class="text-xl font-medium text-neutral-20">
+                    Message:<span class="block ml-2">
+                      {{ proposal.account.message }}</span
+                    >
+                  </p>
+                  <p class="text-xl font-medium text-neutral-20">
+                    Webpage:
+                    <span class="block ml-2">{{
+                      proposal.account.website
+                    }}</span>
+                  </p>
+                  <p class="text-xl font-medium text-neutral-20">
+                    Datetime Sent:
+                    <span class="font-bold">{{
+                      proposal.account.datetime
+                    }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-3 w-full">
+                <div v-if="proposal.products">
+                  <p class="text-2xl font-bold text-secondaryLight-20">
+                    Products:
+                  </p>
+                  <template v-if="proposal.products.length > 0">
+                    <div
+                      class="flex flex-wrap"
+                      v-for="product in proposal.products"
+                      :key="product"
+                    >
+                      <div
+                        class="border border-primary-70 p-6 shadow-lg shadow-[#2c34384f] rounded-xl my-6 space-y-3"
+                      >
+                        <p class="text-2xl font-semibold">
+                          {{ product.account.name }}
+                        </p>
+                        <p class="text-lg text-neutral-20">
+                          {{ product.account.description }}
+                        </p>
+                        <p class="text-lg text-neutral-10">
+                          Total Amount:<span class="font-bold ml-2">
+                            {{ product.account.totalAmount }}</span
+                          >
+                        </p>
+                        <p class="text-lg text-neutral-10">
+                          Influencer Amount:<span class="font-bold ml-2">
+                            {{ product.account.influencerAmount }}</span
+                          >
+                        </p>
+                      </div>
+                    </div>
+                  </template>
+                  <p v-else class="text-lg text-neutral-20 py-6 font-bold">
+                    No Products Found
+                  </p>
+                </div>
+                <div
+                  v-else
+                  class="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full"
+                >
+                  <button
+                    class="border border-secondaryLight-50 max-w-[300px] w-full font-semibold text-xl text-secondaryLight-50 px-6 py-2 rounded-xl"
+                    @click="getProducts(proposal)"
+                  >
+                    Get Products
+                  </button>
+                  <button
+                    v-if="!proposal.account.accepted"
+                    @click="acceptProposal(proposal)"
+                    class="max-w-[300px] w-full rounded-xl bg-secondary-0 py-2 my-6 font-semibold text-xl text-neutral-0 border border-secondary-0 duration-300"
+                  >
+                    Accept
+                  </button>
+                </div>
               </div>
             </div>
-            <div v-else>
-              <button class ="border border-white-10" @click="getProducts(proposal)" >Get Products</button>
+          </template>
+          <template v-else>
+            <div
+              v-for="n in 4"
+              :key="n"
+              class="h-[300px] flex justify-center items-center border mt-10 rounded-xl border-neutral-60"
+            >
+              Loading...
             </div>
-            <button v-if="!proposal.account.accepted" @click="acceptProposal(proposal)" class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300">
-              Accept
-            </button>
-          </div>
+          </template>
         </div>
       </div>
       <!-- <InfluencerStat :stat="{ number: '8.5K', description: 'Average Reach' }" /> -->
@@ -86,32 +184,20 @@ import { ref } from "vue";
 import InfluencerStat from "../components/influencerProfile/InfluencerStat.vue";
 import InfluencerContract from "../components/influencerProfile/InfluencerContract.vue";
 
-import { fetchInfluencerByUsername, getProposalProducts , getInfluencerProposals, acceptInfluencerProposal } from '../../anchor/utils'
+import {
+  fetchInfluencerByUsername,
+  getProposalProducts,
+  getInfluencerProposals,
+  acceptInfluencerProposal,
+} from "../../anchor/utils";
 
 const defaultProfile = ref("/loading.gif");
 
-
-// const contacts = [
-//   {
-//     id: 1,
-//     iconUrl: "/src/assets/icons/call.svg",
-//     contactText: "+91 1234567890",
-//   },
-//   {
-//     id: 2,
-//     iconUrl: "/src/assets/icons/mail.svg",
-//     contactText: "nGnFj@example.com",
-//   },
-//   {
-//     id: 3,
-//     iconUrl: "/src/assets/icons/location.svg",
-//     contactText: "Mumbai, India",
-//   },
-// ];
 import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
-import { PublicKey } from '@solana/web3.js';
-import { program } from '@coral-xyz/anchor/dist/cjs/native/system';
+import { PublicKey } from "@solana/web3.js";
+import { program } from "@coral-xyz/anchor/dist/cjs/native/system";
+import { toast } from "vue3-toastify";
 
 const router = useRouter();
 const route = useRoute();
@@ -123,7 +209,6 @@ const influencer = ref({ name: "", username: "", bio: "", profileImage: "" });
 const proposals = ref([]);
 
 onMounted(() => {
-  console.log(route.params);
   setTimeout(async () => {
     var influencerObj = await fetchInfluencerByUsername(route.params.id);
     console.log(influencerObj.account.createdBy.toBase58());
@@ -132,7 +217,7 @@ onMounted(() => {
 
     getProposals(influencerObj.account.createdBy.toBase58());
   }, 1000);
-})
+});
 
 // async function handleAcceptProposal() {
 //   await acceptProposal("CvPBxZKDPH6C8pWUNfVqA5C3qtuMKh7vYF3ssPnLXRK4");
@@ -140,22 +225,21 @@ onMounted(() => {
 
 async function getProposals(address) {
   const result = await getInfluencerProposals(address);
-  if(result) {
+  if (result) {
     proposals.value = result;
   }
-
 }
 
 async function getProducts(proposal) {
-  console.log(proposal)
+  toast.info("Getting Products...");
   proposal.products = await getProposalProducts(proposal.publicKey.toBase58());
+  toast.success("Products Retrieved");
 }
 
 async function acceptProposal(proposal) {
   await acceptInfluencerProposal(proposal.publicKey);
-  location.reload()
+  location.reload();
 }
-
 </script>
 
 <style scoped></style>

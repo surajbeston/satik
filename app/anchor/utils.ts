@@ -47,7 +47,7 @@ const mintAddress = new PublicKey(
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
 
-console.log("rent", anchor.web3.SYSVAR_RENT_PUBKEY.toBase58())
+console.log("rent", anchor.web3.SYSVAR_RENT_PUBKEY.toBase58());
 
 export async function createInfluencerAccount(
   username: String,
@@ -80,62 +80,90 @@ export async function createInfluencerAccount(
   console.log(tx);
 }
 
+export async function createBrandAccount(
+  username: String,
+  name: String,
+  profile_image: String,
+  bio: String
+) {
+  const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from(username)],
+    program.value.programId
+  );
+  const { publicKey } = useWallet();
+  const brandATA = await getAssociatedTokenAddress(
+    mintAddress,
+    publicKey.value
+  );
 
-
-export async function createBrandAccount(username: String, name: String, profile_image: String, bio: String) {
-    const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(username)], program.value.programId);
-    const { publicKey } = useWallet();
-    const brandATA = await getAssociatedTokenAddress(mintAddress, publicKey.value);
-
-    const tx = await program.value.methods.initializeBrand(username, name, profile_image, bio)
-        .accounts({
-            usdcAta: brandATA,
-            brand: brandAddress,
-            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            mint: mintAddress,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        })
-        .rpc();
-    console.log(tx);
+  const tx = await program.value.methods
+    .initializeBrand(username, name, profile_image, bio)
+    .accounts({
+      usdcAta: brandATA,
+      brand: brandAddress,
+      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      mint: mintAddress,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+    })
+    .rpc();
+  console.log(tx);
 }
 
-export async function initializeProposal(message: String, influencerAddress: PublicKey, brandAddress: PublicKey) {
-    const proposal = new anchor.web3.Keypair();
-    const {publicKey} = useWallet();
+export async function initializeProposal(
+  message: String,
+  influencerAddress: PublicKey,
+  brandAddress: PublicKey
+) {
+  const proposal = new anchor.web3.Keypair();
+  const { publicKey } = useWallet();
 
-    const tx = await program.value.methods.initializeProposal(message, publicKey.value)
-                                .accounts({
-                                    proposal: proposal.publicKey,
-                                    brand: brandAddress,
-                                    influencer: influencerAddress
-                                })
-                                .signers([proposal])
-                                .rpc()
-    return proposal.publicKey;
+  const tx = await program.value.methods
+    .initializeProposal(message, publicKey.value)
+    .accounts({
+      proposal: proposal.publicKey,
+      brand: brandAddress,
+      influencer: influencerAddress,
+    })
+    .signers([proposal])
+    .rpc();
+  return proposal.publicKey;
 }
 
 export async function acceptProposal(proposalAddresString: string) {
-    const proposal = new PublicKey(proposalAddresString);
-    const tx =  await program.value.methods.acceptProposal()
-                      .accounts({
-                        proposal: proposal
-                      })
-                      .rpc()
-    console.log(tx)
+  const proposal = new PublicKey(proposalAddresString);
+  const tx = await program.value.methods
+    .acceptProposal()
+    .accounts({
+      proposal: proposal,
+    })
+    .rpc();
+  console.log(tx);
 }
 
-export async function initializeProduct(name: String, description: String, totalAmount: number, influencerAmount: number, proposalAddress: PublicKey) {
-    const product = Keypair.generate();
+export async function initializeProduct(
+  name: String,
+  description: String,
+  totalAmount: number,
+  influencerAmount: number,
+  proposalAddress: PublicKey
+) {
+  const product = Keypair.generate();
 
-    const tx = await program.value.methods.initializeProduct(name, description, totalAmount * 10 ** 6, influencerAmount * 10 ** 6)
-                                          .accounts({
-                                            product: product.publicKey,
-                                            proposal: proposalAddress
-                                          })
-                                          .signers([product])
-                                          .rpc()
-    return product.publicKey;
+  const tx = await program.value.methods
+    .initializeProduct(
+      name,
+      description,
+      totalAmount * 10 ** 6,
+      influencerAmount * 10 ** 6
+    )
+    .accounts({
+      product: product.publicKey,
+      proposal: proposalAddress,
+    })
+    .signers([product])
+    .rpc();
+  return product.publicKey;
 }
 
 export async function fetchAllInfluencers() {
@@ -164,30 +192,29 @@ export async function fetchInfluencerByUsername(username: string) {
   }
 }
 
-
 export async function getCurrentUser() {
   const influencers = await fetchAllInfluencers();
-    const {publicKey } = useWallet();
+  const { publicKey } = useWallet();
 
-    // console.log(publicKey.value.toBase58())
+  // console.log(publicKey.value.toBase58())
 
-    for (var influencer of influencers) {
-      if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
-        return ["Influencer", influencer];
-      }
+  for (var influencer of influencers) {
+    if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+      return ["Influencer", influencer];
     }
+  }
 
-    const brands = await fetchAllBrands();
+  const brands = await fetchAllBrands();
 
-    console.log(brands);
+  console.log(brands);
 
-    for (var brand of brands) {
-      if(brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
-        return ["Brand", brand];
-      }
+  for (var brand of brands) {
+    if (brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+      return ["Brand", brand];
     }
+  }
 
-    console.log("fuiya...")
+  console.log("fuiya...");
 }
 
 export async function getInfluencerProposals(influencerAddressString: String) {
@@ -195,7 +222,7 @@ export async function getInfluencerProposals(influencerAddressString: String) {
   const influencerProposals = [];
   console.log(influencerAddressString);
   for (var proposal of allProposals) {
-    console.log("This is proposal", proposal)
+    console.log("This is proposal", proposal);
     console.log(proposal.account.influencerKey.toBase58());
     if (proposal.account.influencerKey.toBase58() == influencerAddressString) {
       influencerProposals.push(proposal);
@@ -215,7 +242,7 @@ export async function getProposalProducts(proposalAddressString: String) {
   const proposalProducts = [];
   console.log(proposalAddressString);
   for (var product of allProducts) {
-    console.log("This is product", product)
+    console.log("This is product", product);
     if (product.account.proposal.toBase58() == proposalAddressString) {
       proposalProducts.push(product);
     }
@@ -224,9 +251,10 @@ export async function getProposalProducts(proposalAddressString: String) {
 }
 
 export async function acceptInfluencerProposal(proposal: PublicKey) {
-  await program.value.methods.acceptProposal()
-                              .accounts({
-                                proposal: proposal
-                              })
-                              .rpc()
+  await program.value.methods
+    .acceptProposal()
+    .accounts({
+      proposal: proposal,
+    })
+    .rpc();
 }
