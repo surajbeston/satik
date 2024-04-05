@@ -38,7 +38,15 @@
         </li>
       </ul>
     </nav>
-    <div class="flex items-center justify-between gap-2 sm:gap-6">
+    <div class="flex items-center justify-between gap-2 sm:gap-6 ">
+      <div  class="h-[48px] flex flex-col justify-center rounded-md bg-primary-60 p-2 hover:cursor-pointer" v-if="showProfile" >
+        <div @click="goToProfile" class="h-[30px] flex flex-row">
+          <img class="h-[30px] w-[30px] rounded-full" :src="profile.profileImage" >
+          <div class="flex flex-col justify-center ml-2">
+            <p class="text-sm font-medium">{{ profile.name }} ({{ profileType }})</p>
+          </div>
+        </div>
+      </div>
       <div class="hidden sm:block">
         <wallet-multi-button dark></wallet-multi-button>
       </div>
@@ -54,9 +62,38 @@
 <script setup>
 import { navLinks } from "../constant/index";
 import { WalletMultiButton } from "solana-wallets-vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
+import {getCurrentUser} from "../../anchor/utils";
 const showNav = ref(false);
+
+const showProfile = ref(false);
+const profileType = ref("");
+const profile = ref(null);
+
+onMounted(async () => {
+  setTimeout(async () => {
+    const result = await getCurrentUser();
+    if (result) {
+      const [useType, currentUser] = result;
+        showProfile.value = true;
+        profileType.value = useType;
+        profile.value = currentUser.account;
+      console.log("Current User: ", currentUser);
+    }
+  }, 1000);
+})
+
+
+function goToProfile() {
+  if (profileType.value == "Influencer") {
+    location.href = "/influencer/" + profile.value.username;
+  }
+  else {
+    location.href = "/brand/" + profile.value.username;
+  }
+}
+
 </script>
 
 <style scoped></style>

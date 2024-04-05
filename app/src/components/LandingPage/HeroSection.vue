@@ -9,12 +9,10 @@
       <h1
         class="text-[28px] md:text-[50px] text-neutral-0 font-bold font-open-sans"
       >
-        Decentralized Nexus for Creator-Brand Alliances
+        Decentralized payment for influence
       </h1>
       <p class="text-xl py-6">
-        Unleash the power of decentralized collaborations between content
-        creators and brands, where creators get compensated based on their true
-        impact and reach.
+        Satik helps create on chain contracts between influencers and brands where influencers are paid for both views and purchases on the fly.
       </p>
     </div>
 

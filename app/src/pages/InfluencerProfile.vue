@@ -5,7 +5,7 @@
         <div class="w-full lg:w-1/2 h-[700px] max-md:mx-auto">
           <img
             class="h-full w-full lg:w-[90%] object-cover"
-            :src="influencer.profileImage"
+            :src="influencer.profileImage ? influencer.profileImage : defaultProfile"
             alt=""
           />
         </div>
@@ -30,6 +30,7 @@
                 :contact="contact"
               />
             </ul> -->
+
             <button
               @click="$router.push(`/contract/${publicKey}`)"
               class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
@@ -45,7 +46,36 @@
           </div>
         </div>
       </div>
-
+      <div>
+        <h3 class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10">
+          Proposals
+        </h3>
+        <div v-for="proposal in proposals" :key="proposal" class="flex gap-6 mt-5 border-zinc-100 border p-3">
+          <div class = "flex flex-col gap-2">
+            <p>
+              Brand: <a :href ="`/brand/${proposal.account.brand.username}`" target="_blank">{{ proposal.account.brand.name }}</a>
+            </p>
+            <p>Message: {{ proposal.account.message }}</p>
+            <p>Webpage: {{ proposal.account.website }}</p>
+            <p>Datetime Sent: {{ proposal.account.datetime }}</p>
+            <div v-if="proposal.products">
+              <p>Products:</p>
+              <div class="borber border-white-10 p-2" v-for="product in proposal.products" :key="product">
+                <p>Name: {{ product.account.name }}</p>
+                <p>Description: {{ product.account.description }}</p>
+                <p>Total Amount: {{ product.account.totalAmount }}</p>
+                <p>Influencer Amount: {{ product.account.influencerAmount }}</p>
+              </div>
+            </div>
+            <div v-else>
+              <button class ="border border-white-10" @click="getProducts(proposal)" >Get Products</button>
+            </div>
+            <button v-if="!proposal.account.accepted" @click="acceptProposal(proposal)" class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300">
+              Accept
+            </button>
+          </div>
+        </div>
+      </div>
       <!-- <InfluencerStat :stat="{ number: '8.5K', description: 'Average Reach' }" /> -->
     </div>
   </div>
@@ -56,7 +86,10 @@ import { ref } from "vue";
 import InfluencerStat from "../components/influencerProfile/InfluencerStat.vue";
 import InfluencerContract from "../components/influencerProfile/InfluencerContract.vue";
 
-import { fetchInfluencerByUsername, acceptProposal } from '../../anchor/utils'
+import { fetchInfluencerByUsername, getProposalProducts , getInfluencerProposals, acceptInfluencerProposal } from '../../anchor/utils'
+
+const defaultProfile = ref("/loading.gif");
+
 
 // const contacts = [
 //   {
@@ -87,6 +120,8 @@ const publicKey = ref("");
 
 const influencer = ref({ name: "", username: "", bio: "", profileImage: "" });
 
+const proposals = ref([]);
+
 onMounted(() => {
   console.log(route.params);
   setTimeout(async () => {
@@ -94,11 +129,31 @@ onMounted(() => {
     console.log(influencerObj.account.createdBy.toBase58());
     influencer.value = influencerObj.account;
     publicKey.value = influencerObj.publicKey.toBase58();
+
+    getProposals(influencerObj.account.createdBy.toBase58());
   }, 1000);
 })
 
-async function handleAcceptProposal() {
-  await acceptProposal("CvPBxZKDPH6C8pWUNfVqA5C3qtuMKh7vYF3ssPnLXRK4");
+// async function handleAcceptProposal() {
+//   await acceptProposal("CvPBxZKDPH6C8pWUNfVqA5C3qtuMKh7vYF3ssPnLXRK4");
+// }
+
+async function getProposals(address) {
+  const result = await getInfluencerProposals(address);
+  if(result) {
+    proposals.value = result;
+  }
+
+}
+
+async function getProducts(proposal) {
+  console.log(proposal)
+  proposal.products = await getProposalProducts(proposal.publicKey.toBase58());
+}
+
+async function acceptProposal(proposal) {
+  await acceptInfluencerProposal(proposal.publicKey);
+  location.reload()
 }
 
 </script>

@@ -5,7 +5,7 @@
         <div class="w-full lg:w-1/2 h-[700px] max-md:mx-auto">
           <img
             class="h-full w-full lg:w-[90%] object-cover"
-            :src="brand.profileImage"
+            :src="brand.profileImage ? brand.profileImage : defaultProfile"
             alt=""
           />
         </div>
@@ -52,6 +52,8 @@ import { ref } from "vue";
 const route = useRoute();
 
 const brand = ref({});
+
+const defaultProfile = ref("/loading.gif");
 
 const brandDetails = async () => {
   const brandObj = await fetchBrandByUsername(route.params.id);
