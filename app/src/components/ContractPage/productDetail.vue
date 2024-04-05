@@ -50,7 +50,7 @@
 
       <div class="my-6">
         <label class="block pb-4 text-xl font-semibold" for="price">
-          Total Price:</label
+          Total Price (USDC) :</label
         >
         <input
           v-model="product.totalAmount"
@@ -64,7 +64,7 @@
 
       <div>
         <label class="block pb-4 text-xl font-semibold" for="InfluencerName">
-          Influencer Amount:</label
+          Influencer Amount (USDC) :</label
         >
         <input
           :value="product.influencerAmount"
@@ -97,42 +97,23 @@
       </div>
     </div>
     <div class="self-center w-full lg:w-[30%]">
-      <h2 class="text-4xl font-bold">Profit Distribution:</h2>
+      <h2 class="text-4xl font-bold">Payment Distribution:</h2>
       <p class="text-xl py-3">
-        <span class="text-primary-20 font-bold">{{
-          product.influencerAmount
-        }}</span>
-        would be
         <span class="text-primary-20 font-bold">Influencer</span>
 
-        for every product.
+        will be paid <span class="text-secondaryLight-30 font-bold">{{
+          product.influencerAmount
+        }} USDC</span> 
+        for every sales.
       </p>
-      <div>
-        <h3 class="font-semibold text-neutral-20 text-xl py-1">
-          Influencer Amount:
-          <span class="text-neutral-0">{{ product.influencerAmount }}</span>
-        </h3>
-      </div>
-      <div>
-        <h3 class="font-semibold text-xl py-1 text-neutral-20">
-          Satik Amount :
-          <span class="text-neutral-0">{{
-            (product.totalAmount * 0.01).toFixed(2)
-          }}</span>
-        </h3>
-      </div>
-      <div>
-        <h3 class="font-semibold text-xl py-1 text-neutral-20">
-          Brand Receive :
-          <span class="text-neutral-0">{{
-            (
-              product.totalAmount -
-              product.totalAmount * 0.01 -
-              product.influencerAmount
-            ).toFixed(2)
-          }}</span>
-        </h3>
-      </div>
+      <p class="text-xl py-3">
+        <span class="text-primary-20 font-bold">Brand (You)</span>
+
+        will be paid <span class="text-secondaryLight-30 font-bold">{{
+          product.totalAmount - product.influencerAmount
+        }} USDC</span> 
+        for every sales.
+      </p>
     </div>
   </div>
 </template>

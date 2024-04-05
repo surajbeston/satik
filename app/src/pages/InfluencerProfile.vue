@@ -32,19 +32,20 @@
                 :contact="contact"
               />
             </ul> -->
-
-            <button
-              @click="$router.push(`/contract/${publicKey}`)"
-              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
-            >
-              Initiate Contract
-            </button>
-            <button
-              @click="$router.push(`/cpm-contract/${publicKey}`)"
-              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
-            >
-              Initiate CPM Contract
-            </button>
+            <div v-if="publicKey && wallet.connected">
+              <button
+                @click="initiateContract('purchase')"
+                class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
+              >
+                Initiate Contract
+              </button>
+              <button
+                @click="initiateContract('cpm')"
+                class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
+              >
+                Initiate CPM Contract
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -208,20 +209,57 @@ const influencer = ref({ name: "", username: "", bio: "", profileImage: "" });
 
 const proposals = ref([]);
 
+const showProposals = ref(false);
+
+const wallet = useWallet();
+
 onMounted(() => {
   setTimeout(async () => {
     var influencerObj = await fetchInfluencerByUsername(route.params.id);
     console.log(influencerObj.account.createdBy.toBase58());
     influencer.value = influencerObj.account;
     publicKey.value = influencerObj.publicKey.toBase58();
-
-    getProposals(influencerObj.account.createdBy.toBase58());
+    if (wallet.connected.value) {
+      if (
+        influencerObj.account.createdBy.toBase58() ==
+        wallet.publicKey.value.toBase58()
+      ) {
+        getProposals(influencerObj.account.createdBy.toBase58());
+        showProposals.value = true;
+      }
+    }
   }, 1000);
 });
 
 // async function handleAcceptProposal() {
 //   await acceptProposal("CvPBxZKDPH6C8pWUNfVqA5C3qtuMKh7vYF3ssPnLXRK4");
 // }
+
+async function initiateContract(contractType) {
+  if (!wallet.connected.value) {
+    toast("Please connect your wallet.", { autoClose: 3000, type: "error" });
+  } else {
+    if (store.currentUserLoaded) {
+      if (store.currentUserType == "Brand") {
+        if (contractType) router.push(`/contract/${publicKey.value}`);
+        else router.push(`/cpm-contract/${publicKey.value}`);
+      } else {
+        toast("Only influencer is allowed to submit a proposal.", {
+          autoClose: 3000,
+          type: "error",
+        });
+      }
+    } else {
+      toast("Redirecting to create to brand profile first.", {
+        autoClose: 3000,
+        type: "info",
+      });
+      setTimeout(() => {
+        router.push("/brand/register");
+      }, 2000);
+    }
+  }
+}
 
 async function getProposals(address) {
   const result = await getInfluencerProposals(address);

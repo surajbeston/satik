@@ -4,7 +4,7 @@
       <div class="flex flex-col lg:flex-row gap-10 pb-8">
         <div class="w-full lg:w-1/2 h-[700px] max-md:mx-auto">
           <img
-            class="h-full w-full lg:w-[90%] object-cover"
+            class="h-full w-full lg:w-[90%] object-fit"
             :src="brand.profileImage ? brand.profileImage : defaultProfile"
             alt=""
           />

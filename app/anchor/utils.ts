@@ -108,6 +108,25 @@ export async function createBrandAccount(
     })
     .rpc();
   console.log(tx);
+
+export async function createBrandAccount(username: String, name: String, profile_image: String, bio: String) {
+    const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(username)], program.value.programId);
+    const { publicKey } = useWallet();
+    const brandATA = await getAssociatedTokenAddress(mintAddress, publicKey.value);
+
+    const tx = await program.value.methods.initializeBrand(username, name, profile_image, bio)
+        .accounts({
+            usdcAta: brandATA,
+            brand: brandAddress,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            mint: mintAddress,
+            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        })
+        .rpc({
+          skipPreflight: true
+        });
+    console.log(tx);
 }
 
 export async function initializeProposal(
@@ -197,6 +216,9 @@ export async function getCurrentUser() {
   const { publicKey } = useWallet();
 
   // console.log(publicKey.value.toBase58())
+    console.log("inside curent user", publicKey.value)
+
+    // console.log(publicKey.value.toBase58())
 
   for (var influencer of influencers) {
     if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
