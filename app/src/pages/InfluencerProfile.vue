@@ -193,16 +193,10 @@ import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import { program } from "@coral-xyz/anchor/dist/cjs/native/system";
-<<<<<<< HEAD
-import { useWallet } from "solana-wallets-vue";
-
-import {store} from '../store';
-=======
 import { toast } from "vue3-toastify";
 import { useWallet } from "solana-wallets-vue";
 
 import { store } from "../store";
->>>>>>> 111044687054e467a8af7d591bd5e4e39cf0ca9c
 
 const router = useRouter();
 const route = useRoute();
