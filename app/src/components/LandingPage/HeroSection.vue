@@ -16,18 +16,15 @@
       </p>
     </div>
 
-    <div class="w-full lg:w-1/2 h-[40vh] sm:h-[70vh] font-advent-pro">
-      <img
-        class="h-full mx-auto lg:ml-auto lg:mr-0"
-        src="../../assets/icons/new.svg"
-        alt="Satik icon"
-      />
+    <div class="w-full lg:w-1/2 h-[44vh] sm:h-[70vh] font-advent-pro">
+      <SatikIcon />
     </div>
   </div>
 </template>
 
 <script setup>
 import DividerPattern from "../DividerPattern.vue";
+import SatikIcon from "../icons/SatikIcon.vue";
 import Pattern from "../Pattern.vue";
 </script>
 
