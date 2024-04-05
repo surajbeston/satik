@@ -17,6 +17,7 @@
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/web3.js": "^1.91.1",
+    "@switchboard-xyz/solana.js": "^3.2.5",
     "@vitejs/plugin-react": "^4.2.1",
     "@web3-storage/w3up-client": "^12.5.0",
     "bn.js": "^5.2.1",

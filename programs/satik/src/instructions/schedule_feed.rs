@@ -60,15 +60,15 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
     let params = SbApiFeedParams {
         program_id: crate::id(),
         deal_pk: ctx.accounts.deal.key(),
-        url: ctx.accounts.deal.content_url.clone(),
+        url: ctx.accounts.deal.content_url.clone().unwrap(),
     };
 
-    msg!(&ctx.accounts.deal.content_url);
+    msg!(&ctx.accounts.deal.content_url.clone().unwrap());
 
     // seeds of deal account. (Deal has authority of this request)
     let seeds = &[
         Deal::SEED,
-        &ctx.accounts.deal.id_seed,
+        ctx.accounts.deal.id_seed.as_bytes().as_ref(),
         ctx.accounts.deal.brand.as_ref(),
         ctx.accounts.deal.influencer.as_ref(),
         &[ctx.accounts.deal.bump],

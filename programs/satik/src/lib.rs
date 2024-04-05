@@ -74,15 +74,18 @@ pub mod satik {
 
         Ok(())
     }
-    
+
     pub fn add_proposal_webpage(ctx: Context<AddWebpage>, webpage: String) -> Result<()> {
-        require_keys_eq!(ctx.accounts.proposal.created_by, ctx.accounts.signer.key(), ConstraintErrors::UnexpectedSigner);
+        require_keys_eq!(
+            ctx.accounts.proposal.created_by,
+            ctx.accounts.signer.key(),
+            ConstraintErrors::UnexpectedSigner
+        );
         let proposal = &mut ctx.accounts.proposal;
 
         proposal.webpage = webpage;
 
         Ok(())
-        
     }
 
     pub fn initialize_product(
@@ -275,8 +278,8 @@ pub mod satik {
         handle_create_deal(ctx, data)
     }
 
-    pub fn accept_deal(ctx: Context<AcceptDeal>) -> Result<()> {
-        handle_accept_deal(ctx)
+    pub fn accept_deal(ctx: Context<AcceptDeal>, content_url: String) -> Result<()> {
+        handle_accept_deal(ctx, content_url)
     }
 
     pub fn schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
@@ -306,5 +309,5 @@ pub enum ConstraintErrors {
     UnauthorizedRedeemError,
 
     #[msg("Current signer is not proposal's creator")]
-    UnexpectedSigner
+    UnexpectedSigner,
 }

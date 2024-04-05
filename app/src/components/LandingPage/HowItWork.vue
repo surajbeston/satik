@@ -21,7 +21,7 @@
     </div>
     <div class="pb-10">
       <h2 class="text-primary-10 font-semibold pb-16 text-2xl text-center">
-        How CMP works
+        How CPM works
       </h2>
       <img src="../../assets/icons/how2.svg" alt="how" />
     </div>

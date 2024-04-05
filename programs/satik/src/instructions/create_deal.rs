@@ -8,11 +8,11 @@ use crate::states::{Brand, CreateDealData, Deal, Influencer};
 pub struct CreateDeal<'info> {
     #[account(
         init,
-        space = Deal::FIXED_SIZE + 8 + data.dynamic_size(),
+        space = Deal::INIT_SPACE + 8,
         payer = payer,
         seeds = [
             Deal::SEED,
-            &data.id_seed,
+            data.id_seed.as_bytes().as_ref(),
             brand.key().as_ref(),
             influencer.key().as_ref(),
         ],
@@ -68,7 +68,7 @@ pub fn handle_create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Res
     ctx.accounts.deal.cpm = data.cpm;
     ctx.accounts.deal.feed_scheduled = false;
     ctx.accounts.deal.deal_ended = false;
-    ctx.accounts.deal.content_url = data.content_url;
+    ctx.accounts.deal.returned_remaining_token = false;
     ctx.accounts.deal.id_seed = data.id_seed;
     ctx.accounts.deal.bump = ctx.bumps.deal;
 

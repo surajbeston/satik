@@ -19,10 +19,10 @@
         <input v-model="data.initialAmountOnReach"
           class="w-full bg-transparent font-bold border-primary-50 shadow-[#021E32] shadow-lg border-2 rounded-2xl py-2 px-4 outline-none placeholder:text-primary-40 placeholder:font-bold"
           type="number" name="productName" id="productName" placeholder="1000000" />
-        <label class="block pb-2 mt-4 text-md font-semibold" for="productName">Content URL</label>
+        <!-- <label class="block pb-2 mt-4 text-md font-semibold" for="productName">Content URL</label>
         <input v-model="data.contentUrl"
           class="w-full bg-transparent font-bold border-primary-50 shadow-[#021E32] shadow-lg border-2 rounded-2xl py-2 px-4 outline-none placeholder:text-primary-40 placeholder:font-bold"
-          type="number" name="productName" id="productName" placeholder="https://content-url.xyz" />
+          type="text" name="productName" id="productName" placeholder="https://content-url.xyz" /> -->
       </div>
       <div class="basis-full">
         <div class="flex gap-2 justify-center">
@@ -72,7 +72,6 @@ const data = reactive({
   contractId: "",
   initialAmount: null,
   initialAmountOnReach: null,
-  contentUrl: "",
   startDate: null,
   endDate: null,
   startsOnReach: null,

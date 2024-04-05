@@ -16,8 +16,9 @@ pub struct AcceptDeal<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_accept_deal(ctx: Context<AcceptDeal>) -> Result<()> {
+pub fn handle_accept_deal(ctx: Context<AcceptDeal>, content_url: String) -> Result<()> {
     ctx.accounts.deal.influencer_accepted = true;
+    ctx.accounts.deal.content_url = Some(content_url);
 
     Ok(())
 }
