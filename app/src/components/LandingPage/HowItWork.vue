@@ -1,40 +1,36 @@
 <template>
   <div class="relative">
-    <h1>How it works</h1>
-    <div class="h-[200px] curve relative ml-0 mr-auto">
-      <div class="absolute left-[12%] text-center top-8 w-[25%]">
-        <p>Login</p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eligendi,
-          repellat.
-        </p>
-      </div>
-      <div class="absolute text-center w-[25%] left-[37.5%] -bottom-3">
-        <p>Login</p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eligendi,
-          repellat.
-        </p>
-      </div>
-      <div class="absolute text-center w-[25%] left-[60%] top-8">
-        <p>Login</p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eligendi,
-          repellat.
-        </p>
-      </div>
-      <div class="absolute text-center w-[25%] right-0 bottom-3">
-        <p>Login</p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eligendi,
-          repellat.
-        </p>
-      </div>
+    <DividerPattern />
+    <img
+      class="w-[70px] h-[70px] mb-10"
+      src="../../assets/icons/networking.png"
+      alt="how it work"
+    />
+    <h1 class="font-inria-sans text-secondary-0 font-semibold text-3xl">
+      How it works
+    </h1>
+    <div class="py-20">
+      <h2 class="text-primary-10 font-semibold pb-16 text-2xl text-center">
+        How Product Purchase works
+      </h2>
+      <img
+        class="w-full object-cover"
+        src="../../assets/icons/how1.svg"
+        alt="how"
+      />
+    </div>
+    <div class="pb-10">
+      <h2 class="text-primary-10 font-semibold pb-16 text-2xl text-center">
+        How CMP works
+      </h2>
+      <img src="../../assets/icons/how2.svg" alt="how" />
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import DividerPattern from "../DividerPattern.vue";
+</script>
 
 <style scoped>
 .curve {
