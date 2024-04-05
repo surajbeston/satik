@@ -59,7 +59,7 @@ var idCount = 1;
 
 const route = useRoute()
 
-import { initializeProposal, fetchAllInfluencers, fetchAllBrands } from '../../anchor/utils'
+import { initializeProposal, fetchAllInfluencers, fetchAllBrands, initializeProposalWithProducts } from '../../anchor/utils'
 import { PublicKey } from "@solana/web3.js";
 
 const products = ref([{id: 1, productImage: "", productName: "", influencerAmount: 0, totalAmount: 0, productDescription: ""}]);
@@ -79,15 +79,27 @@ function goToBuilder() {
     }
   }
   if (validProduct) {
-    localStorage.setItem("influencerAddress", route.params.id);
-    location.href = "/builder";
+    
+    // localStorage.setItem("influencerAddress", route.params.id);
+    // location.href = "/builder";
+    createContract();
   }
   else{
     toast("Product name, description, amount and image are required", {autoClose: 3000, type: 'error' })
   }
 }
 
-
+function createContract () {
+  console.log(store.products);
+  if (store.currentUserLoaded){
+    const influencerAddress = new PublicKey(route.params.id);
+    const brandAddress = store.currentUser.publicKey;
+    initializeProposalWithProducts("", influencerAddress, brandAddress, store.products);
+  }
+  else{
+    toast("Brand address not available", {autoClose: 3000, type: 'error' }) 
+  }
+}
 
 watch(store.products, (newProducts) => {
   localStorage.setItem("products", JSON.stringify(newProducts));

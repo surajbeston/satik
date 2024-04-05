@@ -148,7 +148,7 @@ async function createBrand() {
       location.href = "/brand/" + username.value;
     } catch (error) {
       console.log(error)
-      toast("Account creation failed. Try changing username.", {
+      toast("Account creation failed. Check if you have any SOL or try changing username.", {
         autoClose: 2000,
         type: "error",
       });

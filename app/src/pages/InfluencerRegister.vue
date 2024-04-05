@@ -126,6 +126,8 @@ const bio = ref("");
 
 const showInfluencer = ref(false)
 
+const wallet = useWallet();
+
 // const { wallet, influencers };
 
 const sendingImage = ref(false);
@@ -189,7 +191,6 @@ const handleFileChange = async (event) => {
 onMounted(async () => {
   setTimeout(async () => {
     const influencers = await fetchAllInfluencers();
-    const {publicKey } = useWallet();
 
     // console.log(publicKey.value.toBase58())
 

@@ -148,7 +148,6 @@ import { useWallet } from "solana-wallets-vue";
 
 import {store} from '../store';
 
-
 const router = useRouter();
 const route = useRoute();
 

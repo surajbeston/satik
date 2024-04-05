@@ -151,7 +151,7 @@ const insetProduct = () => {
     div.addEventListener("click", () => productClicked(div, product));
     div.innerHTML = `
       <img class="product_image" src="${product.productImage}" alt="${product.name}"/>
-      <p class="product_name">${product.productImage}</p>
+      <p class="product_name">${product.productName}</p>
     `;
     element.insertBefore(div, element.firstChild);
   });
