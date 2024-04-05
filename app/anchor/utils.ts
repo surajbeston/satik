@@ -11,6 +11,7 @@ import {
   TokenAccountNotFoundError,
   TokenInvalidAccountOwnerError,
   transfer,
+  NATIVE_MINT,
 } from "@solana/spl-token";
 import * as anchor from "@coral-xyz/anchor";
 
@@ -21,6 +22,8 @@ import {
   sendAndConfirmTransaction,
   Transaction,
 } from "@solana/web3.js";
+
+import { SwitchboardProgram } from "@switchboard-xyz/solana.js";
 
 import { useAnchorWallet, AnchorWallet, useWallet } from "solana-wallets-vue";
 import {
@@ -45,6 +48,12 @@ import { CreateCPMContractParams } from "../src/types";
 
 const mintAddress = new PublicKey(
   "8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy"
+);
+let publicAttestationQueuePk = new PublicKey(
+  "CkvizjVnm2zA5Wuwan34NhVT3zFc7vqUyGnA6tuEF5aE"
+);
+let functionAccountPk = new PublicKey(
+  "G2ka1S2jqKRWjrn5FUrBf8R566tnghfYfu7ywVEMSAq6"
 );
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
@@ -95,7 +104,7 @@ export async function createBrandAccount(
   const { publicKey } = useWallet();
   const brandATA = await getAssociatedTokenAddress(
     mintAddress,
-    publicKey.value
+    publicKey.value!
   );
 
   const tx = await program.value.methods
@@ -196,7 +205,7 @@ export async function createCPMContract(
     publicKey.value!
   );
 
-  let perReachAmount = params.cpm / 1000;
+  let perReachAmount = params.cpm * 1000;
 
   let data: any = {};
   if (params.initialAmount) {
@@ -211,7 +220,6 @@ export async function createCPMContract(
     endsOn: new BN(params.endsOn.getUTCSeconds()),
     endsOnReach: new BN(params.endsOnReach),
     cpm: new BN(perReachAmount),
-    contentUrl: params.contentUrl,
   };
 
   const tx = await program.value.methods
@@ -225,7 +233,55 @@ export async function createCPMContract(
       payer: publicKey.value!,
     })
     .rpc();
-  console.log("Deal created");
+  console.log("Deal created !");
+}
+
+export async function acceptCPMContract(
+  influencerPk: PublicKey,
+  dealPk: PublicKey,
+  contentUrl: String
+) {
+  const { publicKey } = useWallet();
+
+  const tx = await program.value.methods
+    .acceptDeal(contentUrl)
+    .accounts({
+      influencer: influencerPk,
+      deal: dealPk,
+      signer: publicKey.value!,
+    })
+    .rpc();
+
+  console.log("Deal accepted !");
+}
+
+export async function scheduleCPMFeed(dealPk: PublicKey) {
+  let wallet = useWallet();
+  let switchboard = await SwitchboardProgram.load(connection);
+
+  let sbRequestKeypair = anchor.web3.Keypair.generate();
+
+  const tx = await program.value.methods
+    .scheduleFeed()
+    .accounts({
+      deal: dealPk,
+      switchboardAttestation: switchboard.attestationProgramId,
+      switchboardAttestationState:
+        switchboard.attestationProgramState.publicKey,
+      switchboardAttestationQueue: publicAttestationQueuePk,
+      switchboardFunction: functionAccountPk,
+      switchboardRequest: sbRequestKeypair.publicKey,
+      switchboardRequestEscrow: anchor.utils.token.associatedAddress({
+        mint: NATIVE_MINT,
+        owner: sbRequestKeypair.publicKey,
+      }),
+      switchboardMint: switchboard.mint.address,
+      payer: wallet.publicKey.value!,
+    })
+    .signers([sbRequestKeypair])
+    .rpc();
+
+  console.log("CPM Feed Scheduled !");
 }
 
 export async function fetchAllInfluencers() {

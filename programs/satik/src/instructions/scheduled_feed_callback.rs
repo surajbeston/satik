@@ -39,7 +39,7 @@ pub fn handle_scheduled_feed_callback(
 
     let seeds = &[
         Deal::SEED,
-        &deal_id_seed,
+        deal_id_seed.as_bytes().as_ref(),
         brand_key.as_ref(),
         influencer_key.as_ref(),
         &[deal.bump],

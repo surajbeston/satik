@@ -7,5 +7,4 @@ export interface CreateCPMContractParams {
   endsOn: Date;
   endsOnReach: number;
   cpm: number;
-  contentUrl: number;
 }
