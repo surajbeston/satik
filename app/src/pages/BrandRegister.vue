@@ -1,9 +1,9 @@
 <template>
-  <div class="py-12">
+  <div v-if="showBrand" class="py-12">
     <h1 class="text-4xl text-center font-bold uppercase text-secondaryLight-0">
       Create Brand Account
     </h1>
-    <div
+    <div 
       class="flex justify-between flex-col lg:flex-row py-12 bg-primary-70 border-2 border-primary-60 p-2 rounded-xl my-10"
     >
       <form @submit.prevent="createBrand"
@@ -119,6 +119,9 @@ const name = ref("");
 const username = ref("");
 const bio = ref("");
 
+
+const showBrand = ref(false)
+
 // const { wallet, influencers };
 
 const sendingImage = ref(false);
@@ -204,6 +207,8 @@ onMounted(async () => {
         location.href = "/brand/" + brand.account.username;
       }
     }
+
+    showBrand.value = true;
   }, 1000);
   
   

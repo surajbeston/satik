@@ -47,6 +47,8 @@ const mintAddress = new PublicKey(
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
 
+console.log("rent", anchor.web3.SYSVAR_RENT_PUBKEY.toBase58())
+
 export async function createInfluencerAccount(
   username: String,
   name: String,
@@ -78,34 +80,62 @@ export async function createInfluencerAccount(
   console.log(tx);
 }
 
-export async function createBrandAccount(
-  username: String,
-  name: String,
-  profile_image: String,
-  bio: String
-) {
-  const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from(username)],
-    program.value.programId
-  );
-  const { publicKey } = useWallet();
-  const brandATA = await getAssociatedTokenAddress(
-    mintAddress,
-    publicKey.value
-  );
 
-  const tx = await program.value.methods
-    .initializeBrand(username, name, profile_image, bio)
-    .accounts({
-      usdcAta: brandATA,
-      brand: brandAddress,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      mint: mintAddress,
-      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-    })
-    .rpc();
-  console.log(tx);
+
+export async function createBrandAccount(username: String, name: String, profile_image: String, bio: String) {
+    const [brandAddress, bump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from(username)], program.value.programId);
+    const { publicKey } = useWallet();
+    const brandATA = await getAssociatedTokenAddress(mintAddress, publicKey.value);
+
+    const tx = await program.value.methods.initializeBrand(username, name, profile_image, bio)
+        .accounts({
+            usdcAta: brandATA,
+            brand: brandAddress,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            mint: mintAddress,
+            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        })
+        .rpc();
+    console.log(tx);
+}
+
+export async function initializeProposal(message: String, influencerAddress: PublicKey, brandAddress: PublicKey) {
+    const proposal = new anchor.web3.Keypair();
+    const {publicKey} = useWallet();
+
+    const tx = await program.value.methods.initializeProposal(message, publicKey.value)
+                                .accounts({
+                                    proposal: proposal.publicKey,
+                                    brand: brandAddress,
+                                    influencer: influencerAddress
+                                })
+                                .signers([proposal])
+                                .rpc()
+    return proposal.publicKey;
+}
+
+export async function acceptProposal(proposalAddresString: string) {
+    const proposal = new PublicKey(proposalAddresString);
+    const tx =  await program.value.methods.acceptProposal()
+                      .accounts({
+                        proposal: proposal
+                      })
+                      .rpc()
+    console.log(tx)
+}
+
+export async function initializeProduct(name: String, description: String, totalAmount: number, influencerAmount: number, proposalAddress: PublicKey) {
+    const product = Keypair.generate();
+
+    const tx = await program.value.methods.initializeProduct(name, description, totalAmount * 10 ** 6, influencerAmount * 10 ** 6)
+                                          .accounts({
+                                            product: product.publicKey,
+                                            proposal: proposalAddress
+                                          })
+                                          .signers([product])
+                                          .rpc()
+    return product.publicKey;
 }
 
 export async function fetchAllInfluencers() {

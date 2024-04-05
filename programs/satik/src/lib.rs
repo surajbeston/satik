@@ -58,13 +58,11 @@ pub mod satik {
 
     pub fn initialize_proposal(
         ctx: Context<InitializeProposal>,
-        website: String,
         message: String,
         redeemer: Pubkey,
     ) -> Result<()> {
         require_keys_eq!(ctx.accounts.brand.created_by, ctx.accounts.signer.key());
         let proposal = &mut ctx.accounts.proposal;
-        proposal.website = website;
         proposal.message = message;
         proposal.influencer_key = ctx.accounts.influencer.created_by;
         proposal.brand = ctx.accounts.brand.key();
@@ -75,6 +73,16 @@ pub mod satik {
         proposal.accepted = false;
 
         Ok(())
+    }
+    
+    pub fn add_proposal_webpage(ctx: Context<AddWebpage>, webpage: String) -> Result<()> {
+        require_keys_eq!(ctx.accounts.proposal.created_by, ctx.accounts.signer.key(), ConstraintErrors::UnexpectedSigner);
+        let proposal = &mut ctx.accounts.proposal;
+
+        proposal.webpage = webpage;
+
+        Ok(())
+        
     }
 
     pub fn initialize_product(
@@ -296,4 +304,7 @@ pub enum ConstraintErrors {
 
     #[msg("Balance can only be redeemed by owner")]
     UnauthorizedRedeemError,
+
+    #[msg("Current signer is not proposal's creator")]
+    UnexpectedSigner
 }

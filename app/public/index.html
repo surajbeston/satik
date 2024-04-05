@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Spl Token Boilerplate</title>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <!-- <script src="dist/test.js"></script> -->
+    <script src="https://bundle.run/buffer@6.0.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/borsh@2.0.0/lib/cjs/index.min.js"></script>
+</head>
+<body>
+    <h1> Solana Hey!</h1>
+
+    <script >
+        console.log(solanaWeb3);
+        const connection = new solanaWeb3.Connection("https://api.devnet.solana.com", "confirmed");
+        console.log(connection);
+
+        console.log(buffer);
+
+    </script>
+</body>
+</html>

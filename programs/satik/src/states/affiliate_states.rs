@@ -40,7 +40,7 @@ pub struct Proposal {
     pub brand: Pubkey,
     pub influencer_key: Pubkey,
     #[max_len(200)]
-    pub website: String,
+    pub webpage: String,
     #[max_len(100)]
     pub message: String,
     pub datetime: u64,
