@@ -1,7 +1,7 @@
 <template>
   <div class="py-16">
     <div>
-      <h1 class="text-center text-4xl font-bold pb-4">FILL IN THE DETAILS</h1>
+      <h1 class="text-center text-4xl font-bold pb-4">Create Proposal</h1>
       <div
         class="bg-primary-80 p-2 shadow-2xl rounded-xl border border-primary-60 my-8"
       >
@@ -10,8 +10,8 @@
           class="border-2 border-primary-60 p-6 rounded-xl"
         >
           <div>
-            <label class="text-2xl block pb-5 lg:pb-10" for=""
-              >Add Products:</label
+            <label class="text-2xl block pb-5 lg:pb-10 border-b" for=""
+              >Add Products</label
             >
             <div
               class="py-5 lg:py-10 border-b border-primary-40"
@@ -35,7 +35,7 @@
               type="submit"
               class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto"
             >
-              Build Page
+              Next
             </button>
           </div>
         </form>

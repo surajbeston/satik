@@ -96,7 +96,9 @@ export async function createBrandAccount(username: String, name: String, profile
             mint: mintAddress,
             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
-        .rpc();
+        .rpc({
+          skipPreflight: true
+        });
     console.log(tx);
 }
 
@@ -168,6 +170,8 @@ export async function fetchInfluencerByUsername(username: string) {
 export async function getCurrentUser() {
   const influencers = await fetchAllInfluencers();
     const {publicKey } = useWallet();
+
+    console.log("inside curent user", publicKey.value)
 
     // console.log(publicKey.value.toBase58())
 

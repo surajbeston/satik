@@ -5,7 +5,9 @@
         <div class="w-full lg:w-1/2 h-[700px] max-md:mx-auto">
           <img
             class="h-full w-full lg:w-[90%] object-cover"
-            :src="influencer.profileImage ? influencer.profileImage : defaultProfile"
+            :src="
+              influencer.profileImage ? influencer.profileImage : defaultProfile
+            "
             alt=""
           />
         </div>
@@ -30,37 +32,53 @@
                 :contact="contact"
               />
             </ul> -->
-
-            <button
-              @click="$router.push(`/contract/${publicKey}`)"
-              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
-            >
-              Initiate Contract
-            </button>
-            <button
-              @click="$router.push(`/cpm-contract/${publicKey}`)"
-              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
-            >
-              Initiate CPM Contract
-            </button>
+            <div v-if="publicKey && wallet.connected">
+              <button 
+                @click="initiateContract('purchase')"
+                class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
+              >
+                Initiate Contract
+              </button>
+              <button
+                @click="initiateContract('cpm')"
+                class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
+              >
+                Initiate CPM Contract
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div>
-        <h3 class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10">
+      <div v-if ="showProposals">
+        <h3
+          class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10"
+        >
           Proposals
         </h3>
-        <div v-for="proposal in proposals" :key="proposal" class="flex gap-6 mt-5 border-zinc-100 border p-3">
-          <div class = "flex flex-col gap-2">
+        <div
+          v-for="proposal in proposals"
+          :key="proposal"
+          class="flex gap-6 mt-5 border-zinc-100 border p-3"
+        >
+          <div class="flex flex-col gap-2">
             <p>
-              Brand: <a :href ="`/brand/${proposal.account.brand.username}`" target="_blank">{{ proposal.account.brand.name }}</a>
+              Brand:
+              <a
+                :href="`/brand/${proposal.account.brand.username}`"
+                target="_blank"
+                >{{ proposal.account.brand.name }}</a
+              >
             </p>
             <p>Message: {{ proposal.account.message }}</p>
             <p>Webpage: {{ proposal.account.website }}</p>
             <p>Datetime Sent: {{ proposal.account.datetime }}</p>
             <div v-if="proposal.products">
               <p>Products:</p>
-              <div class="borber border-white-10 p-2" v-for="product in proposal.products" :key="product">
+              <div
+                class="borber border-white-10 p-2"
+                v-for="product in proposal.products"
+                :key="product"
+              >
                 <p>Name: {{ product.account.name }}</p>
                 <p>Description: {{ product.account.description }}</p>
                 <p>Total Amount: {{ product.account.totalAmount }}</p>
@@ -68,9 +86,18 @@
               </div>
             </div>
             <div v-else>
-              <button class ="border border-white-10" @click="getProducts(proposal)" >Get Products</button>
+              <button
+                class="border border-white-10"
+                @click="getProducts(proposal)"
+              >
+                Get Products
+              </button>
             </div>
-            <button v-if="!proposal.account.accepted" @click="acceptProposal(proposal)" class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300">
+            <button
+              v-if="!proposal.account.accepted"
+              @click="acceptProposal(proposal)"
+              class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
+            >
               Accept
             </button>
           </div>
@@ -86,10 +113,14 @@ import { ref } from "vue";
 import InfluencerStat from "../components/influencerProfile/InfluencerStat.vue";
 import InfluencerContract from "../components/influencerProfile/InfluencerContract.vue";
 
-import { fetchInfluencerByUsername, getProposalProducts , getInfluencerProposals, acceptInfluencerProposal } from '../../anchor/utils'
+import {
+  fetchInfluencerByUsername,
+  getProposalProducts,
+  getInfluencerProposals,
+  acceptInfluencerProposal,
+} from "../../anchor/utils";
 
 const defaultProfile = ref("/loading.gif");
-
 
 // const contacts = [
 //   {
@@ -110,8 +141,13 @@ const defaultProfile = ref("/loading.gif");
 // ];
 import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
-import { PublicKey } from '@solana/web3.js';
-import { program } from '@coral-xyz/anchor/dist/cjs/native/system';
+import {toast} from 'vue3-toastify';
+import { PublicKey } from "@solana/web3.js";
+import { program } from "@coral-xyz/anchor/dist/cjs/native/system";
+import { useWallet } from "solana-wallets-vue";
+
+import {store} from '../store';
+
 
 const router = useRouter();
 const route = useRoute();
@@ -122,39 +158,69 @@ const influencer = ref({ name: "", username: "", bio: "", profileImage: "" });
 
 const proposals = ref([]);
 
+const showProposals = ref(false)
+
+const wallet = useWallet();
+
 onMounted(() => {
-  console.log(route.params);
   setTimeout(async () => {
     var influencerObj = await fetchInfluencerByUsername(route.params.id);
     console.log(influencerObj.account.createdBy.toBase58());
     influencer.value = influencerObj.account;
     publicKey.value = influencerObj.publicKey.toBase58();
-
-    getProposals(influencerObj.account.createdBy.toBase58());
+    if(wallet.connected.value){
+      if (influencerObj.account.createdBy.toBase58() == wallet.publicKey.value.toBase58()) {
+        getProposals(influencerObj.account.createdBy.toBase58());
+        showProposals.value = true;
+      }
+    }
   }, 1000);
-})
+});
 
 // async function handleAcceptProposal() {
 //   await acceptProposal("CvPBxZKDPH6C8pWUNfVqA5C3qtuMKh7vYF3ssPnLXRK4");
 // }
 
+async function initiateContract(contractType) {
+  if (!wallet.connected.value) {
+    toast("Please connect your wallet.", { autoClose: 3000, type: "error" });
+  }
+  else{
+    if (store.currentUserLoaded){
+      if (store.currentUserType == "Brand"){
+        if (contractType) router.push(`/contract/${publicKey.value}`);
+        else router.push(`/cpm-contract/${publicKey.value}`);
+      }
+      else{
+        toast("Only influencer is allowed to submit a proposal.", { autoClose: 3000, type: "error" });
+      }
+    }
+    else{
+      toast("Redirecting to create to brand profile first.", { autoClose: 3000, type: "info" });
+      setTimeout(() => {
+        router.push("/brand/register");
+      }, 2000)
+    }
+  }
+}
+
 async function getProposals(address) {
   const result = await getInfluencerProposals(address);
-  if(result) {
+  if (result) {
     proposals.value = result;
   }
-
 }
 
 async function getProducts(proposal) {
-  console.log(proposal)
   proposal.products = await getProposalProducts(proposal.publicKey.toBase58());
 }
 
 async function acceptProposal(proposal) {
   await acceptInfluencerProposal(proposal.publicKey);
-  location.reload()
+  location.reload();
 }
+
+
 
 </script>
 
