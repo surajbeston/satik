@@ -41,6 +41,7 @@ type returnType = {
 import { Buffer } from "buffer";
 import { ComputedRef } from "vue";
 import { BN } from "bn.js";
+import { CreateCPMContractParams } from "../src/types";
 
 const mintAddress = new PublicKey(
   "8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy"
@@ -94,7 +95,7 @@ export async function createBrandAccount(
   const { publicKey } = useWallet();
   const brandATA = await getAssociatedTokenAddress(
     mintAddress,
-    publicKey.value!
+    publicKey.value
   );
 
   const tx = await program.value.methods
@@ -107,7 +108,9 @@ export async function createBrandAccount(
       mint: mintAddress,
       rent: anchor.web3.SYSVAR_RENT_PUBKEY,
     })
-    .rpc();
+    .rpc({
+      skipPreflight: true,
+    });
   console.log(tx);
 }
 
@@ -167,7 +170,32 @@ export async function initializeProduct(
   return product.publicKey;
 }
 
-export async function createCPMContract(params: CreateCPMContractParams) {
+export async function createCPMContract(
+  influencerPk: PublicKey,
+  brandPk: PublicKey,
+  params: CreateCPMContractParams
+) {
+  const { publicKey } = useWallet();
+  const [dealPDA] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("deal_seed"),
+      Buffer.from(params.uniqueId),
+      brandPk.toBytes(),
+      influencerPk.toBytes(),
+    ],
+    program.value.programId
+  );
+
+  const dealUsdcAta = await getAssociatedTokenAddress(
+    mintAddress,
+    dealPDA,
+    true
+  );
+  const brandATA = await getAssociatedTokenAddress(
+    mintAddress,
+    publicKey.value!
+  );
+
   let perReachAmount = params.cpm / 1000;
 
   let data: any = {};
@@ -182,11 +210,21 @@ export async function createCPMContract(params: CreateCPMContractParams) {
     startsOnReach: new BN(params.startsOnReach),
     endsOn: new BN(params.endsOn.getUTCSeconds()),
     endsOnReach: new BN(params.endsOnReach),
-    cpm: new BN(params.cpm),
+    cpm: new BN(perReachAmount),
     contentUrl: params.contentUrl,
   };
 
-  const tx = await program.value.methods.createDeal(data).rpc();
+  const tx = await program.value.methods
+    .createDeal(data)
+    .accounts({
+      deal: dealPDA,
+      dealUsdcAta: dealUsdcAta,
+      brandUsdcAta: brandATA,
+      brand: brandPk,
+      influencer: influencerPk,
+      payer: publicKey.value!,
+    })
+    .rpc();
   console.log("Deal created");
 }
 
@@ -219,6 +257,9 @@ export async function fetchInfluencerByUsername(username: string) {
 export async function getCurrentUser() {
   const influencers = await fetchAllInfluencers();
   const { publicKey } = useWallet();
+
+  // console.log(publicKey.value.toBase58())
+  console.log("inside curent user", publicKey.value);
 
   // console.log(publicKey.value.toBase58())
 

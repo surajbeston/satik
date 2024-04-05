@@ -1,5 +1,5 @@
-interface CreateCPMContractParams {
-  uniqueId: number;
+export interface CreateCPMContractParams {
+  uniqueId: string;
   initialAmount?: number;
   initialAmountOnReach?: number;
   startsOn: Date;

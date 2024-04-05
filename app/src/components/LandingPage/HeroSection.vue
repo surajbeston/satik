@@ -7,11 +7,11 @@
       class="w-full lg:w-1/2 mx-auto text-center lg:text-start relative z-10"
     >
       <h1
-        class="text-[28px] md:text-[50px] text-neutral-0 font-bold font-open-sans"
+        class="text-[28px] md:text-[50px] text-neutral-0 font-bold font-open-sans text-center"
       >
         Decentralized payment for influence
       </h1>
-      <p class="text-xl py-6">
+      <p class="text-xl py-6 text-center">
         Satik helps create on chain contracts between influencers and brands where influencers are paid for both views and purchases on the fly.
       </p>
     </div>

@@ -26,7 +26,7 @@ const { publicKey, sendTransaction } = useWallet();
 
 function initWorkspace() {
   const wallet = useAnchorWallet();
-  const connection = new Connection(clusterApiUrl("devnet"), commitment);
+  const connection = new Connection("https://devnet.helius-rpc.com/?api-key=f34375fa-df6a-425f-8515-e619ad9c9839", commitment);
   const provider = computed(
     () =>
       new AnchorProvider(connection, wallet.value, {
