@@ -112,7 +112,6 @@ function goToBuilder() {
     }
   }
   if (validProduct) {
-<<<<<<< HEAD
     
     // localStorage.setItem("influencerAddress", route.params.id);
     // location.href = "/builder";
@@ -135,18 +134,6 @@ function createContract () {
   }
 }
 
-=======
-    localStorage.setItem("influencerAddress", route.params.id);
-    location.href = "/builder";
-  } else {
-    toast("Product name, description, amount and image are required", {
-      autoClose: 3000,
-      type: "error",
-    });
-  }
-}
-
->>>>>>> 111044687054e467a8af7d591bd5e4e39cf0ca9c
 watch(store.products, (newProducts) => {
   localStorage.setItem("products", JSON.stringify(newProducts));
   const products = localStorage.getItem("products");
