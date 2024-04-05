@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-10 flex-col md:flex-row justify-between py-10">
+  <div class="flex gap-10 flex-col md:flex-row justify-between py-16 mt-6">
     <div class="w-full text-center md:text-start md:w-[400px] lg:w-[600px]">
       <div class="w-[120px] pb-8 max-md:mx-auto">
         <img class="w-full h-full" src="../assets/icons/logo.svg" alt="logo" />

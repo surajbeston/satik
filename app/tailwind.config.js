@@ -9,6 +9,7 @@ export default {
         oswald: ["Oswald", "sans-serif"],
 
         "open-sans": ["Open Sans", "sans-serif"],
+        "advent-pro": ["Advent Pro", "sans-serif"],
       },
       colors: {
         primary: {

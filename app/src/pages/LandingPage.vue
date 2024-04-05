@@ -3,6 +3,7 @@
     <HeroSection />
     <!-- <HowItWork /> -->
     <Features />
+    <HowItWork />
 
     <CreatorSection />
     <BrandSection />
