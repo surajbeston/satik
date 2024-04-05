@@ -27,6 +27,11 @@ pub fn handle_scheduled_feed_callback(
 
     let deal = &mut ctx.accounts.deal;
 
+    // deal has ended and remaining token has been transfered
+    if deal.returned_remaining_token {
+        return Ok(());
+    }
+
     let brand_key = deal.brand.key();
     let influencer_key = deal.influencer.key();
 
@@ -56,6 +61,8 @@ pub fn handle_scheduled_feed_callback(
             ),
             ctx.accounts.deal_usdc_ata.amount,
         )?;
+        ctx.accounts.deal.returned_remaining_token = true;
+        return Ok(());
     }
 
     // handle initial amount
