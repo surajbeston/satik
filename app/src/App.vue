@@ -8,7 +8,7 @@ import Wrapper from "./components/Wrapper.vue";
   <div class="bg-primary min-h-screen text-neutral-0">
     <Wrapper>
       <Header />
-
+      
       <main>
         <RouterView />
       </main>

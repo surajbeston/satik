@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col lg:flex-row gap-10">
-    <div class="border-2 border-primary-30 w-full lg:w-[20%] min-h-[300px] cursor-pointer rounded-xl relative overflow-hidden">
+    <div
+      class="border-2 border-primary-30 w-full lg:w-[20%] min-h-[300px] cursor-pointer rounded-xl relative overflow-hidden"
+    >
       <div class="w-full h-full" v-if="!product.productImage">
         <input
           @change="handleFileChange"
@@ -97,14 +99,12 @@
     <div class="self-center w-full lg:w-[30%]">
       <h2 class="text-4xl font-bold">Profit Distribution:</h2>
       <p class="text-xl py-3">
-        <span class="text-primary-20 font-bold">{{ product.influencerAmount }}</span>
+        <span class="text-primary-20 font-bold">{{
+          product.influencerAmount
+        }}</span>
         would be
         <span class="text-primary-20 font-bold">Influencer</span>
-        and <span class="text-primary-20 font-bold">1%</span> would be<span
-          class="text-primary-20 font-bold"
-        >
-          Satik</span
-        >
+
         for every product.
       </p>
       <div>
@@ -116,14 +116,20 @@
       <div>
         <h3 class="font-semibold text-xl py-1 text-neutral-20">
           Satik Amount :
-          <span class="text-neutral-0">{{ (product.totalAmount * 0.01).toFixed(2) }}</span>
+          <span class="text-neutral-0">{{
+            (product.totalAmount * 0.01).toFixed(2)
+          }}</span>
         </h3>
       </div>
       <div>
         <h3 class="font-semibold text-xl py-1 text-neutral-20">
           Brand Receive :
           <span class="text-neutral-0">{{
-            (product.totalAmount - product.totalAmount * 0.01 - product.influencerAmount).toFixed(2)
+            (
+              product.totalAmount -
+              product.totalAmount * 0.01 -
+              product.influencerAmount
+            ).toFixed(2)
           }}</span>
         </h3>
       </div>
@@ -136,9 +142,9 @@ import { ref } from "vue";
 import { createClient } from "../../helper/client.js";
 import { toast } from "vue3-toastify";
 
-const props = defineProps(['product'])
+const props = defineProps(["product"]);
 
-console.log("Product", props.product)
+console.log("Product", props.product);
 
 const profileHash = ref(null);
 
@@ -159,7 +165,7 @@ const handleFileChange = async (event) => {
     const file = event.target.files[0];
     profilePicture.value = URL.createObjectURL(file);
     profileHash.value = await createClient(file);
-  } catch(error) {
+  } catch (error) {
     console.log(error);
     toast("Something went wrong while uploading profile picture", {
       autoClose: 3000,
@@ -170,19 +176,18 @@ const handleFileChange = async (event) => {
 
   props.product.productImage = `https://${profileHash.value}.ipfs.w3s.link`;
 
-  console.log(props.product)
+  console.log(props.product);
 
   sendingImage.value = false;
 };
 
 const handleAmountChange = (event) => {
-
   console.log(event.target.value);
 
   influencerAmount.value = event.target.value;
 
-  console.log("Influencer value", influencerAmount.value)
-  console.log("Total value", props.product.totalAmount)
+  console.log("Influencer value", influencerAmount.value);
+  console.log("Total value", props.product.totalAmount);
 
   if (influencerAmount.value > props.product.totalAmount) {
     toast("Influencer amount should be less than total amount", {

@@ -163,3 +163,70 @@ export async function fetchInfluencerByUsername(username: string) {
     if (influencer.account.username == username) return influencer;
   }
 }
+
+
+export async function getCurrentUser() {
+  const influencers = await fetchAllInfluencers();
+    const {publicKey } = useWallet();
+
+    // console.log(publicKey.value.toBase58())
+
+    for (var influencer of influencers) {
+      if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+        return ["Influencer", influencer];
+      }
+    }
+
+    const brands = await fetchAllBrands();
+
+    console.log(brands);
+
+    for (var brand of brands) {
+      if(brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+        return ["Brand", brand];
+      }
+    }
+
+    console.log("fuiya...")
+}
+
+export async function getInfluencerProposals(influencerAddressString: String) {
+  const allProposals = await program.value.account.proposal.all();
+  const influencerProposals = [];
+  console.log(influencerAddressString);
+  for (var proposal of allProposals) {
+    console.log("This is proposal", proposal)
+    console.log(proposal.account.influencerKey.toBase58());
+    if (proposal.account.influencerKey.toBase58() == influencerAddressString) {
+      influencerProposals.push(proposal);
+    }
+  }
+  console.log("influencer proposals", influencerProposals);
+  for (var proposal of influencerProposals) {
+    var brand = await program.value.account.brand.fetch(proposal.account.brand);
+    proposal.account.brand = brand;
+  }
+
+  return influencerProposals;
+}
+
+export async function getProposalProducts(proposalAddressString: String) {
+  const allProducts = await program.value.account.product.all();
+  const proposalProducts = [];
+  console.log(proposalAddressString);
+  for (var product of allProducts) {
+    console.log("This is product", product)
+    if (product.account.proposal.toBase58() == proposalAddressString) {
+      proposalProducts.push(product);
+    }
+  }
+  return proposalProducts;
+}
+
+export async function acceptInfluencerProposal(proposal: PublicKey) {
+  await program.value.methods.acceptProposal()
+                              .accounts({
+                                proposal: proposal
+                              })
+                              .rpc()
+}
