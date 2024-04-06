@@ -2,51 +2,27 @@
   <div class="py-16">
     <div>
       <h1 class="text-center text-4xl font-bold pb-4">Create Proposal</h1>
-      <div
-        class="bg-primary-80 p-2 shadow-2xl rounded-xl border border-primary-60 my-8"
-      >
-        <form
-          @submit.prevent="handleSubmit"
-          class="border-2 border-primary-60 p-6 rounded-xl"
-        >
+      <div class="bg-primary-80 p-2 shadow-2xl rounded-xl border border-primary-60 my-8">
+        <form @submit.prevent="handleSubmit" class="border-2 border-primary-60 p-6 rounded-xl">
           <div>
-            <label class="text-2xl block pb-5 lg:pb-10 border-b" for=""
-              >Add Products</label
-            >
-            <div
-              class="py-5 lg:py-10 border-b border-primary-40"
-              v-for="product in store.products"
-              :key="product"
-            >
+            <label class="text-2xl block pb-5 lg:pb-10 border-b" for="">Add Products</label>
+            <div class="py-5 lg:py-10 border-b border-primary-40" v-for="product in store.products" :key="product">
               <ProductDetail :product="product" />
             </div>
           </div>
           <div class="mt-10">
-            <label class="block font-semibold text-xl" for="message"
-              >Message to Influencer:</label
-            >
-            <textarea
-              v-model="bio"
+            <label class="block font-semibold text-xl" for="message">Message to Influencer:</label>
+            <textarea v-model="bio"
               class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
-              cols="30"
-              rows="5"
-              type="text"
-              placeholder="Message to Influencer"
-              id="message"
-              name="message"
-            />
+              cols="30" rows="5" type="text" placeholder="Message to Influencer" id="message" name="message" />
           </div>
           <div
-            class="w-full lg:w-[60%] mx-auto flex flex-col gap-4 md:flex-row font-semibold justify-center items-center pt-8"
-          >
+            class="w-full lg:w-[60%] mx-auto flex flex-col gap-4 md:flex-row font-semibold justify-center items-center pt-8">
             <button @click="addProduct" class="bg-primary-0 py-2 w-full">
               Add Product
             </button>
-            <button
-              @click="goToBuilder()"
-              type="submit"
-              class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto"
-            >
+            <button @click="goToBuilder()" type="submit"
+              class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto">
               Next
             </button>
           </div>
@@ -71,15 +47,11 @@ var idCount = 1;
 
 const route = useRoute();
 
-<<<<<<< HEAD
-import { initializeProposal, fetchAllInfluencers, fetchAllBrands, initializeProposalWithProducts } from '../../anchor/utils'
-=======
 import {
   initializeProposal,
   fetchAllInfluencers,
   fetchAllBrands,
 } from "../../anchor/utils";
->>>>>>> 111044687054e467a8af7d591bd5e4e39cf0ca9c
 import { PublicKey } from "@solana/web3.js";
 
 const products = ref([
@@ -120,41 +92,28 @@ function goToBuilder() {
     }
   }
   if (validProduct) {
-<<<<<<< HEAD
-    
+
     // localStorage.setItem("influencerAddress", route.params.id);
     // location.href = "/builder";
     createContract();
   }
-  else{
-    toast("Product name, description, amount and image are required", {autoClose: 3000, type: 'error' })
+  else {
+    toast("Product name, description, amount and image are required", { autoClose: 3000, type: 'error' })
   }
 }
 
-function createContract () {
+function createContract() {
   console.log(store.products);
-  if (store.currentUserLoaded){
+  if (store.currentUserLoaded) {
     const influencerAddress = new PublicKey(route.params.id);
     const brandAddress = store.currentUser.publicKey;
     initializeProposalWithProducts("", influencerAddress, brandAddress, store.products);
   }
-  else{
-    toast("Brand address not available", {autoClose: 3000, type: 'error' }) 
+  else {
+    toast("Brand address not available", { autoClose: 3000, type: 'error' })
   }
 }
 
-=======
-    localStorage.setItem("influencerAddress", route.params.id);
-    location.href = "/builder";
-  } else {
-    toast("Product name, description, amount and image are required", {
-      autoClose: 3000,
-      type: "error",
-    });
-  }
-}
-
->>>>>>> 111044687054e467a8af7d591bd5e4e39cf0ca9c
 watch(store.products, (newProducts) => {
   localStorage.setItem("products", JSON.stringify(newProducts));
   const products = localStorage.getItem("products");

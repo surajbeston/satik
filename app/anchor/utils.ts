@@ -144,48 +144,61 @@ export async function initializeProposal(
   return proposal.publicKey;
 }
 
-export async function initializeProposalWithProducts(message: String, influencerAddress: PublicKey, brandAddress: PublicKey, products: any[]){
+export async function initializeProposalWithProducts(
+  message: String,
+  influencerAddress: PublicKey,
+  brandAddress: PublicKey,
+  products: any[]
+) {
   const proposal = new anchor.web3.Keypair();
-    const {publicKey, wallet} = useWallet();
+  const { publicKey, wallet } = useWallet();
 
-    // const productInstructions = products.map((product: any) => program.value.methods.initializeProduct(product.productName, product.productDescription, product.totalAmount * 10 ** 6, product.influencerAmount * 10 ** 6)
-    //                                       .accounts({
-    //                                         product: product.publicKey,
-    //                                         proposal: proposal.publicKey
-    //                                       })
-    //                                       .signers([product]))
+  // const productInstructions = products.map((product: any) => program.value.methods.initializeProduct(product.productName, product.productDescription, product.totalAmount * 10 ** 6, product.influencerAmount * 10 ** 6)
+  //                                       .accounts({
+  //                                         product: product.publicKey,
+  //                                         proposal: proposal.publicKey
+  //                                       })
+  //                                       .signers([product]))
 
-    // console.log(productInstructions);
+  // console.log(productInstructions);
 
+  const tx = new Transaction();
 
+  const proposalTransaction = await program.value.methods
+    .initializeProposal(message, publicKey.value)
+    .accounts({
+      proposal: proposal.publicKey,
+      brand: brandAddress,
+      influencer: influencerAddress,
+    })
+    .signers([proposal])
+    .instruction();
+  tx.add(proposalTransaction);
 
-    const tx = new Transaction();
+  for (var product of products) {
+    console.log("product", product);
+    const productTransaction = await program.value.methods
+      .initializeProduct(
+        product.productName,
+        product.productDescription,
+        new BN(product.totalAmount * 10 ** 6),
+        new BN(product.influencerAmount * 10 ** 6)
+      )
+      .accounts({
+        product: product.publicKey,
+        proposal: proposal.publicKey,
+      })
+      .signers([product])
+      .instruction();
+    tx.add(productTransaction);
+  }
 
-    const proposalTransaction = await program.value.methods.initializeProposal(message, publicKey.value)
-                                .accounts({
-                                    proposal: proposal.publicKey,
-                                    brand: brandAddress,
-                                    influencer: influencerAddress
-                                })
-                                .signers([proposal])
-                                .instruction();
-    tx.add(proposalTransaction);
-                                
-    for (var product of products) {
-      console.log("product", product);
-      const productTransaction = await program.value.methods.initializeProduct(product.productName, product.productDescription, new  BN(product.totalAmount * 10 ** 6), new BN(product.influencerAmount * 10 ** 6))
-                                          .accounts({
-                                            product: product.publicKey,
-                                            proposal: proposal.publicKey
-                                          })
-                                          .signers([product])
-                                          .instruction()
-      tx.add(productTransaction);
-    }
-    
-    const finalTx = await provider.value.wallet.signAllTransactions(tx, connection);
-    
-    console.log(finalTx);
+  const finalTx = await provider.value.wallet.signAllTransactions(
+    tx,
+    connection
+  );
+
+  console.log(finalTx);
 }
 
 export async function acceptProposal(proposalAddresString: string) {

@@ -472,7 +472,12 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "contentUrl",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "scheduleFeed",
@@ -555,6 +560,11 @@
         },
         {
           "name": "influencerUsdcAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "brandUsdcAta",
           "isMut": true,
           "isSigner": false
         },
@@ -876,7 +886,9 @@
           },
           {
             "name": "contentUrl",
-            "type": "string"
+            "type": {
+              "option": "string"
+            }
           },
           {
             "name": "initialAmountPaid",
@@ -891,8 +903,16 @@
             "type": "bool"
           },
           {
+            "name": "dealEnded",
+            "type": "bool"
+          },
+          {
+            "name": "returnedRemainingToken",
+            "type": "bool"
+          },
+          {
             "name": "idSeed",
-            "type": "bytes"
+            "type": "string"
           },
           {
             "name": "bump",
@@ -965,12 +985,8 @@
             "type": "u64"
           },
           {
-            "name": "contentUrl",
-            "type": "string"
-          },
-          {
             "name": "idSeed",
-            "type": "bytes"
+            "type": "string"
           }
         ]
       }

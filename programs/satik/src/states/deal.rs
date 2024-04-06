@@ -54,6 +54,5 @@ pub struct CreateDealData {
     pub ends_on: i64,
     pub ends_on_reach: u64,
     pub cpm: u64,
-    pub content_url: String,
     pub id_seed: String,
 }
