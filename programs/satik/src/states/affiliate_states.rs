@@ -52,6 +52,8 @@ pub struct Proposal {
     pub brand_ata: Pubkey,
     pub influencer_ata: Pubkey,
     pub brand_redeemer: Pubkey,
+    #[max_len(300)]
+    pub redeemer_url: String,
 }
 
 #[account]

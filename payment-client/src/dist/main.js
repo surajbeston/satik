@@ -75,31 +75,55 @@ function getProgram(provider) {
 // @ts-ignore
 function purchase(productAddressString) {
     return __awaiter(this, void 0, void 0, function () {
-        var mint, productAddress, product, proposalAddress, proposal, purchaseId, purchaseAddress, escrow, customer_ATA, rent, tx4, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var mint, productAddress, product, proposalAddress, proposal, purchaseId, _a, purchaseAddress, bump, escrow, customer_ATA, url, response, data, error_1, rent, tx4, error_2;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     mint = new web3_js_1.PublicKey("8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy");
                     productAddress = new web3_js_1.PublicKey(productAddressString);
                     return [4 /*yield*/, program.account.product.fetch(productAddress)];
                 case 1:
-                    product = _a.sent();
+                    product = _b.sent();
                     proposalAddress = product.proposal;
                     return [4 /*yield*/, program.account.proposal.fetch(proposalAddress)];
                 case 2:
-                    proposal = _a.sent();
+                    proposal = _b.sent();
                     purchaseId = Math.random().toString(36).slice(2);
-                    purchaseAddress = web3_js_1.PublicKey.findProgramAddressSync([Buffer.from(purchaseId)], program.programId)[0];
+                    _a = web3_js_1.PublicKey.findProgramAddressSync([Buffer.from(purchaseId)], program.programId), purchaseAddress = _a[0], bump = _a[1];
+                    console.log("product", product);
+                    console.log("purchase address ", purchaseAddress.toBase58());
+                    console.log("bump ", bump);
                     return [4 /*yield*/, spl_token_1.getAssociatedTokenAddress(mint, purchaseAddress, true)];
                 case 3:
-                    escrow = _a.sent();
+                    escrow = _b.sent();
                     return [4 /*yield*/, spl_token_1.getAssociatedTokenAddress(mint, wallet === null || wallet === void 0 ? void 0 : wallet.publicKey)];
                 case 4:
-                    customer_ATA = _a.sent();
-                    rent = new web3_js_1.PublicKey("SysvarRent111111111111111111111111111111111");
-                    _a.label = 5;
+                    customer_ATA = _b.sent();
+                    url = "https://satik-redeemer-demo.onrender.com/mint?address=" + customer_ATA.toBase58() + "&amount=" + product.totalAmount.toNumber();
+                    console.log(url);
+                    _b.label = 5;
                 case 5:
-                    _a.trys.push([5, 7, , 8]);
+                    _b.trys.push([5, 8, , 9]);
+                    return [4 /*yield*/, fetch(url)];
+                case 6:
+                    response = _b.sent();
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return [4 /*yield*/, response.json()];
+                case 7:
+                    data = _b.sent();
+                    console.log(data);
+                    return [3 /*break*/, 9];
+                case 8:
+                    error_1 = _b.sent();
+                    console.error('There was a problem with the fetch operation:', error_1);
+                    return [3 /*break*/, 9];
+                case 9:
+                    rent = new web3_js_1.PublicKey("SysvarRent111111111111111111111111111111111");
+                    _b.label = 10;
+                case 10:
+                    _b.trys.push([10, 12, , 13]);
                     _esm_1.toast("Purchase initiated. Please sign the transaction.", { autoClose: 2000, type: "info" });
                     return [4 /*yield*/, program.methods
                             .purchase(purchaseId)
@@ -117,15 +141,17 @@ function purchase(productAddressString) {
                             rent: rent
                         })
                             .rpc()];
-                case 6:
-                    tx4 = _a.sent();
+                case 11:
+                    tx4 = _b.sent();
+                    console.log(tx4);
                     _esm_1.toast("Product purchased.", { autoClose: 2000, type: "success" });
-                    return [3 /*break*/, 8];
-                case 7:
-                    error_1 = _a.sent();
+                    return [3 /*break*/, 13];
+                case 12:
+                    error_2 = _b.sent();
+                    console.log(error_2);
                     _esm_1.toast("Something went wrong", { autoClose: 2000, type: "error" });
-                    return [3 /*break*/, 8];
-                case 8: return [2 /*return*/];
+                    return [3 /*break*/, 13];
+                case 13: return [2 /*return*/];
             }
         });
     });
@@ -144,6 +170,7 @@ function addListeners() {
                     purchase(address);
                 }
                 catch (error) {
+                    console.log(error);
                     _esm_1.toast("Something went wrong", { autoClose: 2000, type: "error" });
                 }
                 return [2 /*return*/];

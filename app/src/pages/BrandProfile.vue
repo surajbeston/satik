@@ -61,7 +61,7 @@
                 class="w-full md:w-auto"
               >
                 <img
-                  class="w-full md:w-[140px] max-h-[200px] object-cover rounded-xl h-full"
+                  class="w-full md:w-[200px] max-h-[300px] rounded-xl h-full"
                   :src="proposal.account.influencer.profileImage"
                   :alt="proposal.account.influencer.name"
                 />
@@ -77,18 +77,7 @@
                 >
                   {{ proposal.account.influencer.name }}
                 </p>
-                <p
-                  :class="
-                    proposal.account.accepted
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  "
-                  class="font-bold"
-                >
-                  {{ proposal.account.accepted ? "Accepted" : "Pending" }}
-                </p>
-
-                <p class="text-lg text-neutral-10 line-clamp-2 min-h-[50px]">
+                <p class="text-lg text-neutral-10">
                   {{ proposal.account.influencer.bio }}
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
@@ -98,27 +87,15 @@
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
                   Webpage:
-<<<<<<< HEAD
                   <span class="block ml-2">{{ proposal.account.webpage }}</span>
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
                   Accepted:
-                  <span class="block ml-2">{{ proposal.account.accepted ? "Accepted" : "Not Accepted" }}</span>
-=======
-                  <a
-                    v-if="proposal.account.webpage"
-                    class="text-secondary-0 underline underline-offset-4 ml-2"
-                    :href="proposal.account.webpage"
-                    target="_blank"
-                    >Visit link</a
-                  >
->>>>>>> 1b942a314a5bc9bce5473513ce4b6f1e82591505
+                  <span class="block ml-2 ">{{ proposal.account.accepted ? "Accepted" : "Not Accepted" }}</span>
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
-                  Sent date-time:
-                  <span class="font-bold text-lg block">{{
-                    formatDate(proposal.account.datetime.toString())
-                  }}</span>
+                  Datetime Sent:
+                  <span class="font-bold">{{ proposal.account.datetime }}</span>
                 </p>
               </div>
             </div>
@@ -188,7 +165,6 @@ import {
 import { onMounted, ref } from "vue";
 import { useWallet } from "solana-wallets-vue";
 import { toast } from "vue3-toastify";
-import { formatDate } from "../helper/dateFormatter";
 const route = useRoute();
 const showProposals = ref(false);
 const proposals = ref([]);
@@ -221,9 +197,7 @@ async function getProposal(address) {
   const result = await getBrandProposals(address);
   console.log("this is result in fsdfs", result);
   if (result) {
-    proposals.value = result.sort((a, b) => {
-      return new Date(b.account.datetime) - new Date(a.account.datetime);
-    });
+    proposals.value = result;
   }
 }
 
