@@ -5,7 +5,7 @@
       v-if="showModal"
       class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-black/70 h-screen w-screen flex justify-center items-center"
     >
-      <div class="p-6 bg-primary-60 rounded-xl shadow-2xl w-[500px] h-[400px]">
+      <div class="p-6 bg-primary-60 rounded-xl shadow-2xl w-[500px] h-[420px]">
         <img
           @click="showModal = false"
           class="w-4 h-4 mr-0 ml-auto cursor-pointer"
@@ -25,6 +25,12 @@
             influencer
           </li>
         </ul>
+        <p class="text-2xl font-bold text-secondary-0">
+          Before sending proposal please make sure you have saved.
+        </p>
+        <p class="text-lg font-semibold text-neutral-10 pt-3 text-center">
+          Happy Building!
+        </p>
       </div>
     </div>
     <!-- modal end -->
@@ -43,15 +49,21 @@
       </button>
       <button
         class="w-full bg-secondaryLight-20 font-bold text-lg"
-        @click="sendProposal"
+        @click="showConfirmModal = true"
       >
         Send Proposal
       </button>
     </div>
+    <Modal
+      v-if="showConfirmModal"
+      @closeModal="closeModal"
+      @sendProposal="handleSendProposal"
+    />
   </div>
 </template>
 
 <script setup>
+import Modal from "../components/Modal.vue";
 import { toast } from "vue3-toastify";
 import { onMounted, ref } from "vue";
 // grapes and grapes plugins
@@ -88,6 +100,7 @@ const editorEl = ref(null);
 const selectedProduct = ref(null);
 const products = ref([]);
 const showModal = ref(true);
+const showConfirmModal = ref(false);
 
 onMounted(async () => {
   const data = localStorage.getItem("products");
@@ -122,6 +135,13 @@ onMounted(async () => {
   }, 1000);
 });
 
+const handleSendProposal = () => {
+  sendProposal();
+  showConfirmModal.value = false;
+};
+const closeModal = () => {
+  showConfirmModal.value = false;
+};
 const productClicked = (div, product) => {
   // unselect, selected component  on canvas
   editor.value.select(null);

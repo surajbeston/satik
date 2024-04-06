@@ -43,7 +43,7 @@
               Add Product
             </button>
             <button
-              @click="goToBuilder()"
+              @click="showModal = true"
               type="submit"
               class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto"
             >
@@ -53,6 +53,11 @@
         </form>
       </div>
     </div>
+    <Modal
+      v-if="showModal"
+      @sendProposal="sendProposal"
+      @closeModal="closeModal"
+    />
   </div>
 </template>
 
@@ -61,6 +66,7 @@ import { ref, computed, watch } from "vue";
 import ProductDetail from "../components/ContractPage/productDetail.vue";
 import { store } from "../store.js";
 import { toast } from "vue3-toastify";
+import Modal from "../components/Modal.vue";
 
 import { useWallet } from "solana-wallets-vue";
 // import { router } from 'vue-router'
@@ -68,8 +74,6 @@ import { useWallet } from "solana-wallets-vue";
 import { useRouter, useRoute } from "vue-router";
 
 var idCount = 1;
-
-const route = useRoute();
 
 import {
   initializeProposal,
@@ -88,6 +92,16 @@ const products = ref([
     productDescription: "",
   },
 ]);
+const route = useRoute();
+const showModal = ref(false);
+
+const sendProposal = () => {
+  goToBuilder();
+  showModal.value = false;
+};
+const closeModal = () => {
+  showModal.value = false;
+};
 
 function addProduct() {
   console.log(store.products);
