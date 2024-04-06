@@ -33,13 +33,23 @@
               />
             </ul> -->
             <div class="flex justify-between border-y-2 border-neutral-80 py-6">
-              <p class="text-2xl font-semibold text-neutral-20">
-                Followers: <span class="font-bold">{{ 1000 }}</span>
-              </p>
               <button
-                class="underline underline-offset-4 text-secondary-10 text-2xl"
+                class="text-secondary-10 flex items-center gap-2 text-2xl"
               >
-                contact
+                Contact
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M 5 3 C 3.9069372 3 3 3.9069372 3 5 L 3 19 C 3 20.093063 3.9069372 21 5 21 L 19 21 C 20.093063 21 21 20.093063 21 19 L 21 12 L 19 12 L 19 19 L 5 19 L 5 5 L 12 5 L 12 3 L 5 3 z M 14 3 L 14 5 L 17.585938 5 L 8.2929688 14.292969 L 9.7070312 15.707031 L 19 6.4140625 L 19 10 L 21 10 L 21 3 L 14 3 z"
+                  ></path>
+                </svg>
               </button>
             </div>
             <div v-if="publicKey && wallet.connected">
@@ -59,6 +69,12 @@
           </div>
         </div>
       </div>
+      <div class="bg-primary-80 rounded-xl flex py-6 mb-8">
+        <InfluencerStat
+          :stat="{ number: 100, description: 'Followers' }"
+          :border="false"
+        />
+      </div>
       <div v-if="showProposals">
         <h3
           class="border-b pb-2 border-secondaryLight-0 text-3xl font-semibold text-neutral-10"
@@ -76,10 +92,10 @@
                 @click="
                   $router.push(`/brand/${proposal.account.brand.username}`)
                 "
-                class="w-full md:w-auto"
+                class="w-full min-w-[120px] md:w-auto"
               >
                 <img
-                  class="w-full md:w-[200px] max-h-[300px] rounded-xl h-full"
+                  class="w-full md:w-[200px] max-h-[200px] object-cover rounded-xl h-full"
                   :src="proposal.account.brand.profileImage"
                   :alt="proposal.account.brand.name"
                 />
@@ -93,18 +109,16 @@
                 >
                   {{ proposal.account.brand.name }}
                 </p>
-                <p class="text-lg text-neutral-10">
+                <p class="text-base text-neutral-10 line-clamp-3">
                   {{ proposal.account.brand.bio }}
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
-                  Message:<span class="block ml-2">
-                    {{ proposal.account.message }}</span
-                  >
+                  Message:<ReadMore :text="proposal.account.message" />
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
                   Webpage:
                   <a
-                    class="text-secondary-0 underline underline-offset-4 ml-2"
+                    class="text-secondary-0 text-base underline underline-offset-4 ml-2"
                     :href="proposal.account.webpage"
                     target="_blank"
                     >Visit link</a
@@ -112,7 +126,7 @@
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
                   Datetime Sent:
-                  <span class="font-bold block ml-2 text-lg">{{
+                  <span class="font-bold block ml-2 text-base">{{
                     formatDate(proposal.account.datetime.toString())
                   }}</span>
                 </p>
@@ -140,12 +154,12 @@
                       </p>
                       <p class="text-lg text-neutral-10">
                         Total Amount:<span class="font-bold ml-2">
-                          {{ product.account.totalAmount }}</span
+                          {{ product.account.totalAmount / 1000000 }}</span
                         >
                       </p>
                       <p class="text-lg text-neutral-10">
                         Influencer Amount:<span class="font-bold ml-2">
-                          {{ product.account.influencerAmount }}</span
+                          {{ product.account.influencerAmount / 1000000 }}</span
                         >
                       </p>
                     </div>
@@ -155,24 +169,27 @@
                   No Products Found
                 </p>
               </div>
-              <div
+              <button
+                v-else
+                class="border border-secondaryLight-50 w-full font-semibold text-base text-secondaryLight-50 px-6 py-2 rounded-xl"
+                @click="getProducts(proposal)"
+              >
+                Get Products
+              </button>
+              <button
+                v-if="!proposal.account.accepted"
+                @click="acceptProposal(proposal)"
+                class="w-full rounded-xl border border-primary-10 b py-2 my-6 font-semibold text-base text-neutral-0 duration-300"
+              >
+                Accept
+              </button>
+
+              <!-- <div
                 v-else
                 class="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full"
               >
-                <button
-                  class="border border-secondaryLight-50 max-w-[300px] w-full font-semibold text-xl text-secondaryLight-50 px-6 py-2 rounded-xl"
-                  @click="getProducts(proposal)"
-                >
-                  Get Products
-                </button>
-                <button
-                  v-if="!proposal.account.accepted"
-                  @click="acceptProposal(proposal)"
-                  class="max-w-[300px] w-full rounded-xl bg-secondary-0 py-2 my-6 font-semibold text-xl text-neutral-0 border border-secondary-0 duration-300"
-                >
-                  Accept
-                </button>
-              </div>
+                
+              </div> -->
             </div>
           </div>
         </div>
@@ -187,6 +204,7 @@ import { ref } from "vue";
 import InfluencerStat from "../components/influencerProfile/InfluencerStat.vue";
 import InfluencerContract from "../components/influencerProfile/InfluencerContract.vue";
 import { formatDate } from "../helper/dateFormatter";
+import ReadMore from "../components/ReadMore.vue";
 import {
   fetchInfluencerByUsername,
   getProposalProducts,
@@ -249,7 +267,7 @@ async function initiateContract(contractType) {
         if (contractType) router.push(`/contract/${publicKey.value}`);
         else router.push(`/cpm-contract/${publicKey.value}`);
       } else {
-        toast("Only influencer is allowed to submit a proposal.", {
+        toast("Only Brands is allowed to submit a proposal.", {
           autoClose: 3000,
           type: "error",
         });
@@ -270,9 +288,13 @@ async function getProposals(address) {
   const result = await getInfluencerProposals(address);
 
   if (result) {
-    proposals.value = result.sort((a, b) => {
-      return new Date(b.account.datetime) - new Date(a.account.datetime);
-    });
+    proposals.value = result
+      .sort((a, b) => {
+        const aDate = a.account.datetime || 0;
+        const bDate = b.account.datetime || 0;
+        return bDate - aDate;
+      })
+      .filter((proposal) => proposal.account.datetime);
   }
 }
 

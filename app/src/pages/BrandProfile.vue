@@ -58,7 +58,7 @@
                 @click="
                   $router.push(`/brand/${proposal.account.influencer.username}`)
                 "
-                class="w-full md:w-auto"
+                class="w-full md:w-auto min-w-[120px]"
               >
                 <img
                   class="w-full md:w-[200px] max-h-[300px] rounded-xl h-full"
@@ -77,25 +77,41 @@
                 >
                   {{ proposal.account.influencer.name }}
                 </p>
-                <p class="text-lg text-neutral-10">
+                <p
+                  :class="
+                    proposal.account.accepted
+                      ? 'text-green-400'
+                      : 'text-red-400'
+                  "
+                  class="font-bold"
+                >
+                  {{ proposal.account.accepted ? "Accepted" : "Pending" }}
+                </p>
+
+                <p
+                  class="text-base font-normal text-neutral-10 line-clamp-2 min-h-[50px]"
+                >
                   {{ proposal.account.influencer.bio }}
                 </p>
+                <p class="text-xl font-bold text-neutral-20">
+                  Message: <ReadMore :text="proposal.account.message" />
+                </p>
+
                 <p class="text-xl font-medium text-neutral-20">
-                  Message:<span class="block ml-2">
-                    {{ proposal.account.message }}</span
+                  Webpage:
+                  <a
+                    v-if="proposal.account.webpage"
+                    class="text-secondary-0 underline underline-offset-4 ml-2"
+                    :href="proposal.account.webpage"
+                    target="_blank"
+                    >Visit link</a
                   >
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
-                  Webpage:
-                  <span class="block ml-2">{{ proposal.account.webpage }}</span>
-                </p>
-                <p class="text-xl font-medium text-neutral-20">
-                  Accepted:
-                  <span class="block ml-2 ">{{ proposal.account.accepted ? "Accepted" : "Not Accepted" }}</span>
-                </p>
-                <p class="text-xl font-medium text-neutral-20">
-                  Datetime Sent:
-                  <span class="font-bold">{{ proposal.account.datetime }}</span>
+                  Sent date-time:
+                  <span class="font-bold text-base block">{{
+                    formatDate(proposal.account.datetime.toString())
+                  }}</span>
                 </p>
               </div>
             </div>
@@ -121,12 +137,12 @@
                       </p>
                       <p class="text-lg text-neutral-10">
                         Total Amount:<span class="font-bold ml-2">
-                          {{ product.account.totalAmount }}</span
+                          {{ product.account.totalAmount / 1000000 }}</span
                         >
                       </p>
                       <p class="text-lg text-neutral-10">
                         Influencer Amount:<span class="font-bold ml-2">
-                          {{ product.account.influencerAmount }}</span
+                          {{ product.account.influencerAmount / 1000000 }}</span
                         >
                       </p>
                     </div>
@@ -162,15 +178,19 @@ import {
   getBrandProposals,
   getProposalProducts,
 } from "../../anchor/utils";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useWallet } from "solana-wallets-vue";
 import { toast } from "vue3-toastify";
+import { formatDate } from "../helper/dateFormatter";
+import ReadMore from "../components/ReadMore.vue";
 const route = useRoute();
 const showProposals = ref(false);
 const proposals = ref([]);
 const publicKey = ref("");
 
 const brand = ref({});
+const isReadMore = ref(false);
+const message = ref("");
 
 const defaultProfile = ref("/loading.gif");
 const wallet = useWallet();
@@ -197,7 +217,17 @@ async function getProposal(address) {
   const result = await getBrandProposals(address);
   console.log("this is result in fsdfs", result);
   if (result) {
+<<<<<<< HEAD
     proposals.value = result;
+=======
+    proposals.value = result
+      .sort((a, b) => {
+        const aDate = a.account.datetime || 0;
+        const bDate = b.account.datetime || 0;
+        return bDate - aDate;
+      })
+      .filter((proposal) => proposal.account.datetime);
+>>>>>>> 2b281ce66be6aac883960c32c8e2b362567abb43
   }
 }
 
@@ -205,6 +235,12 @@ async function getProducts(proposal) {
   toast.info("Getting Products...");
   proposal.products = await getProposalProducts(proposal.publicKey.toBase58());
 }
+
+const displayMessage = computed(() => {
+  if (isReadMore.value) {
+    return;
+  }
+});
 </script>
 
 <style scoped></style>
