@@ -47,12 +47,6 @@
       >
         Confirm and Deploy
       </button>
-      <!-- <button
-        class="w-full bg-secondaryLight-20 font-bold text-lg"
-        @click="showConfirmModal = true"
-      >
-        Send Proposal
-      </button> -->
     </div>
     <Modal
       v-if="showConfirmModal"

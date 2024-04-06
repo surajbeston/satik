@@ -23,7 +23,8 @@
           </div>
           <div class="mt-10">
             <label class="block font-semibold text-xl" for="message"
-              >Message to Influencer:</label
+              >Message to Influencer
+              <span class="text-primary-30">(Words:50) </span>:</label
             >
             <textarea
               v-model="proposalMessage"
@@ -75,14 +76,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, watch } from "vue";
 import ProductDetail from "../components/ContractPage/productDetail.vue";
 import { store } from "../store.js";
 import { toast } from "vue3-toastify";
 import Modal from "../components/Modal.vue";
-
-import { useWallet } from "solana-wallets-vue";
-// import { router } from 'vue-router'
 
 import { useRouter, useRoute } from "vue-router";
 
@@ -92,26 +90,10 @@ const route = useRoute();
 const router = useRouter();
 const showModal = ref(false);
 
-import {
-  initializeProposal,
-  fetchAllInfluencers,
-  fetchAllBrands,
-  initializeProposalWithProducts,
-} from "../../anchor/utils";
+import { initializeProposalWithProducts } from "../../anchor/utils";
 import { PublicKey } from "@solana/web3.js";
 
 const proposalMessage = ref("");
-
-const products = ref([
-  {
-    id: 1,
-    productImage: "",
-    productName: "",
-    influencerAmount: 0,
-    totalAmount: 0,
-    productDescription: "",
-  },
-]);
 
 const sendProposal = () => {
   showModal.value = false;
