@@ -63,17 +63,34 @@ async function purchase(productAddressString: string) {
 
   const purchaseId = Math.random().toString(36).slice(2);
 
-  const [purchaseAddress] = PublicKey.findProgramAddressSync(
+  const [purchaseAddress, bump] = PublicKey.findProgramAddressSync(
     [Buffer.from(purchaseId)],
     program.programId
   );
 
-  const escrow = await getAssociatedTokenAddress(mint, purchaseAddress, true);
+  console.log("product", product)
+
+  console.log("purchase address ", purchaseAddress.toBase58());
+  console.log("bump ", bump);
+  const escrow = await getAssociatedTokenAddress(mint, purchaseAddress, true)
 
   const customer_ATA = await getAssociatedTokenAddress(
     mint,
     wallet?.publicKey as PublicKey
-  );
+  )
+  const url = `https://satik-redeemer-demo.onrender.com/mint?address=${customer_ATA.toBase58()}&amount=${product.totalAmount.toNumber()}`;
+
+  console.log(url);
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
 
   const rent = new PublicKey("SysvarRent111111111111111111111111111111111");
   try{
@@ -94,9 +111,11 @@ async function purchase(productAddressString: string) {
         rent: rent,
       })
       .rpc();
+    console.log(tx4);
     toast("Product purchased.", { autoClose: 2000, type: "success" });
   }
   catch(error){
+    console.log(error)
     toast("Something went wrong", { autoClose: 2000, type: "error" });
   } 
 }
@@ -110,6 +129,7 @@ function addListeners() {
       try {
         purchase(address);
       } catch (error) {
+        console.log(error)
         toast("Something went wrong", { autoClose: 2000, type: "error" });
       }
     });

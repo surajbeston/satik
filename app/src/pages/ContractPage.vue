@@ -94,6 +94,7 @@ import { initializeProposalWithProducts } from "../../anchor/utils";
 import { PublicKey } from "@solana/web3.js";
 
 const proposalMessage = ref("");
+const redeemerURL = ref("http://localhost:3000");
 
 const sendProposal = () => {
   showModal.value = false;
@@ -147,16 +148,8 @@ async function createContract() {
     const influencerAddress = new PublicKey(route.params.id);
     const brandAddress = store.currentUser.publicKey;
     console.log(proposalMessage.value);
-    toast("Sending proposal. Please sign the transaction.", {
-      autoClose: 5000,
-      type: "info",
-    });
-    const [products, proposalAddress] = await initializeProposalWithProducts(
-      proposalMessage.value,
-      influencerAddress,
-      brandAddress,
-      store.products
-    );
+    toast("Sending proposal. Please sign the transaction.", {autoClose: 5000, type: 'info' })
+    const [products, proposalAddress] = await initializeProposalWithProducts(proposalMessage.value, influencerAddress, brandAddress, store.products, redeemerURL.value);
     localStorage.setItem("products", JSON.stringify(products));
     localStorage.setItem("proposalAddress", proposalAddress);
     toast("Contract created successfully. Redirecting to web builder.", {

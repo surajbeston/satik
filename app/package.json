@@ -21,6 +21,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "@web3-storage/w3up-client": "^12.5.0",
     "bn.js": "^5.2.1",
+    "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "grapesjs": "^0.21.9",
     "grapesjs-advance-components": "^1.0.7",

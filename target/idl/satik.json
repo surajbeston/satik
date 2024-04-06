@@ -173,6 +173,10 @@
         {
           "name": "redeemer",
           "type": "publicKey"
+        },
+        {
+          "name": "redeemerUrl",
+          "type": "string"
         }
       ]
     },
@@ -719,6 +723,10 @@
           {
             "name": "brandRedeemer",
             "type": "publicKey"
+          },
+          {
+            "name": "redeemerUrl",
+            "type": "string"
           }
         ]
       }

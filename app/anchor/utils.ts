@@ -153,7 +153,8 @@ export async function initializeProposalWithProducts(
   message: String,
   influencerAddress: PublicKey,
   brandAddress: PublicKey,
-  products: any[]
+  products: any[],
+  redeemerURL: String
 ) {
   const proposal = new anchor.web3.Keypair();
   const { publicKey } = useWallet();
@@ -181,11 +182,11 @@ export async function initializeProposalWithProducts(
   }
 
   const proposalTransaction = await program.value.methods
-    .initializeProposal(message, publicKey.value)
+    .initializeProposal(message, publicKey.value, redeemerURL)
     .accounts({
       proposal: proposal.publicKey,
       brand: brandAddress,
-      influencer: influencerAddress,
+      influencer: influencerAddress
     })
     .postInstructions(instructions)
     .signers([proposal, ...instructionSigners])
