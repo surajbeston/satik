@@ -154,6 +154,8 @@ const bio = ref("");
 
 const showInfluencer = ref(false);
 
+const wallet = useWallet();
+
 // const { wallet, influencers };
 
 const sendingImage = ref(false);

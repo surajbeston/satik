@@ -3,22 +3,15 @@
     <div class="w-full sm:w-[90%] xl:w-[80%] mx-auto py-16">
       <div class="flex flex-col lg:flex-row gap-10 pb-8">
         <div class="w-full lg:w-1/2 h-[700px] max-md:mx-auto">
-          <img
-            class="h-full w-full lg:w-[90%] object-cover"
-            :src="
-              influencer.profileImage ? influencer.profileImage : defaultProfile
-            "
-            alt=""
-          />
+          <img class="h-full w-full lg:w-[90%] object-cover" :src="influencer.profileImage ? influencer.profileImage : defaultProfile
+            " alt="" />
         </div>
         <div class="w-full lg:w-1/2">
           <h1 class="text-5xl pt-2 pb-6 font-bold text-neutral-10">
             {{ influencer.name }}
           </h1>
           <div class="py-9">
-            <h3
-              class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10"
-            >
+            <h3 class="border-b pb-2 border-secondaryLight-0 text-xl font-semibold text-neutral-10">
               Influencer Bio
             </h3>
             <p class="text-xl py-6 text-neutral-10 leading-8 font-normal">
@@ -36,23 +29,17 @@
               <p class="text-2xl font-semibold text-neutral-20">
                 Followers: <span class="font-bold">{{ 1000 }}</span>
               </p>
-              <button
-                class="underline underline-offset-4 text-secondary-10 text-2xl"
-              >
+              <button class="underline underline-offset-4 text-secondary-10 text-2xl">
                 contact
               </button>
             </div>
             <div v-if="publicKey && wallet.connected">
-              <button
-                @click="initiateContract('purchase')"
-                class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
-              >
+              <button @click="initiateContract('purchase')"
+                class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300">
                 Initiate Contract
               </button>
-              <button
-                @click="initiateContract('cpm')"
-                class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300"
-              >
+              <button @click="initiateContract('cpm')"
+                class="border-secondaryLight-50 border-2 w-full py-3 my-6 font-bold text-xl rounded-md text-secondaryLight-50 hover:text-secondaryLight-20 duration-300">
                 Initiate CPM Contract
               </button>
             </div>
@@ -60,37 +47,23 @@
         </div>
       </div>
       <div v-if="showProposals">
-        <h3
-          class="border-b pb-2 border-secondaryLight-0 text-3xl font-semibold text-neutral-10"
-        >
+        <h3 class="border-b pb-2 border-secondaryLight-0 text-3xl font-semibold text-neutral-10">
           Proposals
         </h3>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div
-            v-for="proposal in proposals"
-            :key="proposal"
-            class="mt-10 border-zinc-700 shadow-lg shadow-[#2c3438d0] rounded-xl border p-6"
-          >
+          <div v-for="proposal in proposals" :key="proposal"
+            class="mt-10 border-zinc-700 shadow-lg shadow-[#2c3438d0] rounded-xl border p-6">
             <div class="flex flex-col md:flex-row gap-8 pb-8">
-              <div
-                @click="
-                  $router.push(`/brand/${proposal.account.brand.username}`)
-                "
-                class="w-full md:w-auto"
-              >
-                <img
-                  class="w-full md:w-[200px] max-h-[300px] rounded-xl h-full"
-                  :src="proposal.account.brand.profileImage"
-                  :alt="proposal.account.brand.name"
-                />
+              <div @click="
+            $router.push(`/brand/${proposal.account.brand.username}`)
+            " class="w-full md:w-auto">
+                <img class="w-full md:w-[200px] max-h-[300px] rounded-xl h-full"
+                  :src="proposal.account.brand.profileImage" :alt="proposal.account.brand.name" />
               </div>
               <div class="space-y-3 w-full md:w-auto">
-                <p
-                  @click="
-                    $router.push(`/brand/${proposal.account.brand.username}`)
-                  "
-                  class="text-2xl font-bold cursor-pointer text-secondaryLight-30 underline underline-offset-4"
-                >
+                <p @click="
+            $router.push(`/brand/${proposal.account.brand.username}`)
+            " class="text-2xl font-bold cursor-pointer text-secondaryLight-30 underline underline-offset-4">
                   {{ proposal.account.brand.name }}
                 </p>
                 <p class="text-lg text-neutral-10">
@@ -98,8 +71,7 @@
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
                   Message:<span class="block ml-2">
-                    {{ proposal.account.message }}</span
-                  >
+                    {{ proposal.account.message }}</span>
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
                   Webpage:
@@ -117,14 +89,8 @@
                   Products:
                 </p>
                 <template v-if="proposal.products.length > 0">
-                  <div
-                    class="flex flex-wrap"
-                    v-for="product in proposal.products"
-                    :key="product"
-                  >
-                    <div
-                      class="border border-primary-70 p-6 shadow-lg shadow-[#2c34384f] rounded-xl my-6 space-y-3"
-                    >
+                  <div class="flex flex-wrap" v-for="product in proposal.products" :key="product">
+                    <div class="border border-primary-70 p-6 shadow-lg shadow-[#2c34384f] rounded-xl my-6 space-y-3">
                       <p class="text-2xl font-semibold">
                         {{ product.account.name }}
                       </p>
@@ -133,13 +99,11 @@
                       </p>
                       <p class="text-lg text-neutral-10">
                         Total Amount:<span class="font-bold ml-2">
-                          {{ product.account.totalAmount }}</span
-                        >
+                          {{ product.account.totalAmount }}</span>
                       </p>
                       <p class="text-lg text-neutral-10">
                         Influencer Amount:<span class="font-bold ml-2">
-                          {{ product.account.influencerAmount }}</span
-                        >
+                          {{ product.account.influencerAmount }}</span>
                       </p>
                     </div>
                   </div>
@@ -148,21 +112,14 @@
                   No Products Found
                 </p>
               </div>
-              <div
-                v-else
-                class="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full"
-              >
+              <div v-else class="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full">
                 <button
                   class="border border-secondaryLight-50 max-w-[300px] w-full font-semibold text-xl text-secondaryLight-50 px-6 py-2 rounded-xl"
-                  @click="getProducts(proposal)"
-                >
+                  @click="getProducts(proposal)">
                   Get Products
                 </button>
-                <button
-                  v-if="!proposal.account.accepted"
-                  @click="acceptProposal(proposal)"
-                  class="max-w-[300px] w-full rounded-xl bg-secondary-0 py-2 my-6 font-semibold text-xl text-neutral-0 border border-secondary-0 duration-300"
-                >
+                <button v-if="!proposal.account.accepted" @click="acceptProposal(proposal)"
+                  class="max-w-[300px] w-full rounded-xl bg-secondary-0 py-2 my-6 font-semibold text-xl text-neutral-0 border border-secondary-0 duration-300">
                   Accept
                 </button>
               </div>
@@ -193,10 +150,11 @@ import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
 import { PublicKey } from "@solana/web3.js";
 import { program } from "@coral-xyz/anchor/dist/cjs/native/system";
-import { toast } from "vue3-toastify";
 import { useWallet } from "solana-wallets-vue";
 
-import { store } from "../store";
+import { store } from '../store';
+import { toast } from "vue3-toastify";
+
 
 const router = useRouter();
 const route = useRoute();

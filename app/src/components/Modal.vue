@@ -17,7 +17,7 @@
           No
         </button>
         <button
-          @click="sendProposal()"
+          @click="send()"
           class="w-full rounded-xl bg-secondaryLight-30 text-neutral-0 font-bold py-2"
         >
           Yes
@@ -28,9 +28,12 @@
 </template>
 
 <script setup>
-const emit = defineEmits(["sendProposal", "closeModal"]);
-const sendProposal = () => {
-  emit("sendProposal");
+defineProps({
+  message: string,
+});
+const emit = defineEmits(["handleSendClick", "closeModal"]);
+const send = () => {
+  emit("handleSendClick");
 };
 
 const closeModal = () => {

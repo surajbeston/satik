@@ -99,11 +99,11 @@ const [influencerPDA] = PublicKey.findProgramAddressSync(
   program.programId
 );
 
-const idSeed = Buffer.from("deal2");
+const dealId = "deal2";
 const [dealPDA] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("deal_seed"),
-    idSeed,
+    Buffer.from(dealId),
     brandPDA.toBytes(),
     influencerPDA.toBytes(),
   ],
@@ -227,8 +227,8 @@ async function main() {
   //     endsOn: new BN(Date.now() / 1000 + 1000000),
   //     endsOnReach: new BN(10000),
   //     cpm: new BN(10000),
-  //     contentUrl: "https://eoo6aio1mbtg4nl.m.pipedream.net",
-  //     idSeed,
+  //     // contentUrl: "",
+  //     idSeed: dealId,
   //   })
   //   .accounts({
   //     deal: dealPDA,
@@ -242,7 +242,7 @@ async function main() {
   //   .rpc();
 
   // const tx = await program.methods
-  //   .acceptDeal()
+  //   .acceptDeal("https://eoo6aio1mbtg4nl.m.pipedream.net")
   //   .accounts({
   //     influencer: influencerPDA,
   //     deal: dealPDA,

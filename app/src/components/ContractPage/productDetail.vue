@@ -18,7 +18,7 @@
       </div>
       <div class="w-full h-full relative" v-else>
         <img
-          class="w-full h-full object-cover"
+          class="w-full h-full object-fit"
           :src="product.productImage"
           alt="product image"
         />

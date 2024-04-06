@@ -55,7 +55,7 @@
     </div>
     <Modal
       v-if="showModal"
-      @sendProposal="sendProposal"
+      @handleSendClick="sendProposal"
       @closeModal="closeModal"
     />
   </div>
@@ -75,12 +75,19 @@ import { useRouter, useRoute } from "vue-router";
 
 var idCount = 1;
 
+const route = useRoute();
+const router = useRouter();
+const showModal = ref(false);
+
 import {
   initializeProposal,
   fetchAllInfluencers,
   fetchAllBrands,
+  initializeProposalWithProducts,
 } from "../../anchor/utils";
 import { PublicKey } from "@solana/web3.js";
+
+const proposalMessage = ref("");
 
 const products = ref([
   {
@@ -92,12 +99,10 @@ const products = ref([
     productDescription: "",
   },
 ]);
-const route = useRoute();
-const showModal = ref(false);
 
 const sendProposal = () => {
-  goToBuilder();
   showModal.value = false;
+  goToBuilder();
 };
 const closeModal = () => {
   showModal.value = false;
@@ -130,13 +135,41 @@ function goToBuilder() {
     }
   }
   if (validProduct) {
-    localStorage.setItem("influencerAddress", route.params.id);
-    location.href = "/builder";
+    // localStorage.setItem("influencerAddress", route.params.id);
+    // location.href = "/builder";
+    createContract();
   } else {
     toast("Product name, description, amount and image are required", {
       autoClose: 3000,
       type: "error",
     });
+  }
+}
+
+async function createContract() {
+  console.log(store.products);
+  if (store.currentUserLoaded) {
+    const influencerAddress = new PublicKey(route.params.id);
+    const brandAddress = store.currentUser.publicKey;
+    toast("Sending proposal. Please sign the transaction.", {
+      autoClose: 5000,
+      type: "info",
+    });
+    const [products, proposalAddress] = await initializeProposalWithProducts(
+      proposalMessage.value,
+      influencerAddress,
+      brandAddress,
+      store.products
+    );
+    localStorage.setItem("products", JSON.stringify(products));
+    localStorage.setItem("proposalAddress", proposalAddress);
+    toast("Contract created successfully. Redirecting to web builder.", {
+      autoClose: 3000,
+      type: "success",
+    });
+    router.push("/builder");
+  } else {
+    toast("Brand address not available", { autoClose: 3000, type: "error" });
   }
 }
 
