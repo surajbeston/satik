@@ -57,6 +57,7 @@
       v-if="showModal"
       @handleSendClick="sendProposal"
       @closeModal="closeModal"
+      message="You want to send the proposal"
     />
   </div>
 </template>

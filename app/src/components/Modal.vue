@@ -8,7 +8,7 @@
       <h3 class="text-2xl font-semibold text-primary-20 pb-7">
         Are you sure ?
       </h3>
-      <h3 class="text-2xl font-bold py-4">You want to send proposal.</h3>
+      <h3 class="text-2xl font-bold py-4">{{ message }}</h3>
       <div class="w-full flex gap-2 mt-8">
         <button
           @click="closeModal()"
@@ -29,7 +29,7 @@
 
 <script setup>
 defineProps({
-  message: string,
+  message: String,
 });
 const emit = defineEmits(["handleSendClick", "closeModal"]);
 const send = () => {

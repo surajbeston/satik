@@ -58,6 +58,7 @@
       v-if="showConfirmModal"
       @closeModal="closeModal"
       @handleSendClick="handleSendProposal"
+      message="You want to deploy the webpage and submit link."
     />
   </div>
 </template>
@@ -182,7 +183,6 @@ const getCode = async () => {
   //   combine css to the html file
   const code = createHtml(html, cssCode, products);
 
-  const files = [new File([code], "index.html")];
   const blob = new Blob([code], { type: "text/html" });
   const cid = await createClient(blob);
   const url = `https://${cid}.ipfs.cf-ipfs.com`;

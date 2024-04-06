@@ -1,3 +1,4 @@
+//@ts-nocheck
 import BN from "bn.js";
 import {
   getAssociatedTokenAddress,
@@ -17,7 +18,6 @@ import {
 import * as anchor from "@coral-xyz/anchor";
 
 import { Batch } from "../target/types/batch";
-
 
 import initWorkspace from "./useWorkspace";
 
@@ -61,7 +61,6 @@ let functionAccountPk = new PublicKey(
 );
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
-
 
 export async function createInfluencerAccount(
   username: String,
@@ -146,39 +145,49 @@ export async function initializeProposal(
   return proposal.publicKey;
 }
 
-export async function initializeProposalWithProducts(message: String, influencerAddress: PublicKey, brandAddress: PublicKey, products: any[]){
-
+export async function initializeProposalWithProducts(
+  message: String,
+  influencerAddress: PublicKey,
+  brandAddress: PublicKey,
+  products: any[]
+) {
   const proposal = new anchor.web3.Keypair();
-    const {publicKey} = useWallet();
+  const { publicKey } = useWallet();
 
-    const instructions = [];
-    const instructionSigners = [];
-    for (var product of products) {
-      const productAddress = new anchor.web3.Keypair();
-      instructions.push(
-        await program.value.methods.initializeProduct(product.productName, product.productDescription, new BN(product.totalAmount * 10 ** 6), new  BN(product.influencerAmount * 10 ** 6))
-                .accounts({
-                  product: productAddress.publicKey,
-                  proposal: proposal.publicKey
-                })
-                .instruction()
-      );
-      instructionSigners.push(productAddress);
-      product.productAddress = productAddress.publicKey.toBase58();
-    }
+  const instructions = [];
+  const instructionSigners = [];
+  for (var product of products) {
+    const productAddress = new anchor.web3.Keypair();
+    instructions.push(
+      await program.value.methods
+        .initializeProduct(
+          product.productName,
+          product.productDescription,
+          new BN(product.totalAmount * 10 ** 6),
+          new BN(product.influencerAmount * 10 ** 6)
+        )
+        .accounts({
+          product: productAddress.publicKey,
+          proposal: proposal.publicKey,
+        })
+        .instruction()
+    );
+    instructionSigners.push(productAddress);
+    product.productAddress = productAddress.publicKey.toBase58();
+  }
 
-    const proposalTransaction = await program.value.methods.initializeProposal(message, publicKey.value)
-                                .accounts({
-                                    proposal: proposal.publicKey,
-                                    brand: brandAddress,
-                                    influencer: influencerAddress
-                                })
-                                .postInstructions(instructions)
-                                .signers([proposal, ...instructionSigners])
-                                .rpc()
+  const proposalTransaction = await program.value.methods
+    .initializeProposal(message, publicKey.value)
+    .accounts({
+      proposal: proposal.publicKey,
+      brand: brandAddress,
+      influencer: influencerAddress,
+    })
+    .postInstructions(instructions)
+    .signers([proposal, ...instructionSigners])
+    .rpc();
 
-    console.log(proposalTransaction);
-    return [products, proposal.publicKey.toBase58()]
+  return [products, proposal.publicKey.toBase58()];
 }
 
 export async function acceptProposal(proposalAddresString: string) {
@@ -217,14 +226,18 @@ export async function initializeProduct(
   return product.publicKey;
 }
 
-export async function addProposalWebpage(proposalAddressString: String, webpage: String) {
+export async function addProposalWebpage(
+  proposalAddressString: String,
+  webpage: String
+) {
   const proposalAddress = new PublicKey(proposalAddressString);
 
-  const tx = await program.value.methods.addProposalWebpage(webpage)
-                                        .accounts({
-                                          proposal: proposalAddress,
-                                        }).
-                                        rpc();
+  const tx = await program.value.methods
+    .addProposalWebpage(webpage)
+    .accounts({
+      proposal: proposalAddress,
+    })
+    .rpc();
   console.log(tx);
 }
 
@@ -282,7 +295,6 @@ export async function createCPMContract(
       payer: publicKey.value!,
     })
     .rpc();
-  console.log("Deal created !");
 }
 
 export async function acceptCPMContract(
@@ -352,9 +364,8 @@ export async function fetchBrandByUsername(username: string) {
 
 export async function fetchInfluencerByUsername(username: string) {
   const influencers = await fetchAllInfluencers();
-  console.log(influencers);
+
   for (var influencer of influencers) {
-    console.log(influencer);
     if (influencer.account.username == username) return influencer;
   }
 }
@@ -376,29 +387,47 @@ export async function getCurrentUser() {
 
   const brands = await fetchAllBrands();
 
-  console.log(brands);
-
   for (var brand of brands) {
     if (brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
       return ["Brand", brand];
     }
   }
+}
+export async function getBrandProposals(brandAddressString: String) {
+  const allProposals = await program.value.account.proposal.all();
+  const brandProposals = [];
 
-  console.log("fuiya...");
+  for (var proposal of allProposals) {
+    if (proposal.account.createdBy.toBase58() === brandAddressString) {
+      brandProposals.push(proposal);
+    }
+  }
+
+  const influencers = await fetchAllInfluencers();
+
+  for (var proposal of brandProposals) {
+    const proposalInfluencerKey = proposal.account.influencerKey.toBase58();
+    for (var influencer of influencers) {
+      const influencerKey = influencer.account.createdBy.toBase58();
+
+      if (proposalInfluencerKey === influencerKey) {
+        proposal.account.influencer = influencer.account;
+      }
+    }
+  }
+  return brandProposals;
 }
 
 export async function getInfluencerProposals(influencerAddressString: String) {
   const allProposals = await program.value.account.proposal.all();
   const influencerProposals = [];
-  console.log(influencerAddressString);
+
   for (var proposal of allProposals) {
-    console.log("This is proposal", proposal);
-    console.log(proposal.account.influencerKey.toBase58());
     if (proposal.account.influencerKey.toBase58() == influencerAddressString) {
       influencerProposals.push(proposal);
     }
   }
-  console.log("influencer proposals", influencerProposals);
+
   for (var proposal of influencerProposals) {
     var brand = await program.value.account.brand.fetch(proposal.account.brand);
     proposal.account.brand = brand;
@@ -410,9 +439,7 @@ export async function getInfluencerProposals(influencerAddressString: String) {
 export async function getProposalProducts(proposalAddressString: String) {
   const allProducts = await program.value.account.product.all();
   const proposalProducts = [];
-  console.log(proposalAddressString);
   for (var product of allProducts) {
-    console.log("This is product", product);
     if (product.account.proposal.toBase58() == proposalAddressString) {
       proposalProducts.push(product);
     }
