@@ -47,11 +47,7 @@ var idCount = 1;
 
 const route = useRoute();
 
-import {
-  initializeProposal,
-  fetchAllInfluencers,
-  fetchAllBrands,
-} from "../../anchor/utils";
+import { initializeProposal, fetchAllInfluencers, fetchAllBrands, initializeProposalWithProducts } from '../../anchor/utils'
 import { PublicKey } from "@solana/web3.js";
 
 const products = ref([
