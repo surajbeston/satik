@@ -60,6 +60,9 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
     let params = SbApiFeedParams {
         program_id: crate::id(),
         deal_pk: ctx.accounts.deal.key(),
+        deal_ata: ctx.accounts.deal.deal_usdc_ata,
+        influencer_ata: ctx.accounts.deal.influencer_ata,
+        brand_ata: ctx.accounts.deal.brand_ata,
         url: ctx.accounts.deal.content_url.clone().unwrap(),
     };
 

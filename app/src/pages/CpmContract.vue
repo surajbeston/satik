@@ -7,7 +7,7 @@
         </h1>
         <label class="block pb-2 text-md font-semibold" for="productName">
           Unique Contract ID</label>
-        <input v-model="data.contractId"
+        <input v-model="data.uniqueId"
           class="w-full bg-transparent font-bold border-primary-50 shadow-[#021E32] shadow-lg border-2 rounded-2xl py-2 px-4 outline-none placeholder:text-primary-40 placeholder:font-bold"
           type="text" name="productName" id="productName" placeholder="new unique contract id" />
         <label class="block pb-2 mt-4 text-md font-semibold" for="productName">Initial Amount (Optional)</label>
@@ -28,11 +28,11 @@
         <div class="flex gap-2 justify-center">
           <div class="flex flex-col items-center">
             <label class="mb-2 font-bold">Start Date</label>
-            <Calender v-model="data.startDate" inline />
+            <Calender v-model="data.startsOn" inline />
           </div>
           <div class="flex flex-col items-center">
             <label class="mb-2 font-bold">End Date</label>
-            <Calender v-model="data.endDate" inline />
+            <Calender v-model="data.endsOn" inline />
           </div>
         </div>
         <div class="flex gap-2 mt-10 mx-4">
@@ -51,14 +51,14 @@
         </div>
         <div class="mx-4">
           <label class="block pb-2 mt-4 text-md font-semibold" for="productName">CPM (USDC per 1000 Reach)</label>
-          <input v-model="data.cpm"
+          <input :v-model="data.cpm" @input="onCPMChanged"
             class="w-full bg-transparent font-bold border-primary-50 shadow-[#021E32] shadow-lg border-2 rounded-2xl py-2 px-4 outline-none placeholder:text-primary-40 placeholder:font-bold"
             type="number" name="productName" id="productName" placeholder="2.68" />
         </div>
       </div>
     </div>
     <div class="mt-20 flex justify-center">
-      <Button class="bg-blue-800 px-6 py-2" label="Create CPM Contract" />
+      <Button @click="submitted" class="bg-blue-800 px-6 py-2" label="Create CPM Contract" />
     </div>
   </div>
 </template>
@@ -66,18 +66,47 @@
 <script setup>
 import Calender from "primevue/calendar";
 import Button from "primevue/button";
-import { reactive } from "vue";
+import { PublicKey } from "@solana/web3.js";
+import { reactive, ref } from "vue";
+import { createCPMContract } from "../../anchor/utils";
+import { store } from "../store.js";
+import { useRoute } from "vue-router";
+
+let route = useRoute();
 
 const data = reactive({
-  contractId: "",
+  uniqueId: "",
   initialAmount: null,
   initialAmountOnReach: null,
-  startDate: null,
-  endDate: null,
+  startsOn: null,
+  endsOn: null,
   startsOnReach: null,
   endsOnReach: null,
-  cpm: null,
+  cpm: 1,
 })
+
+function onCPMChanged(event) {
+  let value = event.target.value;
+  if (value != "") {
+    let splitted = value.split(".");
+    if (splitted.length > 1 && splitted[1].split("").length > 2) {
+      value = Math.trunc(value * 100) / 100;
+      event.target.value = value;
+    }
+  }
+  data.cpm = value;
+}
+
+function submitted() {
+  let brand = store.currentUser;
+  console.log(brand.publicKey.toBase58());
+
+  createCPMContract(
+    new PublicKey(route.params.id),
+    brand.publicKey,
+    data,
+  );
+}
 
 
 </script>

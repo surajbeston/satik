@@ -841,6 +841,14 @@
             "type": "publicKey"
           },
           {
+            "name": "brandAta",
+            "type": "publicKey"
+          },
+          {
+            "name": "influencerAta",
+            "type": "publicKey"
+          },
+          {
             "name": "initialAmount",
             "type": {
               "option": "u64"
@@ -1005,6 +1013,18 @@
             "type": "publicKey"
           },
           {
+            "name": "dealAta",
+            "type": "publicKey"
+          },
+          {
+            "name": "influencerAta",
+            "type": "publicKey"
+          },
+          {
+            "name": "brandAta",
+            "type": "publicKey"
+          },
+          {
             "name": "url",
             "type": "string"
           }
@@ -1045,6 +1065,6 @@
     }
   ],
   "metadata": {
-    "address": "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
+    "address": "Eq45sUSp1VB68WLFT4pP3SZ7ydiwffx61NcCjCArJxh7"
   }
 }

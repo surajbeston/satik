@@ -5,17 +5,17 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-satik = "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
+satik = "Eq45sUSp1VB68WLFT4pP3SZ7ydiwffx61NcCjCArJxh7"
 
 [programs.localnet]
-satik = "C86he5HKmQvHpLH2zoZgozwBCm9wkGBYsjBNhmjwNDTU"
+satik = "Eq45sUSp1VB68WLFT4pP3SZ7ydiwffx61NcCjCArJxh7"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
 cluster = "Devnet"
-wallet = "/home/suraj/.config/solana/id.json"
+wallet = "/home/viristo/.config/solana/id.json"
 
 [scripts]
 index = "bun run src_js/index.ts"

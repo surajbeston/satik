@@ -188,6 +188,7 @@ async function main() {
   //   )
   //   .accounts({
   //     brand: brandPDA,
+  //     mint: mintKeypair.publicKey,
   //     usdcAta: payerUsdcAccount.address,
   //     signer: payerKeypair.publicKey,
   //   })
@@ -220,13 +221,13 @@ async function main() {
 
   // const tx = await program.methods
   //   .createDeal({
-  //     initialAmount: new BN(1000000),
+  //     initialAmount: new BN(100000),
   //     initialAmountOnReach: new BN(500),
   //     startsOn: new BN(Date.now() / 1000),
   //     startsOnReach: new BN(1000),
   //     endsOn: new BN(Date.now() / 1000 + 1000000),
   //     endsOnReach: new BN(10000),
-  //     cpm: new BN(10000),
+  //     cpm: new BN(1000),
   //     // contentUrl: "",
   //     idSeed: dealId,
   //   })
@@ -251,9 +252,9 @@ async function main() {
   //   .signers([influencerKeypair])
   //   .rpc();
 
-  // console.log(tx);
-  // const fetchedDeal = await program.account.deal.fetch(dealPDA);
-  // console.log(fetchedDeal);
+  // // console.log(tx);
+  const fetchedDeal = await program.account.deal.fetch(dealPDA);
+  console.log(fetchedDeal);
 
   // const tx = await program.methods
   //   .scheduleFeed()

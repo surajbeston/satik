@@ -197,10 +197,10 @@ async function initiateContract(contractType) {
   } else {
     if (store.currentUserLoaded) {
       if (store.currentUserType == "Brand") {
-        if (contractType) router.push(`/contract/${publicKey.value}`);
+        if (contractType == "purchase") router.push(`/contract/${publicKey.value}`);
         else router.push(`/cpm-contract/${publicKey.value}`);
       } else {
-        toast("Only influencer is allowed to submit a proposal.", {
+        toast("Only brand is allowed to submit a proposal.", {
           autoClose: 3000,
           type: "error",
         });

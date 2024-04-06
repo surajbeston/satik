@@ -58,6 +58,8 @@ pub fn handle_create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Res
     ctx.accounts.deal.brand = ctx.accounts.brand.key();
     ctx.accounts.deal.influencer = ctx.accounts.influencer.key();
     ctx.accounts.deal.deal_usdc_ata = ctx.accounts.deal_usdc_ata.key();
+    ctx.accounts.deal.brand_ata = ctx.accounts.brand_usdc_ata.key();
+    ctx.accounts.deal.influencer_ata = ctx.accounts.influencer.usdc_ata;
     ctx.accounts.deal.initial_amount = data.initial_amount;
     ctx.accounts.deal.initial_amount_on_reach = data.initial_amount_on_reach;
     ctx.accounts.deal.initial_amount_paid = false;

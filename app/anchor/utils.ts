@@ -1,4 +1,3 @@
-import BN from "bn.js";
 import {
   getAssociatedTokenAddress,
   createMint,
@@ -269,28 +268,41 @@ export async function createCPMContract(
   if (params.initialAmount) {
     data.initialAmount = new BN(params.initialAmount);
   }
+  if (params.initialAmountOnReach) {
+    data.initialAmountOnReach = new BN(params.initialAmountOnReach);
+  }
+
+  let startsOn = Math.trunc(params.startsOn.getTime() / 1000);
+  console.log(startsOn);
+
   data = {
     ...data,
     idSeed: params.uniqueId,
-    initialAmountOnReach: params.initialAmountOnReach,
-    startsOn: new BN(params.startsOn.getUTCSeconds()),
+    startsOn: new BN(1712512800),
     startsOnReach: new BN(params.startsOnReach),
-    endsOn: new BN(params.endsOn.getUTCSeconds()),
+    // endsOn: new BN(Math.trunc(params.endsOn.getTime() / 1000)),
     endsOnReach: new BN(params.endsOnReach),
     cpm: new BN(perReachAmount),
   };
 
+  console.log(data);
+
+  let accounts = {
+    deal: dealPDA,
+    dealUsdcAta: dealUsdcAta,
+    brandUsdcAta: brandATA,
+    brand: brandPk,
+    influencer: influencerPk,
+    payer: publicKey.value!,
+  };
+  console.log(accounts);
+
   const tx = await program.value.methods
     .createDeal(data)
-    .accounts({
-      deal: dealPDA,
-      dealUsdcAta: dealUsdcAta,
-      brandUsdcAta: brandATA,
-      brand: brandPk,
-      influencer: influencerPk,
-      payer: publicKey.value!,
-    })
+    .accounts(accounts)
     .rpc();
+  console.log(tx);
+
   console.log("Deal created !");
 }
 

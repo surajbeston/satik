@@ -7,6 +7,9 @@ use crate::types::U8Pubkey;
 pub struct SbApiFeedParams {
     pub program_id: U8Pubkey,
     pub deal_pk: U8Pubkey,
+    pub deal_ata: U8Pubkey,
+    pub influencer_ata: U8Pubkey,
+    pub brand_ata: U8Pubkey,
     pub url: String,
 }
 

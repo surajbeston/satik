@@ -9,6 +9,7 @@ name = "api_feed"
 path = "src/main.rs"
 
 [dependencies]
+anchor-spl = "0.29.0"
 borsh = { "version" = "1.4.0", "features" = ["derive"] }
 reqwest = "0.12.2"
 serde = "1.0.197"

@@ -6,6 +6,8 @@ pub struct Deal {
     pub brand: Pubkey,
     pub influencer: Pubkey,
     pub deal_usdc_ata: Pubkey,
+    pub brand_ata: Pubkey,
+    pub influencer_ata: Pubkey,
     pub initial_amount: Option<u64>,
     pub initial_amount_on_reach: Option<u64>,
     pub starts_on: i64,
