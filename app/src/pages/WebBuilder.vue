@@ -178,7 +178,7 @@ const getCode = async () => {
 
   await addProposalWebpage(proposalAddress.value, url);
 
-  router.push("/brand/" + store.currentUser.account.username);
+  // router.push("/brand/" + store.currentUser.account.username);
 
 };
 

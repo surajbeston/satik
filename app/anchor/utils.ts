@@ -178,6 +178,8 @@ export async function initializeProposalWithProducts(message: String, influencer
                                 .rpc()
 
     console.log(proposalTransaction);
+
+    
     return [products, proposal.publicKey.toBase58()]
 }
 
@@ -220,12 +222,17 @@ export async function initializeProduct(
 export async function addProposalWebpage(proposalAddressString: String, webpage: String) {
   const proposalAddress = new PublicKey(proposalAddressString);
 
+  var proposalFetched = await program.value.account.proposal.fetch(proposalAddress);
+  console.log("Fetched Proposal old", proposalFetched);
+
   const tx = await program.value.methods.addProposalWebpage(webpage)
                                         .accounts({
                                           proposal: proposalAddress,
                                         }).
                                         rpc();
   console.log(tx);
+  proposalFetched = await program.value.account.proposal.fetch(proposalAddress);
+  console.log("Fetched Proposal", proposalFetched);
 }
 
 export async function createCPMContract(

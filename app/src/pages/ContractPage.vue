@@ -11,16 +11,11 @@
             </div>
           </div>
           <div class="mt-10">
-<<<<<<< HEAD
             <label class="block font-semibold text-xl" for="message"
               >Message to Influencer:</label
             >
             <textarea
               v-model="proposalMessage"
-=======
-            <label class="block font-semibold text-xl" for="message">Message to Influencer:</label>
-            <textarea v-model="bio"
->>>>>>> 33bb28a74a58a236b044998d58c978bd705e4c4a
               class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
               cols="30" rows="5" type="text" placeholder="Message to Influencer" id="message" name="message" />
           </div>
@@ -29,18 +24,12 @@
             <button @click="addProduct" class="bg-primary-0 py-2 w-full">
               Add Product
             </button>
-<<<<<<< HEAD
             <button
               @click="goToBuilder()"
               type="submit"
               class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto"
             >
               Send Proposal
-=======
-            <button @click="goToBuilder()" type="submit"
-              class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto">
-              Next
->>>>>>> 33bb28a74a58a236b044998d58c978bd705e4c4a
             </button>
           </div>
         </form>
@@ -118,15 +107,12 @@ function goToBuilder() {
   }
 }
 
-<<<<<<< HEAD
 async function createContract () {
-=======
-function createContract() {
->>>>>>> 33bb28a74a58a236b044998d58c978bd705e4c4a
   console.log(store.products);
   if (store.currentUserLoaded) {
     const influencerAddress = new PublicKey(route.params.id);
     const brandAddress = store.currentUser.publicKey;
+    console.log(proposalMessage.value);
     toast("Sending proposal. Please sign the transaction.", {autoClose: 5000, type: 'info' })
     const [products, proposalAddress] = await initializeProposalWithProducts(proposalMessage.value, influencerAddress, brandAddress, store.products);
     localStorage.setItem("products", JSON.stringify(products));
