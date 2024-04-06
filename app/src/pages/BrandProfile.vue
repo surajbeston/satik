@@ -217,9 +217,13 @@ async function getProposal(address) {
   const result = await getBrandProposals(address);
   console.log("this is result in fsdfs", result);
   if (result) {
-    proposals.value = result.sort((a, b) => {
-      return new Date(b.account.datetime) - new Date(a.account.datetime);
-    });
+    proposals.value = result
+      .sort((a, b) => {
+        const aDate = a.account.datetime || 0;
+        const bDate = b.account.datetime || 0;
+        return bDate - aDate;
+      })
+      .filter((proposal) => proposal.account.datetime);
   }
 }
 

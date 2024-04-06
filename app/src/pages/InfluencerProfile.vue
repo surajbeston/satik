@@ -267,7 +267,7 @@ async function initiateContract(contractType) {
         if (contractType) router.push(`/contract/${publicKey.value}`);
         else router.push(`/cpm-contract/${publicKey.value}`);
       } else {
-        toast("Only influencer is allowed to submit a proposal.", {
+        toast("Only Brands is allowed to submit a proposal.", {
           autoClose: 3000,
           type: "error",
         });
@@ -288,9 +288,13 @@ async function getProposals(address) {
   const result = await getInfluencerProposals(address);
 
   if (result) {
-    proposals.value = result.sort((a, b) => {
-      return new Date(b.account.datetime) - new Date(a.account.datetime);
-    });
+    proposals.value = result
+      .sort((a, b) => {
+        const aDate = a.account.datetime || 0;
+        const bDate = b.account.datetime || 0;
+        return bDate - aDate;
+      })
+      .filter((proposal) => proposal.account.datetime);
   }
 }
 

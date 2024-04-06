@@ -36,6 +36,18 @@
               name="message"
             />
           </div>
+          <div>
+            <label class="block font-semibold text-xl pb-4" for="redeemLink"
+              >Redeem Link</label
+            >
+            <input
+              class="w-full bg-transparent font-bold border-primary-50 shadow-[#021E32] shadow-lg border-2 rounded-2xl py-3 px-6 outline-none placeholder:text-primary-40 placeholder:font-bold"
+              type="text"
+              name="redeemLink"
+              id="redeemLink"
+              placeholder="Your redeem link..."
+            />
+          </div>
           <div
             class="w-full lg:w-[60%] mx-auto flex flex-col gap-4 md:flex-row font-semibold justify-center items-center pt-8"
           >
@@ -147,14 +159,22 @@ function goToBuilder() {
   }
 }
 
-async function createContract () {
+async function createContract() {
   console.log(store.products);
   if (store.currentUserLoaded) {
     const influencerAddress = new PublicKey(route.params.id);
     const brandAddress = store.currentUser.publicKey;
     console.log(proposalMessage.value);
-    toast("Sending proposal. Please sign the transaction.", {autoClose: 5000, type: 'info' })
-    const [products, proposalAddress] = await initializeProposalWithProducts(proposalMessage.value, influencerAddress, brandAddress, store.products);
+    toast("Sending proposal. Please sign the transaction.", {
+      autoClose: 5000,
+      type: "info",
+    });
+    const [products, proposalAddress] = await initializeProposalWithProducts(
+      proposalMessage.value,
+      influencerAddress,
+      brandAddress,
+      store.products
+    );
     localStorage.setItem("products", JSON.stringify(products));
     localStorage.setItem("proposalAddress", proposalAddress);
     toast("Contract created successfully. Redirecting to web builder.", {
