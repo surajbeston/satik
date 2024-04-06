@@ -41,6 +41,7 @@
               >Redeem Link</label
             >
             <input
+              v-model="redeemerURL"
               class="w-full bg-transparent font-bold border-primary-50 shadow-[#021E32] shadow-lg border-2 rounded-2xl py-3 px-6 outline-none placeholder:text-primary-40 placeholder:font-bold"
               type="text"
               name="redeemLink"
@@ -101,7 +102,7 @@ import {
 import { PublicKey } from "@solana/web3.js";
 
 const proposalMessage = ref("");
-const redeemerURL = ref("http://localhost:3000");
+const redeemerURL = ref("");
 
 const products = ref([
   {
@@ -167,6 +168,7 @@ async function createContract() {
     const brandAddress = store.currentUser.publicKey;
     console.log(proposalMessage.value);
     toast("Sending proposal. Please sign the transaction.", {autoClose: 5000, type: 'info' })
+    console.log("redeemerURL", redeemerURL.value)
     const [products, proposalAddress] = await initializeProposalWithProducts(proposalMessage.value, influencerAddress, brandAddress, store.products, redeemerURL.value);
     localStorage.setItem("products", JSON.stringify(products));
     localStorage.setItem("proposalAddress", proposalAddress);
