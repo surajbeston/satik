@@ -178,8 +178,7 @@ export async function initializeProposalWithProducts(message: String, influencer
                                 .rpc()
 
     console.log(proposalTransaction);
-    return [products, proposal.publicKey.toBase58()];
-
+    return [products, proposal.publicKey.toBase58()]
 }
 
 export async function acceptProposal(proposalAddresString: string) {
