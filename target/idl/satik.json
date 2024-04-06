@@ -488,12 +488,22 @@
           "isSigner": false
         },
         {
-          "name": "switchboardAttestation",
-          "isMut": false,
+          "name": "routine",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "escrowWallet",
+          "isMut": true,
           "isSigner": false
         },
         {
-          "name": "switchboardAttestationState",
+          "name": "escrowTokenWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "switchboardAttestation",
           "isMut": false,
           "isSigner": false
         },
@@ -508,19 +518,19 @@
           "isSigner": false
         },
         {
-          "name": "switchboardRequest",
+          "name": "switchboardMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "functionAccountAuthority",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "switchboardRequestEscrow",
+          "name": "payer",
           "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "switchboardMint",
-          "isMut": false,
-          "isSigner": false
+          "isSigner": true
         },
         {
           "name": "tokenProgram",
@@ -531,11 +541,6 @@
           "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
         },
         {
           "name": "systemProgram",
@@ -1030,38 +1035,54 @@
           }
         ]
       }
+    },
+    {
+      "name": "ConstraintErrors",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "UnexpectedProposalError"
+          },
+          {
+            "name": "UnexpectedBrandATAError"
+          },
+          {
+            "name": "ProposalNotExpectedError"
+          },
+          {
+            "name": "UnexpectedInfluencerError"
+          },
+          {
+            "name": "UnauthorizedRedeemError"
+          },
+          {
+            "name": "UnexpectedSigner"
+          }
+        ]
+      }
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "UnexpectedProposalError",
-      "msg": "Given proposal is not same as given product's proposal"
+      "name": "FeedAlreadyScheduled",
+      "msg": "Feed is already scheduled"
     },
     {
       "code": 6001,
-      "name": "UnexpectedBrandATAError",
-      "msg": "Given brand_ata/brand_receiver is not same as proposal's"
+      "name": "DealNotAccepted",
+      "msg": "Deal is not yet accepted by Influencer"
     },
     {
       "code": 6002,
-      "name": "ProposalNotExpectedError",
-      "msg": "Given proposal is not expected by influencer"
+      "name": "InsufficientToken",
+      "msg": "Insufficient token balance"
     },
     {
       "code": 6003,
-      "name": "UnexpectedInfluencerError",
-      "msg": "Given influencer_ata/influencer_receiver is not same as proposal's"
-    },
-    {
-      "code": 6004,
-      "name": "UnauthorizedRedeemError",
-      "msg": "Balance can only be redeemed by owner"
-    },
-    {
-      "code": 6005,
-      "name": "UnexpectedSigner",
-      "msg": "Current signer is not proposal's creator"
+      "name": "InsufficientSOL",
+      "msg": "Insufficient balance"
     }
   ],
   "metadata": {

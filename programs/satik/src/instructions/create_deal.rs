@@ -1,7 +1,7 @@
 use ::anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 
-use crate::states::{Brand, CreateDealData, Deal, Influencer};
+use crate::states::{Brand, CreateDealData, CustomError, Deal, Influencer};
 
 #[derive(Accounts)]
 #[instruction(data: CreateDealData)]
@@ -39,10 +39,9 @@ pub fn handle_create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Res
     msg!("Total amount to pay {}", total_amount_to_pay_to_influencer);
     msg!("Brand USDC amount {}", ctx.accounts.brand_usdc_ata.amount);
 
-    assert!(
-        ctx.accounts.brand_usdc_ata.amount > total_amount_to_pay_to_influencer,
-        "Insufficient USDC amount",
-    );
+    if ctx.accounts.brand_usdc_ata.amount < total_amount_to_pay_to_influencer {
+        return err!(CustomError::InsufficientToken);
+    }
 
     let cpi_accounts = Transfer {
         from: ctx.accounts.brand_usdc_ata.to_account_info().clone(),

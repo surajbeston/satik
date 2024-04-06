@@ -16,6 +16,7 @@ import {
   FunctionRoutineAccount,
   SwitchboardTestContext,
   FunctionRequestAccount,
+  SwitchboardWallet,
 } from "@switchboard-xyz/solana.js";
 import { NodeOracle } from "@switchboard-xyz/oracle";
 import { OracleJob, parseRawMrEnclave } from "@switchboard-xyz/common";
@@ -58,6 +59,11 @@ const influencerKeypair = SwitchboardTestContext.loadKeypair(
 );
 
 const sbRequestKeypair = anchor.web3.Keypair.generate();
+const sbRoutineKeypair = anchor.web3.Keypair.generate();
+const functionAccountKeypair = SwitchboardTestContext.loadKeypair(
+  "./keypairs/function1.json"
+);
+console.log(functionAccountKeypair.publicKey.toBase58());
 
 // let publicOracleQueue: QueueAccount;
 // let publicOracleQueuePk = new PublicKey(
@@ -80,11 +86,11 @@ let publicAttestationQueuePk = new PublicKey(
 
 let functionAccount: FunctionAccount;
 let functionAccountPk = new PublicKey(
-  "G2ka1S2jqKRWjrn5FUrBf8R566tnghfYfu7ywVEMSAq6"
+  "4PDoptYjQXogqKGq5mYGH6XUjWUZvH88vKgZWgSTbe3v"
 );
 
 let mrEnclave = parseRawMrEnclave(
-  "0x4ad9278e1b0743471da9afe9f56a7ad741feb7e57c0af3a392042998dacb9cbe"
+  "0x7c58b6258153d05036f09c02369e6246cd70d7b20d5379b0e6bbcaa0ad66a8b9"
 );
 // console.log(mrEnclave);
 const brandUsername = "brand1";
@@ -112,6 +118,7 @@ const [dealPDA] = PublicKey.findProgramAddressSync(
 
 async function main() {
   switchboard = await SwitchboardProgram.fromProvider(provider);
+  // switchboard = await Swi
   // [publicOracleQueue] = await QueueAccount.load(
   //   switchboard,
   //   publicOracleQueuePk
@@ -126,7 +133,7 @@ async function main() {
   // [aggregatorAccount] = await AggregatorAccount.load(switchboard, aggregatorAccountPk);
 
   // await provider.connection.requestAirdrop(
-  //   influencerKeypair.publicKey,
+  //   functionAccountKeypair.publicKey,
   //   LAMPORTS_PER_SOL
   // );
 
@@ -152,10 +159,19 @@ async function main() {
     true
   );
 
-  // [functionAccount] = await FunctionAccount.load(
-  //   switchboard,
-  //   functionAccountPk
-  // );
+  // await switchboard.verifyNewKeypair(sbRoutineKeypair);
+
+  const escrowWallet = SwitchboardWallet.fromSeed(
+    switchboard,
+    publicAttestationQueuePk,
+    functionAccountKeypair.publicKey,
+    functionAccountPk.toBytes()
+  );
+
+  [functionAccount] = await FunctionAccount.load(
+    switchboard,
+    functionAccountPk
+  );
   // [functionRoutineAccount] = await FunctionRoutineAccount.load(
   //   switchboard,
   //   functionRoutineAccountPk
@@ -253,8 +269,8 @@ async function main() {
   //   .rpc();
 
   // // console.log(tx);
-  const fetchedDeal = await program.account.deal.fetch(dealPDA);
-  console.log(fetchedDeal);
+  // const fetchedDeal = await program.account.deal.fetch(dealPDA);
+  // console.log(fetchedDeal);
 
   // const tx = await program.methods
   //   .scheduleFeed()
@@ -277,6 +293,26 @@ async function main() {
   //   .rpc();
 
   // const tx = await program.methods
+  //   .scheduleFeed()
+  //   .accounts({
+  //     deal: dealPDA,
+  //     switchboardAttestation: switchboard.attestationProgramId,
+  //     switchboardAttestationQueue: publicAttestationQueuePk,
+  //     switchboardFunction: functionAccountPk,
+  //     routine: sbRoutineKeypair.publicKey,
+  //     escrowWallet: escrowWallet.publicKey,
+  //     escrowTokenWallet: anchor.utils.token.associatedAddress({
+  //       mint: NATIVE_MINT,
+  //       owner: escrowWallet.publicKey,
+  //     }),
+  //     switchboardMint: NATIVE_MINT,
+  //     functionAccountAuthority: functionAccountKeypair.publicKey,
+  //     payer: payerKeypair.publicKey,
+  //   })
+  //   .signers([sbRoutineKeypair, functionAccountKeypair, payerKeypair])
+  //   .rpc();
+
+  // const tx = await program.methods
   //   .scheduledFeedCallback({
   //     reach: new BN(1200),
   //   })
@@ -291,20 +327,29 @@ async function main() {
 
   // console.log(tx);
 
-  // [functionAccount] = await FunctionAccount.create(switchboard, {
-  //   attestationQueue: publicAttestationQueue,
-  //   container: "sauravniraula/api_feed",
-  //   containerRegistry: "dockerhub",
-  //   name: "API Feed 11",
-  //   mrEnclave,
-  // });
+  // [functionAccount] = await FunctionAccount.create(
+  //   await SwitchboardProgram.fromConnection(
+  //     provider.connection,
+  //     functionAccountKeypair
+  //   ),
+  //   {
+  //     attestationQueue: publicAttestationQueue,
+  //     container: "sauravniraula/api_feed",
+  //     containerRegistry: "dockerhub",
+  //     name: "API Feed 12",
+  //     authority: functionAccountKeypair.publicKey,
+  //     mrEnclave,
+  //   },
+  //   null,
+  //   {}
+  // );
   // console.log(functionAccount.publicKey.toBase58());
 
-  // [functionRequestAccount] = await FunctionRequestAccount.create(switchboard, {
+  // await FunctionRequestAccount.create(switchboard, {
   //   functionAccount,
   // });
 
-  // [functionRoutineAccount] = await FunctionRoutineAccount.create(switchboard, {
+  // await FunctionRoutineAccount.create(switchboard, {
   //   schedule: "* 1 * * * *",
   //   functionAccount,
   // });
