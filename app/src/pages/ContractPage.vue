@@ -26,7 +26,7 @@
               >Message to Influencer:</label
             >
             <textarea
-              v-model="bio"
+              v-model="proposalMessage"
               class="bg-transparent border-[3px] py-2 indent-4 rounded-xl outline-none w-full my-3 border-primary-30 placeholder:text-primary-30 font-semibold"
               cols="30"
               rows="5"
@@ -47,7 +47,7 @@
               type="submit"
               class="bg-secondaryLight-20 font-semibold w-full py-2 text-center mx-auto"
             >
-              Next
+              Send Proposal
             </button>
           </div>
         </form>
@@ -70,9 +70,12 @@ import { useRouter, useRoute } from "vue-router";
 var idCount = 1;
 
 const route = useRoute();
+const router = useRouter();
 
 import { initializeProposal, fetchAllInfluencers, fetchAllBrands, initializeProposalWithProducts } from '../../anchor/utils'
 import { PublicKey } from "@solana/web3.js";
+
+const proposalMessage = ref("");
 
 const products = ref([
   {
@@ -122,12 +125,17 @@ function goToBuilder() {
   }
 }
 
-function createContract () {
+async function createContract () {
   console.log(store.products);
   if (store.currentUserLoaded){
     const influencerAddress = new PublicKey(route.params.id);
     const brandAddress = store.currentUser.publicKey;
-    initializeProposalWithProducts("", influencerAddress, brandAddress, store.products);
+    toast("Sending proposal. Please sign the transaction.", {autoClose: 5000, type: 'info' })
+    const [products, proposalAddress] = await initializeProposalWithProducts(proposalMessage.value, influencerAddress, brandAddress, store.products);
+    localStorage.setItem("products", JSON.stringify(products));
+    localStorage.setItem("proposalAddress", proposalAddress);
+    toast("Contract created successfully. Redirecting to web builder.", {autoClose: 3000, type: 'success' })
+    router.push("/builder")
   }
   else{
     toast("Brand address not available", {autoClose: 3000, type: 'error' }) 

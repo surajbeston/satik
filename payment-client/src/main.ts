@@ -13,6 +13,7 @@ import { SolanaConnect } from "solana-connect";
 //@ts-ignore
 import { toast } from "https://cdn.jsdelivr.net/npm/vue3-toastify@0.1.13/+esm";
 
+
 const commitment = "confirmed";
 const preflightCommitment = "processed";
 const programID = new PublicKey(idl.metadata.address);
@@ -49,6 +50,7 @@ function getProgram(provider: AnchorProvider): Program {
 }
 // @ts-ignore
 async function purchase(productAddressString: string) {
+
   const mint = new PublicKey("8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy");
 
   const productAddress = new PublicKey(productAddressString);
@@ -76,25 +78,29 @@ async function purchase(productAddressString: string) {
   console.log(customer_ATA.toBase58());
 
   const rent = new PublicKey("SysvarRent111111111111111111111111111111111");
-
-  const tx4 = await program.methods
-    .purchase(purchaseId)
-    .accounts({
-      purchase: purchaseAddress,
-      proposal: proposalAddress,
-      product: productAddress,
-      brandAta: proposal.brandAta as PublicKey,
-      influencerAta: proposal.influencerAta as PublicKey,
-      customerAta: customer_ATA,
-      usdcTokenAccount: escrow,
-      mint: mint,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-      rent: rent,
-    })
-    .rpc();
-  toast("Product Purchased", { autoClose: 2000, type: "success" });
-  console.log(tx4);
+  try{
+    toast("Purchase initiated. Please sign the transaction.", { autoClose: 2000, type: "info" });
+    const tx4 = await program.methods
+      .purchase(purchaseId)
+      .accounts({
+        purchase: purchaseAddress,
+        proposal: proposalAddress,
+        product: productAddress,
+        brandAta: proposal.brandAta as PublicKey,
+        influencerAta: proposal.influencerAta as PublicKey,
+        customerAta: customer_ATA,
+        usdcTokenAccount: escrow,
+        mint: mint,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        rent: rent,
+      })
+      .rpc();
+    toast("Product purchased.", { autoClose: 2000, type: "success" });
+  }
+  catch(error){
+    toast("Something went wrong", { autoClose: 2000, type: "error" });
+  } 
 }
 
 function addListeners() {

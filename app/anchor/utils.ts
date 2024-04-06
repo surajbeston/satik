@@ -16,6 +16,9 @@ import {
 } from "@solana/spl-token";
 import * as anchor from "@coral-xyz/anchor";
 
+import { Batch } from "../target/types/batch";
+
+
 import initWorkspace from "./useWorkspace";
 
 import {
@@ -36,9 +39,9 @@ import {
 import { AnchorProvider, Program } from "@project-serum/anchor";
 
 type returnType = {
-  wallet: AnchorWallet;
-  connection: Connection;
-  provider: AnchorProvider;
+  wallet: ComputedRef<AnchorWallet>;
+  connection: ComputedRef<Connection>;
+  provider: ComputedRef<AnchorProvider>;
   program: ComputedRef<Program>;
 };
 
@@ -59,7 +62,6 @@ let functionAccountPk = new PublicKey(
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
 
-console.log("rent", anchor.web3.SYSVAR_RENT_PUBKEY.toBase58());
 
 export async function createInfluencerAccount(
   username: String,
@@ -145,21 +147,25 @@ export async function initializeProposal(
 }
 
 export async function initializeProposalWithProducts(message: String, influencerAddress: PublicKey, brandAddress: PublicKey, products: any[]){
+
   const proposal = new anchor.web3.Keypair();
-    const {publicKey, wallet} = useWallet();
+    const {publicKey} = useWallet();
 
-    // const productInstructions = products.map((product: any) => program.value.methods.initializeProduct(product.productName, product.productDescription, product.totalAmount * 10 ** 6, product.influencerAmount * 10 ** 6)
-    //                                       .accounts({
-    //                                         product: product.publicKey,
-    //                                         proposal: proposal.publicKey
-    //                                       })
-    //                                       .signers([product]))
-
-    // console.log(productInstructions);
-
-
-
-    const tx = new Transaction();
+    const instructions = [];
+    const instructionSigners = [];
+    for (var product of products) {
+      const productAddress = new anchor.web3.Keypair();
+      instructions.push(
+        await program.value.methods.initializeProduct(product.productName, product.productDescription, new BN(product.totalAmount * 10 ** 6), new  BN(product.influencerAmount * 10 ** 6))
+                .accounts({
+                  product: productAddress.publicKey,
+                  proposal: proposal.publicKey
+                })
+                .instruction()
+      );
+      instructionSigners.push(productAddress);
+      product.productAddress = productAddress.publicKey.toBase58();
+    }
 
     const proposalTransaction = await program.value.methods.initializeProposal(message, publicKey.value)
                                 .accounts({
@@ -167,25 +173,13 @@ export async function initializeProposalWithProducts(message: String, influencer
                                     brand: brandAddress,
                                     influencer: influencerAddress
                                 })
-                                .signers([proposal])
-                                .instruction();
-    tx.add(proposalTransaction);
-                                
-    for (var product of products) {
-      console.log("product", product);
-      const productTransaction = await program.value.methods.initializeProduct(product.productName, product.productDescription, new  BN(product.totalAmount * 10 ** 6), new BN(product.influencerAmount * 10 ** 6))
-                                          .accounts({
-                                            product: product.publicKey,
-                                            proposal: proposal.publicKey
-                                          })
-                                          .signers([product])
-                                          .instruction()
-      tx.add(productTransaction);
-    }
-    
-    const finalTx = await provider.value.wallet.signAllTransactions(tx, connection);
-    
-    console.log(finalTx);
+                                .postInstructions(instructions)
+                                .signers([proposal, ...instructionSigners])
+                                .rpc()
+
+    console.log(proposalTransaction);
+    return [products, proposal.publicKey.toBase58()];
+
 }
 
 export async function acceptProposal(proposalAddresString: string) {
@@ -222,6 +216,17 @@ export async function initializeProduct(
     .signers([product])
     .rpc();
   return product.publicKey;
+}
+
+export async function addProposalWebpage(proposalAddressString: String, webpage: String) {
+  const proposalAddress = new PublicKey(proposalAddressString);
+
+  const tx = await program.value.methods.addProposalWebpage(webpage)
+                                        .accounts({
+                                          proposal: proposalAddress,
+                                        }).
+                                        rpc();
+  console.log(tx);
 }
 
 export async function createCPMContract(
