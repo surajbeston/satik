@@ -5,7 +5,7 @@
       v-if="showModal"
       class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-black/70 h-screen w-screen flex justify-center items-center"
     >
-      <div class="p-6 bg-primary-60 rounded-xl shadow-2xl w-[500px] h-[400px]">
+      <div class="p-6 bg-primary-60 rounded-xl shadow-2xl w-[500px] h-[420px]">
         <img
           @click="showModal = false"
           class="w-4 h-4 mr-0 ml-auto cursor-pointer"
@@ -25,6 +25,12 @@
             influencer
           </li>
         </ul>
+        <p class="text-2xl font-bold text-secondary-0">
+          Before sending proposal please make sure you have saved.
+        </p>
+        <p class="text-lg font-semibold text-neutral-10 pt-3 text-center">
+          Happy Building!
+        </p>
       </div>
     </div>
     <!-- modal end -->
@@ -37,21 +43,28 @@
     <div class="w-full flex py-8">
       <button
         class="w-full bg-primary-20 py-2 font-bold text-lg"
-        @click="getCode"
+        @click="showConfirmModal = true"
       >
         Confirm and Deploy
       </button>
       <!-- <button
         class="w-full bg-secondaryLight-20 font-bold text-lg"
-        @click="sendProposal"
+        @click="showConfirmModal = true"
       >
         Send Proposal
       </button> -->
     </div>
+    <Modal
+      v-if="showConfirmModal"
+      @closeModal="closeModal"
+      @handleSendClick="handleSendProposal"
+      message="Page will be deployed and link will be added to the proposal."
+    />
   </div>
 </template>
 
 <script setup>
+import Modal from "../components/Modal.vue";
 import { toast } from "vue3-toastify";
 import { onMounted, ref } from "vue";
 // grapes and grapes plugins
@@ -69,15 +82,12 @@ import { createHtml } from "../helper/htmlCreator";
 import "grapesjs/dist/css/grapes.min.css";
 // web3 storage
 import { createClient } from "../helper/client";
-import {
-  addProposalWebpage
-} from "../../anchor/utils";
+import { addProposalWebpage } from "../../anchor/utils";
 import { useWallet } from "solana-wallets-vue";
 import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
 import { useRoute, useRouter } from "vue-router";
-
 
 const router = useRouter();
 const route = useRoute();
@@ -88,6 +98,7 @@ const selectedProduct = ref(null);
 const products = ref([]);
 const showModal = ref(true);
 const proposalAddress = ref("");
+const showConfirmModal = ref(false);
 
 onMounted(async () => {
   const data = localStorage.getItem("products");
@@ -122,6 +133,13 @@ onMounted(async () => {
   }, 1000);
 });
 
+const handleSendProposal = () => {
+  getCode();
+  showConfirmModal.value = false;
+};
+const closeModal = () => {
+  showConfirmModal.value = false;
+};
 const productClicked = (div, product) => {
   // unselect, selected component  on canvas
   editor.value.select(null);
@@ -157,31 +175,30 @@ const insetProduct = () => {
   });
 };
 
-
 const getCode = async () => {
-  toast("Deploying the page to IPFS.", { autoClose: 2000, type:"info" });
+  toast("Deploying the page to IPFS.", { autoClose: 2000, type: "info" });
   const html = editor.value.getHtml();
   const cssCode = editor.value.getCss({ clean: true });
 
   //   combine css to the html file
   const code = createHtml(html, cssCode, products);
 
-  const files = [new File([code], "index.html")];
   const blob = new Blob([code], { type: "text/html" });
   const cid = await createClient(blob);
   const url = `https://${cid}.ipfs.cf-ipfs.com`;
 
   console.log(url);
 
-  toast("Page Deployment successful!", { autoClose: 2000, type:"success" });
-  toast("Adding webpage link to proposal. Please sign the transaction.", { autoClose: 2000, type:"info" });
+  toast("Page Deployment successful!", { autoClose: 2000, type: "success" });
+  toast("Adding webpage link to proposal. Please sign the transaction.", {
+    autoClose: 2000,
+    type: "info",
+  });
 
   await addProposalWebpage(proposalAddress.value, url);
 
-  // router.push("/brand/" + store.currentUser.account.username);
-
+  router.push("/brand/" + store.currentUser.account.username);
 };
-
 </script>
 
 <style>

@@ -44,6 +44,8 @@ pub mod satik {
         name: String,
         profile_image: String,
         bio: String,
+        total_followers: u64,
+        social_media: String
     ) -> Result<()> {
         let influencer = &mut ctx.accounts.influencer;
         influencer.name = name;
@@ -52,6 +54,8 @@ pub mod satik {
         influencer.bio = bio;
         influencer.created_by = ctx.accounts.signer.key();
         influencer.usdc_ata = ctx.accounts.usdc_ata.key();
+        influencer.total_followers = total_followers;
+        influencer.social_media = social_media;
 
         Ok(())
     }
@@ -71,6 +75,7 @@ pub mod satik {
         proposal.brand_ata = ctx.accounts.brand.usdc_ata;
         proposal.created_by = ctx.accounts.signer.key();
         proposal.accepted = false;
+        proposal.datetime = Clock::get()?.unix_timestamp;
 
         Ok(())
     }

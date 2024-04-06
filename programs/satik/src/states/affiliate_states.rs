@@ -31,7 +31,10 @@ pub struct Influencer {
     #[max_len(200)]
     pub bio: String,
     pub created_by: Pubkey,
-    pub usdc_ata: Pubkey
+    pub usdc_ata: Pubkey,
+    pub total_followers: u64,
+    #[max_len(350)]
+    pub social_media: String
 }
 
 #[account]
@@ -39,11 +42,11 @@ pub struct Influencer {
 pub struct Proposal {
     pub brand: Pubkey,
     pub influencer_key: Pubkey,
-    #[max_len(200)]
+    #[max_len(300)]
     pub webpage: String,
     #[max_len(100)]
     pub message: String,
-    pub datetime: u64,
+    pub datetime: i64,
     pub created_by: Pubkey,
     pub accepted: bool,
     pub brand_ata: Pubkey,

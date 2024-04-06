@@ -75,8 +75,6 @@ async function purchase(productAddressString: string) {
     wallet?.publicKey as PublicKey
   );
 
-  console.log(customer_ATA.toBase58());
-
   const rent = new PublicKey("SysvarRent111111111111111111111111111111111");
   try{
     toast("Purchase initiated. Please sign the transaction.", { autoClose: 2000, type: "info" });

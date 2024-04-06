@@ -96,7 +96,6 @@ function purchase(productAddressString) {
                     return [4 /*yield*/, spl_token_1.getAssociatedTokenAddress(mint, wallet === null || wallet === void 0 ? void 0 : wallet.publicKey)];
                 case 4:
                     customer_ATA = _a.sent();
-                    console.log(customer_ATA.toBase58());
                     rent = new web3_js_1.PublicKey("SysvarRent111111111111111111111111111111111");
                     _a.label = 5;
                 case 5:

@@ -55,6 +55,7 @@ pub struct InitializeProposal<'info> {
 
 #[derive(Accounts)]
 pub struct AddWebpage<'info> {
+    #[account(mut)]
     pub proposal: Account<'info, Proposal>,
 
     #[account(mut)]

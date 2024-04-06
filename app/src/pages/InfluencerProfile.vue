@@ -75,7 +75,7 @@
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
                   Webpage:
-                  <span class="block ml-2">{{ proposal.account.website }}</span>
+                  <span class="block ml-2">{{ proposal.account.webpage }}</span>
                 </p>
                 <p class="text-xl font-medium text-neutral-20">
                   Datetime Sent:
