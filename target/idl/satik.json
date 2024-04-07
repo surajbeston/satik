@@ -370,11 +370,6 @@
           "isSigner": false
         },
         {
-          "name": "satikReceiver",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "escrow",
           "isMut": true,
           "isSigner": false
@@ -1250,6 +1245,6 @@
     }
   ],
   "metadata": {
-    "address": "EVsYvVjhpgYr9RExmu6sn1Hi5fCufyFfXhwkBZcuy6ah"
+    "address": "HCbLy5R4323caot2m8sTdh567oRwmurE8QhHDYGJYDFm"
   }
 }

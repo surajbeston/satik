@@ -13,7 +13,8 @@ use states::{ApiFeedData, CreateDealData};
 
 use instructions::affiliate_instructions::*;
 
-declare_id!("EVsYvVjhpgYr9RExmu6sn1Hi5fCufyFfXhwkBZcuy6ah");
+declare_id!("HCbLy5R4323caot2m8sTdh567oRwmurE8QhHDYGJYDFm");
+
 
 #[program]
 pub mod satik {
@@ -224,7 +225,7 @@ pub mod satik {
         let escrow = ctx.accounts.escrow.clone();
         let influencer_receiver = ctx.accounts.influencer_receiver.clone();
         let brand_receiver = ctx.accounts.brand_receiver.clone();
-        let satik_receiver = ctx.accounts.satik_receiver.clone();
+        // let satik_receiver = ctx.accounts.satik_receiver.clone();
         let mint = ctx.accounts.mint.clone();
 
         let cpi_program = &ctx.accounts.token_program;
@@ -263,20 +264,20 @@ pub mod satik {
 
         let _ = transfer_checked(ctx, purchase.influencer_amount, 6);
 
-        let transfer_accounts_for_mint = TransferChecked {
-            from: escrow.to_account_info(),
-            to: satik_receiver.to_account_info(),
-            authority: purchase.to_account_info(),
-            mint: mint.to_account_info(),
-        };
+        // let transfer_accounts_for_mint = TransferChecked {
+        //     from: escrow.to_account_info(),
+        //     to: satik_receiver.to_account_info(),
+        //     authority: purchase.to_account_info(),
+        //     mint: mint.to_account_info(),
+        // };
 
-        let ctx = CpiContext::new_with_signer(
-            cpi_program.to_account_info(),
-            transfer_accounts_for_mint,
-            signer_seeds,
-        );
+        // let ctx = CpiContext::new_with_signer(
+        //     cpi_program.to_account_info(),
+        //     transfer_accounts_for_mint,
+        //     signer_seeds,
+        // );
 
-        let _ = transfer_checked(ctx, purchase.satik_amount, 6);
+        // let _ = transfer_checked(ctx, purchase.satik_amount, 6);
 
         Ok(())
     }

@@ -90,12 +90,14 @@ function purchase(productAddressString) {
                     proposal = _b.sent();
                     purchaseId = Math.random().toString(36).slice(2);
                     _a = web3_js_1.PublicKey.findProgramAddressSync([Buffer.from(purchaseId)], program.programId), purchaseAddress = _a[0], bump = _a[1];
+                    console.log("Program ID", program.programId.toBase58());
                     console.log("product", product);
                     console.log("purchase address ", purchaseAddress.toBase58());
                     console.log("bump ", bump);
                     return [4 /*yield*/, spl_token_1.getAssociatedTokenAddress(mint, purchaseAddress, true)];
                 case 3:
                     escrow = _b.sent();
+                    console.log("Proposal: ", proposal);
                     return [4 /*yield*/, spl_token_1.getAssociatedTokenAddress(mint, wallet === null || wallet === void 0 ? void 0 : wallet.publicKey)];
                 case 4:
                     customer_ATA = _b.sent();
@@ -145,6 +147,7 @@ function purchase(productAddressString) {
                     tx4 = _b.sent();
                     console.log(tx4);
                     _esm_1.toast("Product purchased.", { autoClose: 2000, type: "success" });
+                    location.href = proposal.redeemerUrl + "?purchaseAddress=" + purchaseAddress.toBase58() + "&bump=" + bump;
                     return [3 /*break*/, 13];
                 case 12:
                     error_2 = _b.sent();

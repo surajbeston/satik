@@ -1,7 +1,7 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
-import {bs58} from 'bs58';
 import { Satik } from "../target/types/satik";
+import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { u32, u8, struct, blob, Layout } from "@solana/buffer-layout";
 import { publicKey, u64, bool } from "@solana/buffer-layout-utils";
@@ -43,10 +43,11 @@ describe("satik", () => {
 
     it("Initialize brand and influencer, create proposal and accept it", async () => {
       // program.account.purchase.all
+      console.log()
         var payer = anchor.Wallet.local().payer;
-        console.log(payer.secretKey);
+        console.log("payer: ", bs58.encode(payer.secretKey));
+        
 
-        console.log(bs58.encode(payer.secretKey))
 
         
 

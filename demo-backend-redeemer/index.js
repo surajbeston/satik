@@ -10,7 +10,7 @@ import fs from 'fs';
 import { TOKEN_PROGRAM_ID, mintTo } from '@solana/spl-token';
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 
 
 const idl = JSON.parse(fs.readFileSync('satik.json', 'utf8'));
@@ -44,20 +44,20 @@ const purchases = await program.account.purchase.all();
 
 app.get('/', async (req, res) => {
     if (!req.query.purchaseAddress || !req.query.bump) {
-        res.status(301).send('Please provide purchaseAddress');
+        res.send('Please provide purchaseAddress');
+        return;
     }
     try{
         const purchaseAddress = new PublicKey(req.query.purchaseAddress);
         const purchase = await program.account.purchase.fetch(purchaseAddress);
-
-        console.log("purchase", purchase);
 
         const redeemDatetimeAddress = anchor.web3.Keypair.generate();
         const mint = new PublicKey("8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy");
 
         const bump = parseInt(req.query.bump);
 
-        console.log("Brand Receiver", purchase.brandReceiver.toBase58())
+        console.log("Escrow Address: ", purchase.escrow.toBase58());
+
 
 
         const tx6 = await program.methods.redeemAmount(bump)
@@ -66,13 +66,15 @@ app.get('/', async (req, res) => {
                                             purchase: purchaseAddress,
                                             brandReceiver: purchase.brandReceiver,
                                             influencerReceiver: purchase.influencerReceiver,
-                                            satikReceiver: purchase.satikReceiver,
+                                            // satikReceiver: purchase.satikReceiver,
                                             escrow: purchase.escrow,
                                             mint: mint,
                                             tokenProgram: TOKEN_PROGRAM_ID 
                                         })
                                         .signers([redeemDatetimeAddress, wallet])
-                                        .rpc()
+                                        .rpc({
+                                            skipPreflight: true
+                                        })
 
         console.log(tx6)
     }
@@ -81,11 +83,13 @@ app.get('/', async (req, res) => {
         res.status(500).send("Something went horribly wrong")
     }
     res.send('Successful response.');
+    return;
 })
 
 app.get('/mint', async (req, res) => {
     if (!req.query.address || !req.query.amount) {
         res.status(301).send('Please provide address and amount');
+        return;
     }
     const customer_ATA = new PublicKey(req.query.address);
     const amount = req.query.amount;
@@ -99,8 +103,8 @@ app.get('/mint', async (req, res) => {
         mintAuthority.publicKey,
         amount
     )
-    console.log(tx5);
     res.send(req.query);
+    return;
 })
 
 
