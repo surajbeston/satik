@@ -424,12 +424,22 @@
           "isSigner": false
         },
         {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "payer",
           "isMut": true,
           "isSigner": true
         },
         {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
         },
@@ -935,6 +945,18 @@
       }
     },
     {
+      "name": "FunctionsOwner",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
       "name": "UserAccount",
       "type": {
         "kind": "struct",
@@ -1086,6 +1108,6 @@
     }
   ],
   "metadata": {
-    "address": "Eq45sUSp1VB68WLFT4pP3SZ7ydiwffx61NcCjCArJxh7"
+    "address": "EVsYvVjhpgYr9RExmu6sn1Hi5fCufyFfXhwkBZcuy6ah"
   }
 }

@@ -47,7 +47,10 @@ const provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
 const program = anchor.workspace.Satik as anchor.Program<Satik>;
 
-const mintKeypair = SwitchboardTestContext.loadKeypair("./keypairs/mint.json");
+// const mintKeypair = SwitchboardTestContext.loadKeypair("./keypairs/mint.json");
+const mintAddress = new PublicKey(
+  "8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy"
+);
 
 const payerWsolAccount = anchor.utils.token.associatedAddress({
   mint: NATIVE_MINT,
@@ -63,7 +66,7 @@ const sbRoutineKeypair = anchor.web3.Keypair.generate();
 const functionAccountKeypair = SwitchboardTestContext.loadKeypair(
   "./keypairs/function1.json"
 );
-console.log(functionAccountKeypair.publicKey.toBase58());
+// console.log(functionAccountKeypair.publicKey.toBase58());
 
 // let publicOracleQueue: QueueAccount;
 // let publicOracleQueuePk = new PublicKey(
@@ -105,7 +108,7 @@ const [influencerPDA] = PublicKey.findProgramAddressSync(
   program.programId
 );
 
-const dealId = "deal2";
+const dealId = "deal5";
 const [dealPDA] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("deal_seed"),
@@ -137,41 +140,36 @@ async function main() {
   //   LAMPORTS_PER_SOL
   // );
 
-  const payerUsdcAccount = await getOrCreateAssociatedTokenAccount(
-    provider.connection,
-    payerKeypair,
-    mintKeypair.publicKey,
+  const payerUsdcAddress = await getAssociatedTokenAddress(
+    mintAddress,
     payerKeypair.publicKey
   );
+  // console.log(payerUsdcAddress.toBase58());
 
-  const influencerUsdcAccount = await getOrCreateAssociatedTokenAccount(
-    provider.connection,
-    payerKeypair,
-    mintKeypair.publicKey,
+  const influencerUsdcAddress = await getAssociatedTokenAddress(
+    mintAddress,
     influencerKeypair.publicKey
   );
 
-  const dealUsdcAccount = await getOrCreateAssociatedTokenAccount(
-    provider.connection,
-    payerKeypair,
-    mintKeypair.publicKey,
+  const dealUsdcAddress = await getAssociatedTokenAddress(
+    mintAddress,
     dealPDA,
     true
   );
 
   // await switchboard.verifyNewKeypair(sbRoutineKeypair);
 
-  const escrowWallet = SwitchboardWallet.fromSeed(
-    switchboard,
-    publicAttestationQueuePk,
-    functionAccountKeypair.publicKey,
-    functionAccountPk.toBytes()
-  );
+  // const escrowWallet = SwitchboardWallet.fromSeed(
+  //   switchboard,
+  //   publicAttestationQueuePk,
+  //   functionAccountKeypair.publicKey,
+  //   functionAccountPk.toBytes()
+  // );
 
-  [functionAccount] = await FunctionAccount.load(
-    switchboard,
-    functionAccountPk
-  );
+  // [functionAccount] = await FunctionAccount.load(
+  //   switchboard,
+  //   functionAccountPk
+  // );
   // [functionRoutineAccount] = await FunctionRoutineAccount.load(
   //   switchboard,
   //   functionRoutineAccountPk
@@ -204,8 +202,8 @@ async function main() {
   //   )
   //   .accounts({
   //     brand: brandPDA,
-  //     mint: mintKeypair.publicKey,
-  //     usdcAta: payerUsdcAccount.address,
+  //     mint: mintAddress,
+  //     usdcAta: payerUsdcAddress,
   //     signer: payerKeypair.publicKey,
   //   })
   //   .signers([payerKeypair])
@@ -223,8 +221,8 @@ async function main() {
   //   )
   //   .accounts({
   //     influencer: influencerPDA,
-  //     usdcAta: influencerUsdcAccount.address,
-  //     mint: mintKeypair.publicKey,
+  //     usdcAta: influencerUsdcAddress,
+  //     mint: mintAddress,
   //     signer: influencerKeypair.publicKey,
   //   })
   //   .signers([influencerKeypair])
@@ -237,7 +235,7 @@ async function main() {
 
   // const tx = await program.methods
   //   .createDeal({
-  //     initialAmount: new BN(100000),
+  //     initialAmount: new BN(10000),
   //     initialAmountOnReach: new BN(500),
   //     startsOn: new BN(Date.now() / 1000),
   //     startsOnReach: new BN(1000),
@@ -249,10 +247,11 @@ async function main() {
   //   })
   //   .accounts({
   //     deal: dealPDA,
-  //     dealUsdcAta: dealUsdcAccount.address,
-  //     brandUsdcAta: payerUsdcAccount.address,
+  //     dealUsdcAta: dealUsdcAddress,
+  //     brandUsdcAta: payerUsdcAddress,
   //     brand: brandPDA,
   //     influencer: influencerPDA,
+  //     mint: mintAddress,
   //     payer: payerKeypair.publicKey,
   //   })
   //   .signers([payerKeypair])
@@ -327,11 +326,13 @@ async function main() {
 
   // console.log(tx);
 
-  // [functionAccount] = await FunctionAccount.create(
+  // ***
+  // [functionAccount] = await FunctionAccount.createInstruction(
   //   await SwitchboardProgram.fromConnection(
   //     provider.connection,
   //     functionAccountKeypair
   //   ),
+  //   functionAccountKeypair.publicKey,
   //   {
   //     attestationQueue: publicAttestationQueue,
   //     container: "sauravniraula/api_feed",

@@ -261,26 +261,24 @@ export async function createCPMContract(
     mintAddress,
     publicKey.value!
   );
-
-  let perReachAmount = params.cpm * 1000;
+  console.log(brandATA.toBase58());
 
   let data: any = {};
-  if (params.initialAmount) {
-    data.initialAmount = new BN(params.initialAmount);
-  }
-  if (params.initialAmountOnReach) {
-    data.initialAmountOnReach = new BN(params.initialAmountOnReach);
-  }
+  let perReachAmount = params.cpm * 1000;
 
-  let startsOn = Math.trunc(params.startsOn.getTime() / 1000);
-  console.log(startsOn);
+  data.initialAmount = params.initialAmount
+    ? new BN(params.initialAmount)
+    : null;
+  data.initialAmountOnReach = params.initialAmountOnReach
+    ? new BN(params.initialAmountOnReach)
+    : null;
 
   data = {
     ...data,
     idSeed: params.uniqueId,
-    startsOn: new BN(1712512800),
+    startsOn: new BN(params.startsOn.getTime() / 1000),
     startsOnReach: new BN(params.startsOnReach),
-    // endsOn: new BN(Math.trunc(params.endsOn.getTime() / 1000)),
+    endsOn: new BN(Math.trunc(params.endsOn.getTime() / 1000)),
     endsOnReach: new BN(params.endsOnReach),
     cpm: new BN(perReachAmount),
   };
@@ -294,6 +292,7 @@ export async function createCPMContract(
     brand: brandPk,
     influencer: influencerPk,
     payer: publicKey.value!,
+    mint: mintAddress,
   };
   console.log(accounts);
 

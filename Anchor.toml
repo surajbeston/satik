@@ -5,10 +5,10 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-satik = "Eq45sUSp1VB68WLFT4pP3SZ7ydiwffx61NcCjCArJxh7"
+satik = "EVsYvVjhpgYr9RExmu6sn1Hi5fCufyFfXhwkBZcuy6ah"
 
 [programs.localnet]
-satik = "Eq45sUSp1VB68WLFT4pP3SZ7ydiwffx61NcCjCArJxh7"
+satik = "EVsYvVjhpgYr9RExmu6sn1Hi5fCufyFfXhwkBZcuy6ah"
 
 [registry]
 url = "https://api.apr.dev"

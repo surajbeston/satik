@@ -1,5 +1,6 @@
 use ::anchor_lang::prelude::*;
-use anchor_spl::token::{self, Token, TokenAccount, Transfer};
+use anchor_spl::associated_token::AssociatedToken;
+use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
 use crate::states::{Brand, CreateDealData, CustomError, Deal, Influencer};
 
@@ -19,17 +20,19 @@ pub struct CreateDeal<'info> {
         bump,
     )]
     deal: Account<'info, Deal>,
-    #[account(mut)]
+    #[account(init, payer = payer, associated_token::mint = mint, associated_token::authority = deal)]
     deal_usdc_ata: Account<'info, TokenAccount>,
     #[account(constraint = payer.key() == brand.created_by)]
     brand: Account<'info, Brand>,
     #[account(mut, constraint = brand.usdc_ata == brand_usdc_ata.key())]
     brand_usdc_ata: Account<'info, TokenAccount>,
     influencer: Account<'info, Influencer>,
+    mint: Account<'info, Mint>,
 
     #[account(mut)]
     payer: Signer<'info>,
     token_program: Program<'info, Token>,
+    associated_token_program: Program<'info, AssociatedToken>,
     system_program: Program<'info, System>,
 }
 
