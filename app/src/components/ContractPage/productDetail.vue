@@ -82,7 +82,7 @@
           class="block pb-4 text-xl font-semibold"
           for="productDescription"
         >
-          Description:</label
+          Description<span class="text-primary-20">(words:50)</span>:</label
         >
         <textarea
           v-model="product.productDescription"
@@ -101,17 +101,19 @@
       <p class="text-xl py-3">
         <span class="text-primary-20 font-bold">Influencer</span>
 
-        will be paid <span class="text-secondaryLight-30 font-bold">{{
-          product.influencerAmount
-        }} USDC</span> 
+        will be paid
+        <span class="text-secondaryLight-30 font-bold"
+          >{{ product.influencerAmount }} USDC</span
+        >
         for every sales.
       </p>
       <p class="text-xl py-3">
         <span class="text-primary-20 font-bold">Brand (You)</span>
 
-        will be paid <span class="text-secondaryLight-30 font-bold">{{
-          product.totalAmount - product.influencerAmount
-        }} USDC</span> 
+        will be paid
+        <span class="text-secondaryLight-30 font-bold"
+          >{{ product.totalAmount - product.influencerAmount }} USDC</span
+        >
         for every sales.
       </p>
     </div>
@@ -125,15 +127,12 @@ import { toast } from "vue3-toastify";
 
 const props = defineProps(["product"]);
 
-console.log("Product", props.product);
-
 const profileHash = ref(null);
 
 const productImage = ref(null);
-const produtName = ref("");
+
 const influencerAmount = ref(0);
 const totalAmount = ref("");
-const productDescription = ref("");
 
 const sendingImage = ref(false);
 
@@ -166,9 +165,6 @@ const handleAmountChange = (event) => {
   console.log(event.target.value);
 
   influencerAmount.value = event.target.value;
-
-  console.log("Influencer value", influencerAmount.value);
-  console.log("Total value", props.product.totalAmount);
 
   if (influencerAmount.value > props.product.totalAmount) {
     toast("Influencer amount should be less than total amount", {

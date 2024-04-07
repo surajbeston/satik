@@ -12,7 +12,8 @@
         Decentralized payment for influence
       </h1>
       <p class="text-xl py-6 text-center">
-        Satik helps create on chain contracts between influencers and brands where influencers are paid for both views and purchases on the fly.
+        Satik helps create on chain contracts between influencers and brands
+        where influencers are paid for both views and purchases on the fly.
       </p>
     </div>
 

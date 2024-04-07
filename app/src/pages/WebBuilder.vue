@@ -25,9 +25,7 @@
             influencer
           </li>
         </ul>
-        <p class="text-2xl font-bold text-secondary-0">
-          Before sending proposal please make sure you have saved.
-        </p>
+
         <p class="text-lg font-semibold text-neutral-10 pt-3 text-center">
           Happy Building!
         </p>
@@ -47,12 +45,6 @@
       >
         Confirm and Deploy
       </button>
-      <!-- <button
-        class="w-full bg-secondaryLight-20 font-bold text-lg"
-        @click="showConfirmModal = true"
-      >
-        Send Proposal
-      </button> -->
     </div>
     <Modal
       v-if="showConfirmModal"
@@ -76,7 +68,7 @@ import { store } from "../store.js";
 
 import webpage from "grapesjs-preset-webpage";
 import grjNavbar from "grapesjs-navbar";
-import plugin from "grapesjs-advance-components";
+// import plugin from "grapesjs-advance-components";
 import { createHtml } from "../helper/htmlCreator";
 
 import "grapesjs/dist/css/grapes.min.css";
@@ -88,6 +80,7 @@ import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
 import { useRoute, useRouter } from "vue-router";
+import { builderHtml, builderCss } from "../constant/builderContent";
 
 const router = useRouter();
 const route = useRoute();
@@ -110,9 +103,12 @@ onMounted(async () => {
 
   editor.value = grapesjs.init({
     container: "#gjs",
-    plugins: [grapesjsblocks, webpage, grjNavbar, plugin],
+    plugins: [grapesjsblocks, webpage, grjNavbar],
+    storageManager: false,
   });
 
+  editor.value.setStyle(builderCss, { clean: true });
+  editor.value.setComponents(builderHtml);
   editor.value.on("component:selected", (model) => {
     let className;
     if (selectedProduct.value) {
