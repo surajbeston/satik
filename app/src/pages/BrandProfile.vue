@@ -217,9 +217,6 @@ async function getProposal(address) {
   const result = await getBrandProposals(address);
   console.log("this is result in fsdfs", result);
   if (result) {
-<<<<<<< HEAD
-    proposals.value = result;
-=======
     proposals.value = result
       .sort((a, b) => {
         const aDate = a.account.datetime || 0;
@@ -227,7 +224,6 @@ async function getProposal(address) {
         return bDate - aDate;
       })
       .filter((proposal) => proposal.account.datetime);
->>>>>>> 2b281ce66be6aac883960c32c8e2b362567abb43
   }
 }
 
