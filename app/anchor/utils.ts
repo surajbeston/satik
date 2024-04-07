@@ -1,5 +1,3 @@
-//@ts-nocheck
-import BN from "bn.js";
 import {
   getAssociatedTokenAddress,
   createMint,
@@ -23,11 +21,19 @@ import initWorkspace from "./useWorkspace";
 
 import {
   Keypair,
+  LAMPORTS_PER_SOL,
   sendAndConfirmTransaction,
   Transaction,
 } from "@solana/web3.js";
 
-import { SwitchboardProgram } from "@switchboard-xyz/solana.js";
+import {
+  AttestationQueueAccount,
+  FunctionAccount,
+  SwitchboardProgram,
+  SwitchboardWallet,
+  TransactionObject,
+} from "@switchboard-xyz/solana.js";
+import { parseRawMrEnclave } from "@switchboard-xyz/common";
 
 import { useAnchorWallet, AnchorWallet, useWallet } from "solana-wallets-vue";
 import {
@@ -36,7 +42,7 @@ import {
   PublicKey,
   sendAndConfirmRawTransaction,
 } from "@solana/web3.js";
-import { AnchorProvider, Program } from "@project-serum/anchor";
+import { AnchorProvider, Program } from "@coral-xyz/anchor";
 
 type returnType = {
   wallet: ComputedRef<AnchorWallet>;
@@ -56,8 +62,8 @@ const mintAddress = new PublicKey(
 let publicAttestationQueuePk = new PublicKey(
   "CkvizjVnm2zA5Wuwan34NhVT3zFc7vqUyGnA6tuEF5aE"
 );
-let functionAccountPk = new PublicKey(
-  "G2ka1S2jqKRWjrn5FUrBf8R566tnghfYfu7ywVEMSAq6"
+let mrEnclave = parseRawMrEnclave(
+  "0x7c58b6258153d05036f09c02369e6246cd70d7b20d5379b0e6bbcaa0ad66a8b9"
 );
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
@@ -70,7 +76,6 @@ export async function createInfluencerAccount(
   total_followers: number,
   social_media: String
 ) {
-
   console.log("reached here");
   const [influencerAddress, bump] =
     anchor.web3.PublicKey.findProgramAddressSync(
@@ -84,7 +89,14 @@ export async function createInfluencerAccount(
   );
 
   const tx = await program.value.methods
-    .initializeInfluencer(username, name, profile_image, bio, new BN(total_followers), social_media)
+    .initializeInfluencer(
+      username,
+      name,
+      profile_image,
+      bio,
+      new BN(total_followers),
+      social_media
+    )
     .accounts({
       usdcAta: influencerATA,
       influencer: influencerAddress,
@@ -186,16 +198,15 @@ export async function initializeProposalWithProducts(
     .accounts({
       proposal: proposal.publicKey,
       brand: brandAddress,
-      influencer: influencerAddress
+      influencer: influencerAddress,
     })
     .postInstructions(instructions)
     .signers([proposal, ...instructionSigners])
     .rpc();
 
-    console.log(proposalTransaction);
+  console.log(proposalTransaction);
 
-    
-    return [products, proposal.publicKey.toBase58()]
+  return [products, proposal.publicKey.toBase58()];
 }
 
 export async function acceptProposal(proposalAddresString: string) {
@@ -240,14 +251,16 @@ export async function addProposalWebpage(
 ) {
   const proposalAddress = new PublicKey(proposalAddressString);
 
-  var proposalFetched = await program.value.account.proposal.fetch(proposalAddress);
+  var proposalFetched =
+    await program.value.account.proposal.fetch(proposalAddress);
   console.log("Fetched Proposal old", proposalFetched);
 
-  const tx = await program.value.methods.addProposalWebpage(webpage)
-                                        .accounts({
-                                          proposal: proposalAddress,
-                                        }).
-                                        rpc();
+  const tx = await program.value.methods
+    .addProposalWebpage(webpage)
+    .accounts({
+      proposal: proposalAddress,
+    })
+    .rpc();
   console.log(tx);
   proposalFetched = await program.value.account.proposal.fetch(proposalAddress);
   console.log("Fetched Proposal", proposalFetched);
@@ -279,34 +292,43 @@ export async function createCPMContract(
     publicKey.value!
   );
 
+  let data: any = {};
   let perReachAmount = params.cpm * 1000;
 
-  let data: any = {};
-  if (params.initialAmount) {
-    data.initialAmount = new BN(params.initialAmount);
-  }
+  data.initialAmount = params.initialAmount
+    ? new BN(params.initialAmount)
+    : null;
+  data.initialAmountOnReach = params.initialAmountOnReach
+    ? new BN(params.initialAmountOnReach)
+    : null;
+
   data = {
     ...data,
     idSeed: params.uniqueId,
-    initialAmountOnReach: params.initialAmountOnReach,
-    startsOn: new BN(params.startsOn.getUTCSeconds()),
+    startsOn: new BN(params.startsOn.getTime() / 1000),
     startsOnReach: new BN(params.startsOnReach),
-    endsOn: new BN(params.endsOn.getUTCSeconds()),
+    endsOn: new BN(Math.trunc(params.endsOn.getTime() / 1000)),
     endsOnReach: new BN(params.endsOnReach),
     cpm: new BN(perReachAmount),
   };
 
+  let accounts = {
+    deal: dealPDA,
+    dealUsdcAta: dealUsdcAta,
+    brandUsdcAta: brandATA,
+    brand: brandPk,
+    influencer: influencerPk,
+    payer: publicKey.value!,
+    mint: mintAddress,
+  };
+
   const tx = await program.value.methods
     .createDeal(data)
-    .accounts({
-      deal: dealPDA,
-      dealUsdcAta: dealUsdcAta,
-      brandUsdcAta: brandATA,
-      brand: brandPk,
-      influencer: influencerPk,
-      payer: publicKey.value!,
-    })
+    .accounts(accounts)
     .rpc();
+  console.log(tx);
+
+  console.log("Deal created !");
 }
 
 export async function acceptCPMContract(
@@ -319,7 +341,7 @@ export async function acceptCPMContract(
   const tx = await program.value.methods
     .acceptDeal(contentUrl)
     .accounts({
-      influencer: influencerPk,
+      influencer: new PublicKey(influencerPk),
       deal: dealPk,
       signer: publicKey.value!,
     })
@@ -329,29 +351,69 @@ export async function acceptCPMContract(
 }
 
 export async function scheduleCPMFeed(dealPk: PublicKey) {
-  let wallet = useWallet();
-  let switchboard = await SwitchboardProgram.load(connection);
+  // let switchboard = await SwitchboardProgram.fromProvider(provider.value);
 
-  let sbRequestKeypair = anchor.web3.Keypair.generate();
+  // let [attestationQueueAccount] = await AttestationQueueAccount.load(
+  //   switchboard,
+  //   publicAttestationQueuePk
+  // );
+  // // // will be created by program
+  // let functionAccount: FunctionAccount;
+  // let txObject: TransactionObject;
+  // [functionAccount, txObject] = await FunctionAccount.createInstruction(
+  //   switchboard,
+  //   wallet.value.publicKey,
+  //   {
+  //     attestationQueue: attestationQueueAccount,
+  //     container: "sauravniraula/api_feed",
+  //     containerRegistry: "dockerhub",
+  //     name: "Payment Feed",
+  //     mrEnclave,
+  //   }
+  // );
+  // wallet.value.signTransaction();
+  // await switchboard.signAndSend(txObject);
+  // await txObject.signAndSend(provider.value);
+  // console.log(functionAccount.publicKey.toBase58());
+
+  // let sbRoutineKeypair = anchor.web3.Keypair.generate();
+  // const escrowWallet = SwitchboardWallet.fromSeed(
+  //   switchboard,
+  //   publicAttestationQueuePk,
+  //   wallet.publicKey.value!,
+  //   functionAccount.publicKey
+  // );
+
+  // const tx = await program.value.methods
+  //   .scheduleFeed()
+  //   .accounts({
+  //     deal: dealPk,
+  //     switchboardAttestation: switchboard.attestationProgramId,
+  //     switchboardAttestationQueue: publicAttestationQueuePk,
+  //     switchboardFunction: functionAccount.publicKey,
+  //     routine: sbRoutineKeypair.publicKey,
+  //     escrowWallet: escrowWallet.publicKey,
+  //     escrowTokenWallet: anchor.utils.token.associatedAddress({
+  //       mint: NATIVE_MINT,
+  //       owner: escrowWallet.publicKey,
+  //     }),
+  //     switchboardMint: NATIVE_MINT,
+  //     functionAccountAuthority: wallet.publicKey.value!,
+  //     payer: wallet.publicKey.value!,
+  //   })
+  //   .signers([sbRoutineKeypair])
+  //   .rpc();
+
+  // console.log(tx);
+
+  // using mock for now
 
   const tx = await program.value.methods
-    .scheduleFeed()
+    .scheduleFeedMock()
     .accounts({
       deal: dealPk,
-      switchboardAttestation: switchboard.attestationProgramId,
-      switchboardAttestationState:
-        switchboard.attestationProgramState.publicKey,
-      switchboardAttestationQueue: publicAttestationQueuePk,
-      switchboardFunction: functionAccountPk,
-      switchboardRequest: sbRequestKeypair.publicKey,
-      switchboardRequestEscrow: anchor.utils.token.associatedAddress({
-        mint: NATIVE_MINT,
-        owner: sbRequestKeypair.publicKey,
-      }),
-      switchboardMint: switchboard.mint.address,
-      payer: wallet.publicKey.value!,
+      signer: wallet.value.publicKey,
     })
-    .signers([sbRequestKeypair])
     .rpc();
 
   console.log("CPM Feed Scheduled !");
@@ -446,6 +508,32 @@ export async function getInfluencerProposals(influencerAddressString: String) {
   }
 
   return influencerProposals;
+}
+
+export async function getBrandCPMContracts(address) {
+  let allCPMContracts = await program.value.account.deal.all();
+  allCPMContracts = allCPMContracts.filter((e) => {
+    return e.account.brand.toBase58() == address;
+  });
+  for (var deal of allCPMContracts) {
+    var influencer = await program.value.account.influencer.fetch(
+      deal.account.influencer
+    );
+    deal.account.influencer = influencer;
+  }
+  return allCPMContracts;
+}
+
+export async function getInfluencerCPMContracts(address) {
+  let allCPMContracts = await program.value.account.deal.all();
+  allCPMContracts = allCPMContracts.filter((e) => {
+    return e.account.influencer.toBase58() == address;
+  });
+  for (var deal of allCPMContracts) {
+    var brand = await program.value.account.brand.fetch(deal.account.brand);
+    deal.account.brand = brand;
+  }
+  return allCPMContracts;
 }
 
 export async function getProposalProducts(proposalAddressString: String) {

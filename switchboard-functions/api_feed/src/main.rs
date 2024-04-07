@@ -9,8 +9,11 @@ use errors::CustomError;
 use reqwest;
 use tokio;
 
+use anchor_spl::token;
 use models::{ApiFeedData, ContentData, SbApiFeedParams};
-use switchboard_solana::{get_ixn_discriminator, prelude::*, switchboard_function};
+use switchboard_solana::{
+    anchor_lang::system_program, get_ixn_discriminator, prelude::*, switchboard_function,
+};
 
 #[switchboard_function]
 pub async fn sb_api_feed_function(
@@ -30,7 +33,7 @@ pub async fn sb_api_feed_function(
         reach: content_data.views,
     };
 
-    let mut ix_data = get_ixn_discriminator("scheduled_callback").to_vec();
+    let mut ix_data = get_ixn_discriminator("scheduled_feed_callback").to_vec();
     let mut serialized_feed_data =
         borsh::to_vec(&api_feed_data).map_err(|_| CustomError::ParseError)?;
     ix_data.append(&mut serialized_feed_data);
@@ -39,7 +42,12 @@ pub async fn sb_api_feed_function(
         program_id: Pubkey::new_from_array(params.program_id),
         accounts: vec![
             AccountMeta::new(Pubkey::new_from_array(params.deal_pk), false),
+            AccountMeta::new(Pubkey::new_from_array(params.deal_ata), false),
+            AccountMeta::new(Pubkey::new_from_array(params.influencer_ata), false),
+            AccountMeta::new(Pubkey::new_from_array(params.brand_ata), false),
             AccountMeta::new_readonly(runner.signer, true),
+            AccountMeta::new_readonly(token::ID, false),
+            AccountMeta::new_readonly(system_program::ID, false),
         ],
         data: ix_data,
     };

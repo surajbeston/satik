@@ -49,6 +49,10 @@ pub fn handle_scheduled_feed_callback(
 
     // if deal is ended return usdc to brand ATA
     if deal.deal_ended {
+        // return if no amount in deal ata
+        if ctx.accounts.deal_usdc_ata.amount == 0 {
+            return Ok(());
+        }
         token::transfer(
             CpiContext::new_with_signer(
                 ctx.accounts.token_program.to_account_info(),

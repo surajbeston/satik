@@ -15,6 +15,7 @@ use instructions::affiliate_instructions::*;
 
 declare_id!("HCbLy5R4323caot2m8sTdh567oRwmurE8QhHDYGJYDFm");
 
+
 #[program]
 pub mod satik {
 
@@ -45,7 +46,7 @@ pub mod satik {
         profile_image: String,
         bio: String,
         total_followers: u64,
-        social_media: String
+        social_media: String,
     ) -> Result<()> {
         let influencer = &mut ctx.accounts.influencer;
         influencer.name = name;
@@ -64,7 +65,7 @@ pub mod satik {
         ctx: Context<InitializeProposal>,
         message: String,
         redeemer: Pubkey,
-        redeemer_url: String
+        redeemer_url: String,
     ) -> Result<()> {
         require_keys_eq!(ctx.accounts.brand.created_by, ctx.accounts.signer.key());
         let proposal = &mut ctx.accounts.proposal;
@@ -170,7 +171,7 @@ pub mod satik {
 
         purchase.brand_receiver = proposal.brand_ata;
         purchase.influencer_receiver = proposal.influencer_ata;
-        purchase.satik_receiver = 
+        purchase.satik_receiver =
             Pubkey::from_str("FMzdabL9cxpTTHEgfXD1CXbt5qg8Vijks4c56b4rzdBD").unwrap();
         purchase.redeemer = proposal.brand_redeemer;
         purchase.escrow = ctx.accounts.usdc_token_account.key();
@@ -281,6 +282,17 @@ pub mod satik {
         Ok(())
     }
 
+    pub fn create_functions_owner(
+        ctx: Context<CreateFunctionsOwner>,
+        name: String,
+        metadata: String,
+        container: String,
+        registry: String,
+        mr_enclave: [u8; 32],
+    ) -> Result<()> {
+        handle_create_functions_owner(ctx, name, metadata, container, registry, mr_enclave)
+    }
+
     pub fn create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Result<()> {
         handle_create_deal(ctx, data)
     }
@@ -291,6 +303,10 @@ pub mod satik {
 
     pub fn schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
         handle_schedule_feed(ctx)
+    }
+
+    pub fn schedule_feed_mock(ctx: Context<ScheduleFeedMock>) -> Result<()> {
+        handle_schedule_feed_mock(ctx)
     }
 
     pub fn scheduled_feed_callback(
