@@ -70,9 +70,11 @@ import { PublicKey } from "@solana/web3.js";
 import { reactive, ref } from "vue";
 import { createCPMContract } from "../../anchor/utils";
 import { store } from "../store.js";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
 
 let route = useRoute();
+let router = useRouter();
 
 const data = reactive({
   uniqueId: "",
@@ -97,15 +99,41 @@ function onCPMChanged(event) {
   data.cpm = value;
 }
 
-function submitted() {
+async function submitted() {
   let brand = store.currentUser;
-  console.log(brand.publicKey.toBase58());
 
-  createCPMContract(
-    new PublicKey(route.params.id),
-    brand.publicKey,
-    data,
-  );
+  if (!(data.uniqueId && data.endsOn && data.endsOnReach && data.startsOn && data.startsOnReach && data.cpm)) {
+    toast("Please fill all required fields", {
+      autoClose: 3000,
+      type: "error",
+    });
+    return;
+  }
+
+  toast("Creating CPM Contract...", {
+    autoClose: 3000,
+    type: "info",
+  });
+
+  try {
+    await createCPMContract(
+      new PublicKey(route.params.id),
+      brand.publicKey,
+      data,
+    );
+    toast("CPM contract created", {
+      autoClose: 3000,
+      type: "info",
+    });
+    setTimeout(() => {
+      router.back();
+    }, 1000);
+  } catch (error) {
+    toast("Error occured!", {
+      autoClose: 3000,
+      type: "error",
+    });
+  }
 }
 
 

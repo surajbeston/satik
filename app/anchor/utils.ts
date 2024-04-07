@@ -68,7 +68,6 @@ export async function createInfluencerAccount(
   total_followers: number,
   social_media: String
 ) {
-
   console.log("reached here");
   const [influencerAddress, bump] =
     anchor.web3.PublicKey.findProgramAddressSync(
@@ -82,7 +81,14 @@ export async function createInfluencerAccount(
   );
 
   const tx = await program.value.methods
-    .initializeInfluencer(username, name, profile_image, bio, new BN(total_followers), social_media)
+    .initializeInfluencer(
+      username,
+      name,
+      profile_image,
+      bio,
+      new BN(total_followers),
+      social_media
+    )
     .accounts({
       usdcAta: influencerATA,
       influencer: influencerAddress,
@@ -184,16 +190,15 @@ export async function initializeProposalWithProducts(
     .accounts({
       proposal: proposal.publicKey,
       brand: brandAddress,
-      influencer: influencerAddress
+      influencer: influencerAddress,
     })
     .postInstructions(instructions)
     .signers([proposal, ...instructionSigners])
     .rpc();
 
-    console.log(proposalTransaction);
+  console.log(proposalTransaction);
 
-    
-    return [products, proposal.publicKey.toBase58()]
+  return [products, proposal.publicKey.toBase58()];
 }
 
 export async function acceptProposal(proposalAddresString: string) {
@@ -238,14 +243,16 @@ export async function addProposalWebpage(
 ) {
   const proposalAddress = new PublicKey(proposalAddressString);
 
-  var proposalFetched = await program.value.account.proposal.fetch(proposalAddress);
+  var proposalFetched =
+    await program.value.account.proposal.fetch(proposalAddress);
   console.log("Fetched Proposal old", proposalFetched);
 
-  const tx = await program.value.methods.addProposalWebpage(webpage)
-                                        .accounts({
-                                          proposal: proposalAddress,
-                                        }).
-                                        rpc();
+  const tx = await program.value.methods
+    .addProposalWebpage(webpage)
+    .accounts({
+      proposal: proposalAddress,
+    })
+    .rpc();
   console.log(tx);
   proposalFetched = await program.value.account.proposal.fetch(proposalAddress);
   console.log("Fetched Proposal", proposalFetched);
@@ -276,7 +283,6 @@ export async function createCPMContract(
     mintAddress,
     publicKey.value!
   );
-  console.log(brandATA.toBase58());
 
   let data: any = {};
   let perReachAmount = params.cpm * 1000;
@@ -298,8 +304,6 @@ export async function createCPMContract(
     cpm: new BN(perReachAmount),
   };
 
-  console.log(data);
-
   let accounts = {
     deal: dealPDA,
     dealUsdcAta: dealUsdcAta,
@@ -309,7 +313,6 @@ export async function createCPMContract(
     payer: publicKey.value!,
     mint: mintAddress,
   };
-  console.log(accounts);
 
   const tx = await program.value.methods
     .createDeal(data)
@@ -330,7 +333,7 @@ export async function acceptCPMContract(
   const tx = await program.value.methods
     .acceptDeal(contentUrl)
     .accounts({
-      influencer: influencerPk,
+      influencer: new PublicKey(influencerPk),
       deal: dealPk,
       signer: publicKey.value!,
     })
@@ -457,6 +460,15 @@ export async function getInfluencerProposals(influencerAddressString: String) {
   }
 
   return influencerProposals;
+}
+
+export async function getInfluencerCPMContracts() {
+  const allCPMContracts = await program.value.account.deal.all();
+  for (var deal of allCPMContracts) {
+    var brand = await program.value.account.brand.fetch(deal.account.brand);
+    deal.account.brand = brand;
+  }
+  return allCPMContracts;
 }
 
 export async function getProposalProducts(proposalAddressString: String) {
