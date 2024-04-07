@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { useAnchorWallet, useWallet } from "solana-wallets-vue";
 import { Connection, clusterApiUrl, PublicKey } from "@solana/web3.js";
-import { AnchorProvider, Program } from "@project-serum/anchor";
+import { AnchorProvider, Program } from "@coral-xyz/anchor";
 
 import idl from "../../target/idl/satik.json";
 
@@ -26,7 +26,10 @@ const { publicKey, sendTransaction } = useWallet();
 
 function initWorkspace() {
   const wallet = useAnchorWallet();
-  const connection = new Connection("https://devnet.helius-rpc.com/?api-key=f34375fa-df6a-425f-8515-e619ad9c9839", commitment);
+  const connection = new Connection(
+    "https://devnet.helius-rpc.com/?api-key=f34375fa-df6a-425f-8515-e619ad9c9839",
+    commitment
+  );
   const provider = computed(
     () =>
       new AnchorProvider(connection, wallet.value, {

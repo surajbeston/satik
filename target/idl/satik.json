@@ -408,6 +408,103 @@
       ]
     },
     {
+      "name": "createFunctionsOwner",
+      "accounts": [
+        {
+          "name": "functionsOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "function",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "addressLookupTable",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowWallet",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "escrowTokenWallet",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "switchboardAttestation",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "attestationQueue",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "addressLookupProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "metadata",
+          "type": "string"
+        },
+        {
+          "name": "container",
+          "type": "string"
+        },
+        {
+          "name": "registry",
+          "type": "string"
+        },
+        {
+          "name": "mrEnclave",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "createDeal",
       "accounts": [
         {
@@ -563,6 +660,27 @@
           "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "scheduleFeedMock",
+      "accounts": [
+        {
+          "name": "deal",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
         },
         {
           "name": "systemProgram",

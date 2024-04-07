@@ -17,6 +17,7 @@ import {
   SwitchboardTestContext,
   FunctionRequestAccount,
   SwitchboardWallet,
+  TransactionObject,
 } from "@switchboard-xyz/solana.js";
 import { NodeOracle } from "@switchboard-xyz/oracle";
 import { OracleJob, parseRawMrEnclave } from "@switchboard-xyz/common";
@@ -50,6 +51,10 @@ const program = anchor.workspace.Satik as anchor.Program<Satik>;
 // const mintKeypair = SwitchboardTestContext.loadKeypair("./keypairs/mint.json");
 const mintAddress = new PublicKey(
   "8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy"
+);
+
+const addressLookupProgram = new PublicKey(
+  "AddressLookupTab1e1111111111111111111111111"
 );
 
 const payerWsolAccount = anchor.utils.token.associatedAddress({
@@ -116,6 +121,11 @@ const [dealPDA] = PublicKey.findProgramAddressSync(
     brandPDA.toBytes(),
     influencerPDA.toBytes(),
   ],
+  program.programId
+);
+
+const [functionsOwner] = PublicKey.findProgramAddressSync(
+  [Buffer.from("functions_owner")],
   program.programId
 );
 
@@ -323,28 +333,75 @@ async function main() {
   //   })
   //   .signers([payerKeypair])
   //   .rpc();
-
   // console.log(tx);
-
-  // ***
   // [functionAccount] = await FunctionAccount.createInstruction(
-  //   await SwitchboardProgram.fromConnection(
-  //     provider.connection,
-  //     functionAccountKeypair
-  //   ),
-  //   functionAccountKeypair.publicKey,
+  //   switchboard,
+  //   payerKeypair.publicKey,
   //   {
   //     attestationQueue: publicAttestationQueue,
   //     container: "sauravniraula/api_feed",
   //     containerRegistry: "dockerhub",
-  //     name: "API Feed 12",
-  //     authority: functionAccountKeypair.publicKey,
+  //     name: "Payment Feed",
+  //     authority: functionsOwner,
   //     mrEnclave,
-  //   },
-  //   null,
-  //   {}
+  //   }
+  // );
+
+  // const recentSlot = new BN(
+  //   await provider.connection.getSlot({
+  //     commitment: "finalized",
+  //   })
+  // );
+  // functionAccount = FunctionAccount.fromSeed(
+  //   switchboard,
+  //   // payerKeypair.publicKey.toBuffer(),
+  //   functionsOwner.toBytes(),
+  //   recentSlot
   // );
   // console.log(functionAccount.publicKey.toBase58());
+
+  // const escrowWallet = SwitchboardWallet.fromSeed(
+  //   switchboard,
+  //   publicAttestationQueuePk,
+  //   // payerKeypair.publicKey,
+  //   functionsOwner,
+  //   functionAccount.publicKey
+  // );
+
+  // console.log((await escrowWallet.loadData()).authority);
+
+  // const [addressLookupTable] = PublicKey.findProgramAddressSync(
+  //   [functionAccount.publicKey.toBuffer(), recentSlot.toBuffer("le", 8)],
+  //   addressLookupProgram
+  // );
+
+  // console.log(functionAccount.publicKey);
+  // console.log(functionsOwner);
+
+  // const tx = await program.methods
+  //   .createFunctionsOwner(
+  //     "Payment Feed",
+  //     "",
+  //     "sauravniraula/api_feed",
+  //     "dockerhub",
+  //     Array(32).fill(1)
+  //   )
+  //   .accounts({
+  //     function: functionAccount.publicKey,
+  //     functionsOwner: functionsOwner,
+  //     escrowWallet: escrowWallet.publicKey,
+  //     escrowTokenWallet: anchor.utils.token.associatedAddress({
+  //       mint: NATIVE_MINT,
+  //       owner: escrowWallet.publicKey,
+  //     }),
+  //     mint: NATIVE_MINT,
+  //     addressLookupTable: addressLookupTable,
+  //     addressLookupProgram,
+  //     attestationQueue: publicAttestationQueuePk,
+  //     switchboardAttestation: switchboard.attestationProgramId,
+  //     payer: payerKeypair.publicKey,
+  //   })
+  //   .rpc();
 
   // await FunctionRequestAccount.create(switchboard, {
   //   functionAccount,

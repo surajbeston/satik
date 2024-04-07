@@ -148,7 +148,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div v-for="deal in cpmContracts" :key="deal"
             class="mt-10 border-zinc-700 shadow-lg shadow-[#2c3438d0] rounded-xl border p-6">
-            <div class="flex flex-col md:flex-row gap-8 pb-8">
+            <div class="flex flex-col md:flex-row gap-8">
               <div @click="
             $router.push(`/brand/${deal.account.brand.username}`)
             " class="w-full min-w-[120px] md:w-auto">
@@ -164,16 +164,16 @@
                 <p class="text-base text-neutral-10 line-clamp-3">
                   {{ deal.account.brand.bio }}
                 </p>
-                <p :class="[getStatusColor(deal.account.influencerAccepted), 'text-base text-neutral-10 line-clamp-3']">
+                <p :class="[getStatusColor(deal.account.influencerAccepted), 'text-base line-clamp-3']">
                   {{ deal.account.influencerAccepted ? "Accepted" : "Pending Approval" }}
                 </p>
-                <p :class="[getStatusColor(deal.account.feedScheduled), 'text-base text-neutral-10 line-clamp-3']">
+                <p :class="[getStatusColor(deal.account.feedScheduled), 'text-base line-clamp-3']">
                   {{ deal.account.feedScheduled ? "Payment Scheduled" : "Payment Not Scheduled" }}
                 </p>
-                <p class="text-xl font-medium text-neutral-20">
+                <p v-if="deal.account.initialAmount" class="text-sm font-medium text-neutral-20">
                   Initial Payment: $ {{ deal.account.initialAmount / 1000000 }}
                 </p>
-                <p class="text-sm font-medium text-neutral-20">
+                <p v-if="deal.account.initialAmountOnReach" class="text-sm font-medium text-neutral-20">
                   Initial Payment After : {{ deal.account.initialAmountOnReach }} reach
                 </p>
                 <p class="text-sm font-medium text-neutral-20">
@@ -186,7 +186,14 @@
                   Ends on : {{ new Date(deal.account.endsOn * 1000).toLocaleDateString() }}
                 </p>
                 <p class="text-sm font-medium text-neutral-20">
+                  Ends after : {{ deal.account.endsOnReach }} reach
+                </p>
+                <p class="text-sm font-medium text-neutral-20">
                   CPM : $ {{ deal.account.cpm / 1000 }} (USDC per 1000 reach)
+                </p>
+                <p v-if="deal.account.dealEnded"
+                  :class="[getStatusColor(!deal.account.dealEnded), 'text-base line-clamp-3 font-bold']">
+                  {{ deal.account.dealEnded ? "Deal Ended" : "Deal Active" }}
                 </p>
                 <div class="pt-1"></div>
                 <button @click="submitContentUrl(deal)" v-if="!deal.account.influencerAccepted"
@@ -266,7 +273,7 @@ onMounted(() => {
         wallet.publicKey.value.toBase58()
       ) {
         getProposals(influencerObj.account.createdBy.toBase58());
-        getCPMContracts(null);
+        getCPMContracts(publicKey.value);
         showProposals.value = true;
       }
     }
@@ -366,7 +373,7 @@ async function getProposals(address) {
 }
 
 async function getCPMContracts(address) {
-  const result = await getInfluencerCPMContracts();
+  const result = await getInfluencerCPMContracts(address);
   console.log(result);
   if (result) {
     cpmContracts.value = result
