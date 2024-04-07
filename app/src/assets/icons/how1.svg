@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg viewBox="22.962 29.836 447.86 105.822" style="isolation: isolate;" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+<svg viewBox="25.924 27.839 443.86 100.46" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
   <defs>
     <bx:grid x="0" y="0" width="14.962" height="14.962"/>
-    <linearGradient id="paint0_linear_1_4555" x1="514" y1="0.543457" x2="514" y2="84.902" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.416847, 0, 0, 0.416847, 35.721364, 59.621643)">
+    <linearGradient id="paint0_linear_1_4555" x1="514" y1="0.543457" x2="514" y2="84.902" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.416847, 0, 0, 0.416847, 38.119278, 52.428207)">
       <stop stop-color="#FD7000"/>
       <stop offset="1" stop-color="#0095FF"/>
     </linearGradient>
   </defs>
-  <path d="M 36.138 95.012 C 36.138 95.012 97.815 59.734 141.012 59.848 C 183.871 59.961 202.117 95.012 244.979 95.012 C 302.716 95.012 332.268 59.848 390.874 59.848 C 425.111 59.848 463.822 95.012 463.822 95.012" stroke="url(#paint0_linear_1_4555)" style="fill: rgba(255, 255, 255, 0);"/>
-  <path d="M 37.526 97.012 C 37.526 99.773 35.287 102.012 32.526 102.012 C 29.765 102.012 27.526 99.773 27.526 97.012 C 27.526 94.251 29.765 92.012 32.526 92.012 C 35.287 92.012 37.526 94.251 37.526 97.012 Z" fill="#0095FF" style=""/>
-  <circle cx="133.732" cy="59.612" r="5" fill="#FD7000" style=""/>
-  <path d="M 252.651 94.676 C 252.651 97.438 250.413 99.676 247.651 99.676 C 244.889 99.676 242.651 97.438 242.651 94.676 C 242.651 91.914 244.889 89.676 247.651 89.676 C 250.413 89.676 252.651 91.914 252.651 94.676 Z" fill="#0095FF"/>
-  <circle cx="380.022" cy="60.612" r="5" fill="#FD7000"/>
-  <path d="M 464.689 91.501 C 464.689 94.263 462.451 96.501 459.689 96.501 C 456.927 96.501 454.689 94.263 454.689 91.501 C 454.689 88.739 456.927 86.501 459.689 86.501 C 462.451 86.501 464.689 88.739 464.689 91.501 Z" fill="#0095FF"/>
-  <text style="fill: rgb(253, 112, 0); font-family: Arial, sans-serif; font-size: 7px; font-weight: 700; white-space: pre;" x="119.951" y="45.389">Contract</text>
-  <text style="fill: rgb(0, 149, 255); font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; white-space: pre;" x="223.43" y="78.611">Product Page</text>
-  <text style="fill: rgb(253, 112, 0); font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; white-space: pre;" x="362.662" y="44.602">Purchase</text>
-  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 8px; text-anchor: middle; white-space: pre;" transform="matrix(0.800942, 0, 0, 0.800942, 64.325951, 8.969093)"><tspan x="91.351" y="86.746">Influencer and brand come</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>together and agree on</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>commission per purchase</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>for influencer.</tspan></text>
-  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 159.557251, 26.045792)"><tspan x="91.351" y="86.746">An immutable product page is created</tspan><tspan x="91.351" dy="1em">​</tspan><tspan> for customer to purchase,</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>which then influencer promotes.</tspan><tspan x="91.351" dy="1em">​</tspan><tspan> </tspan></text>
-  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 291.885803, -5.694883)"><tspan x="91.351" y="86.746">Customer purchases the product </tspan><tspan x="91.351" dy="1em">​</tspan><tspan>and the payment is distributed</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>on the fly.</tspan><tspan x="91.351" dy="1em">​</tspan></text>
+  <path d="M 38.536 87.818 C 38.536 87.818 100.213 52.54 143.41 52.654 C 186.269 52.767 204.515 87.818 247.377 87.818 C 305.114 87.818 334.666 52.654 393.272 52.654 C 427.509 52.654 466.22 87.818 466.22 87.818" stroke="url(#paint0_linear_1_4555)" style="fill: rgba(255, 255, 255, 0);"/>
+  <path d="M 39.924 89.818 C 39.924 92.579 37.685 94.818 34.924 94.818 C 32.163 94.818 29.924 92.579 29.924 89.818 C 29.924 87.057 32.163 84.818 34.924 84.818 C 37.685 84.818 39.924 87.057 39.924 89.818 Z" fill="#0095FF" style=""/>
+  <circle cx="136.13" cy="52.418" r="5" fill="#FD7000" style=""/>
+  <path d="M 255.049 87.482 C 255.049 90.244 252.811 92.482 250.049 92.482 C 247.287 92.482 245.049 90.244 245.049 87.482 C 245.049 84.72 247.287 82.482 250.049 82.482 C 252.811 82.482 255.049 84.72 255.049 87.482 Z" fill="#0095FF"/>
+  <circle cx="382.42" cy="53.418" r="5" fill="#FD7000"/>
+  <path d="M 468.087 85.307 C 468.087 88.069 465.849 90.307 463.087 90.307 C 460.325 90.307 458.087 88.069 458.087 85.307 C 458.087 82.545 460.325 80.307 463.087 80.307 C 465.849 80.307 468.087 82.545 468.087 85.307 Z" fill="#0095FF"/>
+  <text style="fill: rgb(253, 112, 0); font-family: Arial, sans-serif; font-size: 7px; font-weight: 700; white-space: pre;" x="122.349" y="38.195">Contract</text>
+  <text style="fill: rgb(0, 149, 255); font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; white-space: pre;" x="225.828" y="71.418">Product Page</text>
+  <text style="fill: rgb(253, 112, 0); font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; white-space: pre;" x="365.06" y="37.409">Purchase</text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 8px; text-anchor: middle; white-space: pre;" transform="matrix(0.800942, 0, 0, 0.800942, 66.723862, 1.775661)"><tspan x="91.351" y="86.746">Influencer and brand come</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>together and agree on</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>commission per purchase</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>for influencer.</tspan></text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 161.954926, 18.852566)"><tspan x="91.351" y="86.746">An immutable product page is created</tspan><tspan x="91.351" dy="1em">​</tspan><tspan> for customer to purchase,</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>which then influencer promotes.</tspan><tspan x="91.351" dy="1em">​</tspan><tspan> </tspan></text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 294.283905, -12.888435)"><tspan x="91.351" y="86.746">Customer purchases the product </tspan><tspan x="91.351" dy="1em">​</tspan><tspan>and the payment is distributed</tspan><tspan x="91.351" dy="1em">​</tspan><tspan>on the fly.</tspan><tspan x="91.351" dy="1em">​</tspan></text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; white-space: pre;" x="28.904" y="101.796">Start</text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; white-space: pre;" x="457.94" y="100.274">End</text>
 </svg>

@@ -55,6 +55,24 @@
           </div>
         </div>
       </div>
+      <div v-else>
+        <div v-if="$route.path === '/influencers'">
+          <button
+            class="text-lg font-medium text-white bg-secondary-70 shadow-2xl rounded-md px-6 py-3 hover:bg-secondary-80 duration-300"
+            @click="$router.push('/influencer/register')"
+          >
+            Register
+          </button>
+        </div>
+        <div v-else-if="$route.path === '/brands'">
+          <button
+            class="text-lg font-medium text-white bg-secondary-70 shadow-2xl rounded-md px-6 py-3 hover:bg-secondary-80 duration-300"
+            @click="$router.push('/brand/register')"
+          >
+            Register
+          </button>
+        </div>
+      </div>
       <div class="hidden sm:block">
         <wallet-multi-button dark></wallet-multi-button>
       </div>
@@ -72,11 +90,11 @@ import { navLinks } from "../constant/index";
 import { WalletMultiButton } from "solana-wallets-vue";
 import { onMounted, ref, watch } from "vue";
 import { useWallet } from "solana-wallets-vue";
-import {toast} from 'vue3-toastify';
+import { toast } from "vue3-toastify";
 
 import { getCurrentUser } from "../../anchor/utils";
 
-import {store} from '../store';
+import { store } from "../store";
 
 const wallet = useWallet();
 
@@ -125,7 +143,6 @@ watch(
         setTimeout(() => {
           location.reload();
         }, 1000);
-        
       }
     }
   }

@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg viewBox="-40.59 165.36 445.785 132.034" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+<svg viewBox="21.182 194.059 444.138 87.193" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
   <defs>
+    <bx:grid x="-98.403" y="-53.586" width="23.917" height="23.917"/>
     <bx:grid x="0" y="0" width="20.295" height="20.295"/>
-    <linearGradient id="gradient-1" x1="514" y1="0.543457" x2="514" y2="84.902" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.416847, 0, 0, 0.416847, -27.036325, 200.808412)">
+    <linearGradient id="gradient-1" x1="514" y1="0.543457" x2="514" y2="84.902" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.416847, 0, 0, 0.416847, 32.112038, 215.372894)">
       <stop stop-color="#FD7000"/>
       <stop offset="1" stop-color="#0095FF"/>
     </linearGradient>
   </defs>
-  <path d="M -26.619 236.199 C -26.619 236.199 35.058 200.921 78.255 201.035 C 121.114 201.148 139.36 236.199 182.222 236.199 C 239.959 236.199 269.511 201.035 328.117 201.035 C 362.354 201.035 401.065 236.199 401.065 236.199" stroke="url(#gradient-1)" style="fill: rgba(255, 255, 255, 0);"/>
-  <path d="M -25.231 238.199 C -25.231 240.96 -27.47 243.199 -30.231 243.199 C -32.992 243.199 -35.231 240.96 -35.231 238.199 C -35.231 235.438 -32.992 233.199 -30.231 233.199 C -27.47 233.199 -25.231 235.438 -25.231 238.199 Z" fill="#0095FF" style=""/>
-  <circle cx="70.975" cy="200.799" r="5" fill="#FD7000" style=""/>
-  <path d="M 189.894 235.863 C 189.894 238.625 187.656 240.863 184.894 240.863 C 182.132 240.863 179.894 238.625 179.894 235.863 C 179.894 233.101 182.132 230.863 184.894 230.863 C 187.656 230.863 189.894 233.101 189.894 235.863 Z" fill="#0095FF"/>
-  <circle cx="317.265" cy="201.799" r="5" fill="#FD7000"/>
-  <path d="M 401.932 232.688 C 401.932 235.45 399.694 237.688 396.932 237.688 C 394.17 237.688 391.932 235.45 391.932 232.688 C 391.932 229.926 394.17 227.688 396.932 227.688 C 399.694 227.688 401.932 229.926 401.932 232.688 Z" fill="#0095FF"/>
-  <text style="fill: rgb(253, 112, 0); font-family: Arial, sans-serif; font-size: 7px; font-weight: 700; white-space: pre;" x="56.194" y="187.576">Contract</text>
-  <text style="fill: rgb(0, 149, 255); font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; white-space: pre;" x="159.673" y="219.798">Content Upload</text>
-  <text style="fill: rgb(253, 112, 0); font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; white-space: pre;" x="299.905" y="186.789">Payment</text>
-  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 8px; text-anchor: middle; white-space: pre;" transform="matrix(0.800942, 0, 0, 0.800942, 1.568264, 150.155853)"><tspan x="91.351" y="86.746">Influencer and brand come</tspan><tspan x="91.35099792480469" dy="1em">​</tspan><tspan>together and agree on</tspan><tspan x="91.35099792480469" dy="1em">​</tspan><tspan>CPM(Cost Per Mile).</tspan></text>
-  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 95.799789, 166.232849)" x="91.35099792480469" y="86.74600219726562"><tspan>Influencer uploads their content which <tspan x="91.35099792480469" dy="1em">​</tspan>is then monitered by Satik's on-chain<tspan x="91.35099792480469" dy="1em">​</tspan>programs.</tspan><tspan x="91.35099792480469" dy="1em">​</tspan><tspan> </tspan></text>
-  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 229.128799, 135.491852)" x="91.35099792480469" y="86.74600219726562"><tspan>Content's performance is checked <tspan x="91.35099792480469" dy="1em">​</tspan>on regular basis by on-chain prgrams<tspan x="91.35099792480469" dy="1em">​</tspan> and influencer is </tspan>paid accordingly.<tspan> <tspan x="91.35099792480469" dy="1em">​</tspan></tspan><tspan x="91.35099792480469" dy="1em">​</tspan></text>
+  <path d="M 32.529 250.764 C 32.529 250.764 94.206 215.486 137.403 215.6 C 180.262 215.713 198.508 250.764 241.37 250.764 C 299.107 250.764 328.659 215.6 387.265 215.6 C 421.502 215.6 460.213 250.764 460.213 250.764" stroke="url(#gradient-1)" style="fill: rgba(255, 255, 255, 0);"/>
+  <path d="M 33.917 252.764 C 33.917 255.525 31.678 257.764 28.917 257.764 C 26.156 257.764 23.917 255.525 23.917 252.764 C 23.917 250.003 26.156 247.764 28.917 247.764 C 31.678 247.764 33.917 250.003 33.917 252.764 Z" fill="#0095FF" style=""/>
+  <circle cx="130.123" cy="215.364" r="5" fill="#FD7000" style=""/>
+  <path d="M 249.042 250.428 C 249.042 253.19 246.804 255.428 244.042 255.428 C 241.28 255.428 239.042 253.19 239.042 250.428 C 239.042 247.666 241.28 245.428 244.042 245.428 C 246.804 245.428 249.042 247.666 249.042 250.428 Z" fill="#0095FF"/>
+  <circle cx="376.413" cy="216.364" r="5" fill="#FD7000"/>
+  <path d="M 462.08 248.253 C 462.08 251.015 459.842 253.253 457.08 253.253 C 454.318 253.253 452.08 251.015 452.08 248.253 C 452.08 245.491 454.318 243.253 457.08 243.253 C 459.842 243.253 462.08 245.491 462.08 248.253 Z" fill="#0095FF"/>
+  <text style="fill: rgb(253, 112, 0); font-family: Arial, sans-serif; font-size: 7px; font-weight: 700; white-space: pre;" x="115.342" y="202.141">Contract</text>
+  <text style="fill: rgb(0, 149, 255); font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; white-space: pre;" x="218.821" y="234.363">Content Upload</text>
+  <text style="fill: rgb(253, 112, 0); font-family: Arial, sans-serif; font-size: 8px; font-weight: 700; white-space: pre;" x="359.053" y="201.354">Payment</text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 8px; text-anchor: middle; white-space: pre;" transform="matrix(0.800942, 0, 0, 0.800942, 60.716625, 164.720337)"><tspan x="91.351" y="86.746">Influencer and brand come</tspan><tspan x="91.35099792480469" dy="1em">​</tspan><tspan>together and agree on</tspan><tspan x="91.35099792480469" dy="1em">​</tspan><tspan>CPM(Cost Per Mile).</tspan></text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 154.948364, 180.797485)" x="91.35099792480469" y="86.74600219726562"><tspan>Influencer uploads their content which <tspan x="91.35099792480469" dy="1em">​</tspan>is then monitered by Satik's on-chain<tspan x="91.35099792480469" dy="1em">​</tspan>programs.</tspan><tspan x="91.35099792480469" dy="1em">​</tspan><tspan> </tspan></text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 288.277374, 150.056488)" x="91.35099792480469" y="86.74600219726562"><tspan>Content's performance is checked <tspan x="91.35099792480469" dy="1em">​</tspan>on regular basis by on-chain prgrams<tspan x="91.35099792480469" dy="1em">​</tspan> and influencer is </tspan>paid accordingly.<tspan> <tspan x="91.35099792480469" dy="1em">​</tspan></tspan><tspan x="91.35099792480469" dy="1em">​</tspan></text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; white-space: pre;" x="22.298" y="266.091">Start</text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 6px; white-space: pre;" x="451.589" y="261.97">End</text>
 </svg>

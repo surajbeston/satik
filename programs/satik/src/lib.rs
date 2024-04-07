@@ -44,6 +44,8 @@ pub mod satik {
         name: String,
         profile_image: String,
         bio: String,
+        total_followers: u64,
+        social_media: String
     ) -> Result<()> {
         let influencer = &mut ctx.accounts.influencer;
         influencer.name = name;
@@ -52,6 +54,8 @@ pub mod satik {
         influencer.bio = bio;
         influencer.created_by = ctx.accounts.signer.key();
         influencer.usdc_ata = ctx.accounts.usdc_ata.key();
+        influencer.total_followers = total_followers;
+        influencer.social_media = social_media;
 
         Ok(())
     }
@@ -60,6 +64,7 @@ pub mod satik {
         ctx: Context<InitializeProposal>,
         message: String,
         redeemer: Pubkey,
+        redeemer_url: String
     ) -> Result<()> {
         require_keys_eq!(ctx.accounts.brand.created_by, ctx.accounts.signer.key());
         let proposal = &mut ctx.accounts.proposal;
@@ -71,6 +76,8 @@ pub mod satik {
         proposal.brand_ata = ctx.accounts.brand.usdc_ata;
         proposal.created_by = ctx.accounts.signer.key();
         proposal.accepted = false;
+        proposal.datetime = Clock::get()?.unix_timestamp;
+        proposal.redeemer_url = redeemer_url;
 
         Ok(())
     }
@@ -163,8 +170,8 @@ pub mod satik {
 
         purchase.brand_receiver = proposal.brand_ata;
         purchase.influencer_receiver = proposal.influencer_ata;
-        purchase.satik_receiver =
-            Pubkey::from_str("ACxRSAhXU25zxuaTgEtGnxbg9dQG9A49BVRwskmwnYqQ").unwrap();
+        purchase.satik_receiver = 
+            Pubkey::from_str("FMzdabL9cxpTTHEgfXD1CXbt5qg8Vijks4c56b4rzdBD").unwrap();
         purchase.redeemer = proposal.brand_redeemer;
         purchase.escrow = ctx.accounts.usdc_token_account.key();
         purchase.total_amount = product.total_amount;

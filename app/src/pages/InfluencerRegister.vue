@@ -89,6 +89,7 @@
             >Total Followers:</label
           >
           <input
+            v-model="totalFollowers"
             class="w-full bg-transparent border-primary-50 font-bold shadow-lg border-2 rounded-2xl py-2 px-6 outline-none placeholder:text-primary-40 placeholder:font-bold mt-3"
             type="number"
             name="followers"
@@ -101,6 +102,7 @@
             >Primary social media:</label
           >
           <input
+            v-model="socialLink"
             class="w-full bg-transparent border-primary-50 font-bold shadow-lg border-2 rounded-2xl py-2 px-6 outline-none placeholder:text-primary-40 placeholder:font-bold mt-3"
             type="text"
             name="social-link"
@@ -151,6 +153,8 @@ var profileImageURL = "";
 const name = ref("");
 const username = ref("");
 const bio = ref("");
+const totalFollowers = ref(0);
+const socialLink = ref("");
 
 const showInfluencer = ref(false);
 
@@ -176,7 +180,9 @@ async function createInfluencer() {
         username.value,
         name.value,
         profileImageURL,
-        bio.value
+        bio.value,
+        totalFollowers.value,
+        socialLink.value
       );
       toast("Profile Created", { autoClose: 2000 });
       location.href = "/influencer/" + username.value;
@@ -221,27 +227,31 @@ onMounted(async () => {
     const { publicKey } = useWallet();
 
     // console.log(publicKey.value.toBase58())
-
-    for (var influencer of influencers) {
-      console.log(influencer.account.createdBy.toBase58());
-      console.log(publicKey.value.toBase58());
-      if (
-        influencer.account.createdBy.toBase58() == publicKey.value.toBase58()
-      ) {
-        console.log("inside");
-        location.href = "/influencer/" + influencer.account.username;
+    if (publicKey.value){
+      for (var influencer of influencers) {
+        console.log(influencer.account.createdBy.toBase58());
+        console.log(publicKey.value.toBase58());
+        if (
+          influencer.account.createdBy.toBase58() == publicKey.value.toBase58()
+        ) {
+          console.log("inside");
+          location.href = "/influencer/" + influencer.account.username;
+        }
+        console.log();
       }
-      console.log();
-    }
 
-    const brands = await fetchAllBrands();
+      const brands = await fetchAllBrands();
 
-    for (var brand of brands) {
-      if (brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
-        location.href = "/brand/" + brand.account.username;
+      for (var brand of brands) {
+        if (brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+          location.href = "/brand/" + brand.account.username;
+        }
       }
+      showInfluencer.value = true;
     }
-    showInfluencer.value = true;
+    else{
+      toast("Please connect your wallet to continue", {autoClose: 3000, type: 'error'})
+    }
   }, 1000);
 });
 </script>

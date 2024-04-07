@@ -13,6 +13,7 @@ import { SolanaConnect } from "solana-connect";
 //@ts-ignore
 import { toast } from "https://cdn.jsdelivr.net/npm/vue3-toastify@0.1.13/+esm";
 
+
 const commitment = "confirmed";
 const preflightCommitment = "processed";
 const programID = new PublicKey(idl.metadata.address);
@@ -49,6 +50,7 @@ function getProgram(provider: AnchorProvider): Program {
 }
 // @ts-ignore
 async function purchase(productAddressString: string) {
+
   const mint = new PublicKey("8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy");
 
   const productAddress = new PublicKey(productAddressString);
@@ -61,40 +63,61 @@ async function purchase(productAddressString: string) {
 
   const purchaseId = Math.random().toString(36).slice(2);
 
-  const [purchaseAddress] = PublicKey.findProgramAddressSync(
+  const [purchaseAddress, bump] = PublicKey.findProgramAddressSync(
     [Buffer.from(purchaseId)],
     program.programId
   );
 
-  const escrow = await getAssociatedTokenAddress(mint, purchaseAddress, true);
+  console.log("product", product)
+
+  console.log("purchase address ", purchaseAddress.toBase58());
+  console.log("bump ", bump);
+  const escrow = await getAssociatedTokenAddress(mint, purchaseAddress, true)
 
   const customer_ATA = await getAssociatedTokenAddress(
     mint,
     wallet?.publicKey as PublicKey
-  );
+  )
+  const url = `https://satik-redeemer-demo.onrender.com/mint?address=${customer_ATA.toBase58()}&amount=${product.totalAmount.toNumber()}`;
 
-  console.log(customer_ATA.toBase58());
+  console.log(url);
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
 
   const rent = new PublicKey("SysvarRent111111111111111111111111111111111");
-
-  const tx4 = await program.methods
-    .purchase(purchaseId)
-    .accounts({
-      purchase: purchaseAddress,
-      proposal: proposalAddress,
-      product: productAddress,
-      brandAta: proposal.brandAta as PublicKey,
-      influencerAta: proposal.influencerAta as PublicKey,
-      customerAta: customer_ATA,
-      usdcTokenAccount: escrow,
-      mint: mint,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-      rent: rent,
-    })
-    .rpc();
-  toast("Product Purchased", { autoClose: 2000, type: "success" });
-  console.log(tx4);
+  try{
+    toast("Purchase initiated. Please sign the transaction.", { autoClose: 2000, type: "info" });
+    const tx4 = await program.methods
+      .purchase(purchaseId)
+      .accounts({
+        purchase: purchaseAddress,
+        proposal: proposalAddress,
+        product: productAddress,
+        brandAta: proposal.brandAta as PublicKey,
+        influencerAta: proposal.influencerAta as PublicKey,
+        customerAta: customer_ATA,
+        usdcTokenAccount: escrow,
+        mint: mint,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        rent: rent,
+      })
+      .rpc();
+    console.log(tx4);
+    toast("Product purchased.", { autoClose: 2000, type: "success" });
+  }
+  catch(error){
+    console.log(error)
+    toast("Something went wrong", { autoClose: 2000, type: "error" });
+  } 
 }
 
 function addListeners() {
@@ -106,6 +129,7 @@ function addListeners() {
       try {
         purchase(address);
       } catch (error) {
+        console.log(error)
         toast("Something went wrong", { autoClose: 2000, type: "error" });
       }
     });

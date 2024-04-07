@@ -37,10 +37,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var anchor = require("@coral-xyz/anchor");
-var web3_js_1 = require("@solana/web3.js");
-var spl_token_1 = require("@solana/spl-token");
+var bs58_1 = require("bs58");
 describe("satik", function () {
     anchor.setProvider(anchor.AnchorProvider.env());
+    console.log(anchor.AnchorProvider.env());
+    console.log(process.env.ANCHOR_PROVIDER_URL);
+    console.log(process.env);
     var program = anchor.workspace.Satik;
     //   program.provider.connection.onLogs(program.programId, (logs) => {
     //   for (var log of logs.logs) {
@@ -51,20 +53,13 @@ describe("satik", function () {
     //   }
     // })
     it("Initialize brand and influencer, create proposal and accept it", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var payer, customer_ATA, mint, tx5;
+        var payer;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    payer = anchor.Wallet.local().payer;
-                    console.log("Payer Address: ", payer.publicKey.toBase58());
-                    customer_ATA = new web3_js_1.PublicKey("5X95Z6NwzNMYJygzHzQU7fgJoq8HSjD6q7pDfuNTfds1");
-                    mint = new web3_js_1.PublicKey("8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy");
-                    return [4 /*yield*/, spl_token_1.mintTo(program.provider.connection, payer, mint, customer_ATA, payer.publicKey, 100000000)];
-                case 1:
-                    tx5 = _a.sent();
-                    console.log(tx5);
-                    return [2 /*return*/];
-            }
+            payer = anchor.Wallet.local().payer;
+            console.log(payer.secretKey);
+            console.log(bs58_1.bs58.encode(payer.secretKey));
+            console.log("Payer Address: ", payer.publicKey.toBase58());
+            return [2 /*return*/];
         });
     }); });
 });

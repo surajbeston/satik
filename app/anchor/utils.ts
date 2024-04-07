@@ -15,6 +15,8 @@ import {
 } from "@solana/spl-token";
 import * as anchor from "@coral-xyz/anchor";
 
+import { Batch } from "../target/types/batch";
+
 import initWorkspace from "./useWorkspace";
 
 import {
@@ -35,9 +37,9 @@ import {
 import { AnchorProvider, Program } from "@project-serum/anchor";
 
 type returnType = {
-  wallet: AnchorWallet;
-  connection: Connection;
-  provider: AnchorProvider;
+  wallet: ComputedRef<AnchorWallet>;
+  connection: ComputedRef<Connection>;
+  provider: ComputedRef<AnchorProvider>;
   program: ComputedRef<Program>;
 };
 
@@ -58,14 +60,16 @@ let functionAccountPk = new PublicKey(
 
 const { wallet, connection, provider, program }: returnType = initWorkspace();
 
-console.log("rent", anchor.web3.SYSVAR_RENT_PUBKEY.toBase58());
-
 export async function createInfluencerAccount(
   username: String,
   name: String,
   profile_image: String,
-  bio: String
+  bio: String,
+  total_followers: number,
+  social_media: String
 ) {
+
+  console.log("reached here");
   const [influencerAddress, bump] =
     anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from(username)],
@@ -78,7 +82,7 @@ export async function createInfluencerAccount(
   );
 
   const tx = await program.value.methods
-    .initializeInfluencer(username, name, profile_image, bio)
+    .initializeInfluencer(username, name, profile_image, bio, new BN(total_followers), social_media)
     .accounts({
       usdcAta: influencerATA,
       influencer: influencerAddress,
@@ -147,57 +151,49 @@ export async function initializeProposalWithProducts(
   message: String,
   influencerAddress: PublicKey,
   brandAddress: PublicKey,
-  products: any[]
+  products: any[],
+  redeemerURL: String
 ) {
   const proposal = new anchor.web3.Keypair();
-  const { publicKey, wallet } = useWallet();
+  const { publicKey } = useWallet();
 
-  // const productInstructions = products.map((product: any) => program.value.methods.initializeProduct(product.productName, product.productDescription, product.totalAmount * 10 ** 6, product.influencerAmount * 10 ** 6)
-  //                                       .accounts({
-  //                                         product: product.publicKey,
-  //                                         proposal: proposal.publicKey
-  //                                       })
-  //                                       .signers([product]))
-
-  // console.log(productInstructions);
-
-  const tx = new Transaction();
+  const instructions = [];
+  const instructionSigners = [];
+  for (var product of products) {
+    const productAddress = new anchor.web3.Keypair();
+    instructions.push(
+      await program.value.methods
+        .initializeProduct(
+          product.productName,
+          product.productDescription,
+          new BN(product.totalAmount * 10 ** 6),
+          new BN(product.influencerAmount * 10 ** 6)
+        )
+        .accounts({
+          product: productAddress.publicKey,
+          proposal: proposal.publicKey,
+        })
+        .instruction()
+    );
+    instructionSigners.push(productAddress);
+    product.productAddress = productAddress.publicKey.toBase58();
+  }
 
   const proposalTransaction = await program.value.methods
-    .initializeProposal(message, publicKey.value)
+    .initializeProposal(message, publicKey.value, redeemerURL)
     .accounts({
       proposal: proposal.publicKey,
       brand: brandAddress,
-      influencer: influencerAddress,
+      influencer: influencerAddress
     })
-    .signers([proposal])
-    .instruction();
-  tx.add(proposalTransaction);
+    .postInstructions(instructions)
+    .signers([proposal, ...instructionSigners])
+    .rpc();
 
-  for (var product of products) {
-    console.log("product", product);
-    const productTransaction = await program.value.methods
-      .initializeProduct(
-        product.productName,
-        product.productDescription,
-        new BN(product.totalAmount * 10 ** 6),
-        new BN(product.influencerAmount * 10 ** 6)
-      )
-      .accounts({
-        product: product.publicKey,
-        proposal: proposal.publicKey,
-      })
-      .signers([product])
-      .instruction();
-    tx.add(productTransaction);
-  }
+    console.log(proposalTransaction);
 
-  const finalTx = await provider.value.wallet.signAllTransactions(
-    tx,
-    connection
-  );
-
-  console.log(finalTx);
+    
+    return [products, proposal.publicKey.toBase58()]
 }
 
 export async function acceptProposal(proposalAddresString: string) {
@@ -234,6 +230,25 @@ export async function initializeProduct(
     .signers([product])
     .rpc();
   return product.publicKey;
+}
+
+export async function addProposalWebpage(
+  proposalAddressString: String,
+  webpage: String
+) {
+  const proposalAddress = new PublicKey(proposalAddressString);
+
+  var proposalFetched = await program.value.account.proposal.fetch(proposalAddress);
+  console.log("Fetched Proposal old", proposalFetched);
+
+  const tx = await program.value.methods.addProposalWebpage(webpage)
+                                        .accounts({
+                                          proposal: proposalAddress,
+                                        }).
+                                        rpc();
+  console.log(tx);
+  proposalFetched = await program.value.account.proposal.fetch(proposalAddress);
+  console.log("Fetched Proposal", proposalFetched);
 }
 
 export async function createCPMContract(
@@ -372,9 +387,8 @@ export async function fetchBrandByUsername(username: string) {
 
 export async function fetchInfluencerByUsername(username: string) {
   const influencers = await fetchAllInfluencers();
-  console.log(influencers);
+
   for (var influencer of influencers) {
-    console.log(influencer);
     if (influencer.account.username == username) return influencer;
   }
 }
@@ -396,29 +410,47 @@ export async function getCurrentUser() {
 
   const brands = await fetchAllBrands();
 
-  console.log(brands);
-
   for (var brand of brands) {
     if (brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
       return ["Brand", brand];
     }
   }
+}
+export async function getBrandProposals(brandAddressString: String) {
+  const allProposals = await program.value.account.proposal.all();
+  const brandProposals = [];
 
-  console.log("fuiya...");
+  for (var proposal of allProposals) {
+    if (proposal.account.createdBy.toBase58() === brandAddressString) {
+      brandProposals.push(proposal);
+    }
+  }
+
+  const influencers = await fetchAllInfluencers();
+
+  for (var proposal of brandProposals) {
+    const proposalInfluencerKey = proposal.account.influencerKey.toBase58();
+    for (var influencer of influencers) {
+      const influencerKey = influencer.account.createdBy.toBase58();
+
+      if (proposalInfluencerKey === influencerKey) {
+        proposal.account.influencer = influencer.account;
+      }
+    }
+  }
+  return brandProposals;
 }
 
 export async function getInfluencerProposals(influencerAddressString: String) {
   const allProposals = await program.value.account.proposal.all();
   const influencerProposals = [];
-  console.log(influencerAddressString);
+
   for (var proposal of allProposals) {
-    console.log("This is proposal", proposal);
-    console.log(proposal.account.influencerKey.toBase58());
     if (proposal.account.influencerKey.toBase58() == influencerAddressString) {
       influencerProposals.push(proposal);
     }
   }
-  console.log("influencer proposals", influencerProposals);
+
   for (var proposal of influencerProposals) {
     var brand = await program.value.account.brand.fetch(proposal.account.brand);
     proposal.account.brand = brand;
@@ -430,9 +462,7 @@ export async function getInfluencerProposals(influencerAddressString: String) {
 export async function getProposalProducts(proposalAddressString: String) {
   const allProducts = await program.value.account.product.all();
   const proposalProducts = [];
-  console.log(proposalAddressString);
   for (var product of allProducts) {
-    console.log("This is product", product);
     if (product.account.proposal.toBase58() == proposalAddressString) {
       proposalProducts.push(product);
     }

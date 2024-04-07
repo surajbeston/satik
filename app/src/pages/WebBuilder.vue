@@ -5,7 +5,7 @@
       v-if="showModal"
       class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-black/70 h-screen w-screen flex justify-center items-center"
     >
-      <div class="p-6 bg-primary-60 rounded-xl shadow-2xl w-[500px] h-[400px]">
+      <div class="p-6 bg-primary-60 rounded-xl shadow-2xl w-[500px] h-[420px]">
         <img
           @click="showModal = false"
           class="w-4 h-4 mr-0 ml-auto cursor-pointer"
@@ -25,6 +25,10 @@
             influencer
           </li>
         </ul>
+
+        <p class="text-lg font-semibold text-neutral-10 pt-3 text-center">
+          Happy Building!
+        </p>
       </div>
     </div>
     <!-- modal end -->
@@ -37,21 +41,22 @@
     <div class="w-full flex py-8">
       <button
         class="w-full bg-primary-20 py-2 font-bold text-lg"
-        @click="getCode"
+        @click="showConfirmModal = true"
       >
-        Save
-      </button>
-      <button
-        class="w-full bg-secondaryLight-20 font-bold text-lg"
-        @click="sendProposal"
-      >
-        Send Proposal
+        Confirm and Deploy
       </button>
     </div>
+    <Modal
+      v-if="showConfirmModal"
+      @closeModal="closeModal"
+      @handleSendClick="handleSendProposal"
+      message="Page will be deployed and link will be added to the proposal."
+    />
   </div>
 </template>
 
 <script setup>
+import Modal from "../components/Modal.vue";
 import { toast } from "vue3-toastify";
 import { onMounted, ref } from "vue";
 // grapes and grapes plugins
@@ -63,24 +68,21 @@ import { store } from "../store.js";
 
 import webpage from "grapesjs-preset-webpage";
 import grjNavbar from "grapesjs-navbar";
-import plugin from "grapesjs-advance-components";
+// import plugin from "grapesjs-advance-components";
 import { createHtml } from "../helper/htmlCreator";
 
 import "grapesjs/dist/css/grapes.min.css";
 // web3 storage
 import { createClient } from "../helper/client";
-import {
-  initializeProposal,
-  initializeProduct,
-  fetchAllBrands,
-  fetchAllInfluencers,
-} from "../../anchor/utils";
+import { addProposalWebpage } from "../../anchor/utils";
 import { useWallet } from "solana-wallets-vue";
 import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { builderHtml, builderCss } from "../constant/builderContent";
 
+const router = useRouter();
 const route = useRoute();
 
 const editor = ref(null);
@@ -88,6 +90,8 @@ const editorEl = ref(null);
 const selectedProduct = ref(null);
 const products = ref([]);
 const showModal = ref(true);
+const proposalAddress = ref("");
+const showConfirmModal = ref(false);
 
 onMounted(async () => {
   const data = localStorage.getItem("products");
@@ -95,17 +99,20 @@ onMounted(async () => {
     location.href = "/";
   }
   products.value = JSON.parse(data);
+  proposalAddress.value = localStorage.getItem("proposalAddress");
 
   editor.value = grapesjs.init({
     container: "#gjs",
-    plugins: [grapesjsblocks, webpage, grjNavbar, plugin],
+    plugins: [grapesjsblocks, webpage, grjNavbar],
+    storageManager: false,
   });
 
+  editor.value.setStyle(builderCss, { clean: true });
+  editor.value.setComponents(builderHtml);
   editor.value.on("component:selected", (model) => {
     let className;
-    console.log(selectedProduct.value.product);
     if (selectedProduct.value) {
-      className = `product-${selectedProduct.value.product.id}`;
+      className = `product-${selectedProduct.value.product.productAddress}`;
       model.setAttributes({
         class: className,
       });
@@ -122,6 +129,13 @@ onMounted(async () => {
   }, 1000);
 });
 
+const handleSendProposal = () => {
+  getCode();
+  showConfirmModal.value = false;
+};
+const closeModal = () => {
+  showConfirmModal.value = false;
+};
 const productClicked = (div, product) => {
   // unselect, selected component  on canvas
   editor.value.select(null);
@@ -157,56 +171,29 @@ const insetProduct = () => {
   });
 };
 
-async function sendProposal() {
-  const brands = await fetchAllBrands();
-
-  const { publicKey } = useWallet();
-  var brandAddress = null;
-  for (var brand of brands) {
-    if (brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
-      brandAddress = brand.publicKey;
-    }
-  }
-  const influencerAddressString = localStorage.getItem("influencerAddress");
-  const influencerAddress = new PublicKey(influencerAddressString);
-  toast("Sending Proposal", { autoClose: 2000 });
-  const proposalAddress = await initializeProposal(
-    "gh",
-    influencerAddress,
-    brandAddress
-  );
-  for (var product of products.value) {
-    let productAddress = await initializeProduct(
-      product.productName,
-      product.productDescription,
-      new BN(product.totalAmount),
-      new BN(product.influencerAmount),
-      proposalAddress
-    );
-    product.productAddress = productAddress;
-    console.log("Product Address: ", productAddress.toBase58());
-  }
-  toast("Proposal successfully sent.", { autoClose: 2000 });
-  console.log(proposalAddress.toBase58());
-}
-
 const getCode = async () => {
-  sendProposal();
-
+  toast("Deploying the page to IPFS.", { autoClose: 2000, type: "info" });
   const html = editor.value.getHtml();
   const cssCode = editor.value.getCss({ clean: true });
 
   //   combine css to the html file
   const code = createHtml(html, cssCode, products);
 
-  const files = [new File([code], "index.html")];
   const blob = new Blob([code], { type: "text/html" });
   const cid = await createClient(blob);
-  const url = `https://${cid}.ipfs.w3s.link`;
-  const link = document.createElement("a");
-  link.target = "_blank";
-  link.href = url;
-  link.click();
+  const url = `https://${cid}.ipfs.cf-ipfs.com`;
+
+  console.log(url);
+
+  toast("Page Deployment successful!", { autoClose: 2000, type: "success" });
+  toast("Adding webpage link to proposal. Please sign the transaction.", {
+    autoClose: 2000,
+    type: "info",
+  });
+
+  await addProposalWebpage(proposalAddress.value, url);
+
+  router.push("/brand/" + store.currentUser.account.username);
 };
 </script>
 

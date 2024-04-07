@@ -1,5 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
+import {bs58} from 'bs58';
 import { Satik } from "../target/types/satik";
 import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { u32, u8, struct, blob, Layout } from "@solana/buffer-layout";
@@ -19,8 +20,13 @@ import { assert } from "chai";
 
 
 describe("satik", () => {
-
+  
     anchor.setProvider(anchor.AnchorProvider.env());
+
+    console.log(anchor.AnchorProvider.env())
+
+    console.log(process.env.ANCHOR_PROVIDER_URL)
+    console.log(process.env)
 
     const program = anchor.workspace.Satik as Program<Satik>;
 
@@ -36,24 +42,29 @@ describe("satik", () => {
     
 
     it("Initialize brand and influencer, create proposal and accept it", async () => {
-
+      // program.account.purchase.all
         var payer = anchor.Wallet.local().payer;
+        console.log(payer.secretKey);
+
+        console.log(bs58.encode(payer.secretKey))
+
+        
 
         console.log("Payer Address: ", payer.publicKey.toBase58());
 
-          const customer_ATA = new PublicKey("5X95Z6NwzNMYJygzHzQU7fgJoq8HSjD6q7pDfuNTfds1");
-          const mint = new PublicKey("8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy");
+        //   const customer_ATA = new PublicKey("5X95Z6NwzNMYJygzHzQU7fgJoq8HSjD6q7pDfuNTfds1");
+        //   const mint = new PublicKey("8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy");
 
-          const tx5 = await mintTo(
-            program.provider.connection,
-            payer,
-            mint,
-            customer_ATA,
-            payer.publicKey,
-            100_000_000
-          )
+        //   const tx5 = await mintTo(
+        //     program.provider.connection,
+        //     payer,
+        //     mint,
+        //     customer_ATA,
+        //     payer.publicKey,
+        //     100_000_000
+        //   )
 
-          console.log(tx5)
+        //   console.log(tx5)
 
         // const mint = await createMint(
         //     program.provider.connection,

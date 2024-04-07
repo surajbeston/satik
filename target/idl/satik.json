@@ -125,6 +125,14 @@
         {
           "name": "bio",
           "type": "string"
+        },
+        {
+          "name": "totalFollowers",
+          "type": "u64"
+        },
+        {
+          "name": "socialMedia",
+          "type": "string"
         }
       ]
     },
@@ -165,6 +173,10 @@
         {
           "name": "redeemer",
           "type": "publicKey"
+        },
+        {
+          "name": "redeemerUrl",
+          "type": "string"
         }
       ]
     },
@@ -173,7 +185,7 @@
       "accounts": [
         {
           "name": "proposal",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -670,6 +682,14 @@
           {
             "name": "usdcAta",
             "type": "publicKey"
+          },
+          {
+            "name": "totalFollowers",
+            "type": "u64"
+          },
+          {
+            "name": "socialMedia",
+            "type": "string"
           }
         ]
       }
@@ -697,7 +717,7 @@
           },
           {
             "name": "datetime",
-            "type": "u64"
+            "type": "i64"
           },
           {
             "name": "createdBy",
@@ -718,6 +738,10 @@
           {
             "name": "brandRedeemer",
             "type": "publicKey"
+          },
+          {
+            "name": "redeemerUrl",
+            "type": "string"
           }
         ]
       }

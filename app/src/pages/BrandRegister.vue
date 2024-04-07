@@ -119,7 +119,6 @@ const name = ref("");
 const username = ref("");
 const bio = ref("");
 
-
 const showBrand = ref(false)
 
 // const { wallet, influencers };
@@ -189,29 +188,32 @@ onMounted(async () => {
     const {publicKey } = useWallet();
 
     // console.log(publicKey.value.toBase58())
-
-    for (var influencer of influencers) {
-      console.log(influencer.account.createdBy.toBase58())
-      console.log (publicKey.value.toBase58())
-      if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
-        console.log("inside")
-        location.href = "/influencer/" + influencer.account.username;
+    if (publicKey.value) {
+      for (var influencer of influencers) {
+        console.log(influencer.account.createdBy.toBase58())
+        console.log (publicKey.value.toBase58())
+        if (influencer.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+          console.log("inside")
+          location.href = "/influencer/" + influencer.account.username;
+        }
+        console.log ()
       }
-      console.log ()
-    }
 
-    const brands = await fetchAllBrands();
+      const brands = await fetchAllBrands();
 
-    for (var brand of brands) {
-      if(brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
-        location.href = "/brand/" + brand.account.username;
+      for (var brand of brands) {
+        if(brand.account.createdBy.toBase58() == publicKey.value.toBase58()) {
+          location.href = "/brand/" + brand.account.username;
+        }
       }
-    }
 
-    showBrand.value = true;
+      showBrand.value = true;
+    }
+    else {
+      toast("Please connect you wallet to register",  { autoClose: 3000, type: "error" });
+    }
   }, 1000);
-  
-  
+
 })
 </script>
 
