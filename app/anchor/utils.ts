@@ -351,70 +351,22 @@ export async function acceptCPMContract(
 }
 
 export async function scheduleCPMFeed(dealPk: PublicKey) {
-  // let switchboard = await SwitchboardProgram.fromProvider(provider.value);
+  // will be created by program on further updates
+  // currently brand backend schedules payment
 
-  // let [attestationQueueAccount] = await AttestationQueueAccount.load(
-  //   switchboard,
-  //   publicAttestationQueuePk
-  // );
-  // // // will be created by program
-  // let functionAccount: FunctionAccount;
-  // let txObject: TransactionObject;
-  // [functionAccount, txObject] = await FunctionAccount.createInstruction(
-  //   switchboard,
-  //   wallet.value.publicKey,
-  //   {
-  //     attestationQueue: attestationQueueAccount,
-  //     container: "sauravniraula/api_feed",
-  //     containerRegistry: "dockerhub",
-  //     name: "Payment Feed",
-  //     mrEnclave,
-  //   }
-  // );
-  // wallet.value.signTransaction();
-  // await switchboard.signAndSend(txObject);
-  // await txObject.signAndSend(provider.value);
-  // console.log(functionAccount.publicKey.toBase58());
+  const url = "https://satik-redeemer-demo.onrender.com/";
 
-  // let sbRoutineKeypair = anchor.web3.Keypair.generate();
-  // const escrowWallet = SwitchboardWallet.fromSeed(
-  //   switchboard,
-  //   publicAttestationQueuePk,
-  //   wallet.publicKey.value!,
-  //   functionAccount.publicKey
-  // );
-
-  // const tx = await program.value.methods
-  //   .scheduleFeed()
-  //   .accounts({
-  //     deal: dealPk,
-  //     switchboardAttestation: switchboard.attestationProgramId,
-  //     switchboardAttestationQueue: publicAttestationQueuePk,
-  //     switchboardFunction: functionAccount.publicKey,
-  //     routine: sbRoutineKeypair.publicKey,
-  //     escrowWallet: escrowWallet.publicKey,
-  //     escrowTokenWallet: anchor.utils.token.associatedAddress({
-  //       mint: NATIVE_MINT,
-  //       owner: escrowWallet.publicKey,
-  //     }),
-  //     switchboardMint: NATIVE_MINT,
-  //     functionAccountAuthority: wallet.publicKey.value!,
-  //     payer: wallet.publicKey.value!,
-  //   })
-  //   .signers([sbRoutineKeypair])
-  //   .rpc();
-
-  // console.log(tx);
+  await fetch("url" + "?deal=" + dealPk);
 
   // using mock for now
 
-  const tx = await program.value.methods
-    .scheduleFeedMock()
-    .accounts({
-      deal: dealPk,
-      signer: wallet.value.publicKey,
-    })
-    .rpc();
+  // const tx = await program.value.methods
+  //   .scheduleFeedMock()
+  //   .accounts({
+  //     deal: dealPk,
+  //     signer: wallet.value.publicKey,
+  //   })
+  //   .rpc();
 
   console.log("CPM Feed Scheduled !");
 }

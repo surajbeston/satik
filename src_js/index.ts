@@ -20,7 +20,11 @@ import {
   TransactionObject,
 } from "@switchboard-xyz/solana.js";
 import { NodeOracle } from "@switchboard-xyz/oracle";
-import { OracleJob, parseRawMrEnclave } from "@switchboard-xyz/common";
+import {
+  OracleJob,
+  parseRawMrEnclave,
+  parseCronSchedule,
+} from "@switchboard-xyz/common";
 import { payerKeypair } from "../src_js/constants";
 import { base64, bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import * as anchor from "@coral-xyz/anchor";
@@ -123,6 +127,7 @@ const [dealPDA] = PublicKey.findProgramAddressSync(
   ],
   program.programId
 );
+console.log(dealPDA.toBase58());
 
 const [functionsOwner] = PublicKey.findProgramAddressSync(
   [Buffer.from("functions_owner")],
@@ -320,6 +325,8 @@ async function main() {
   //   })
   //   .signers([sbRoutineKeypair, functionAccountKeypair, payerKeypair])
   //   .rpc();
+
+  console.log(Buffer.from(parseCronSchedule("* * * 1 * *")));
 
   // const tx = await program.methods
   //   .scheduledFeedCallback({

@@ -42,9 +42,9 @@ pub struct ScheduleFeed<'info> {
 }
 
 pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
-    // if ctx.accounts.deal.feed_scheduled {
-    //     return err!(CustomError::FeedAlreadyScheduled);
-    // }
+    if ctx.accounts.deal.feed_scheduled {
+        return err!(CustomError::FeedAlreadyScheduled);
+    }
     if !ctx.accounts.deal.influencer_accepted {
         return err!(CustomError::DealNotAccepted);
     }
@@ -103,7 +103,7 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
         name: None,
         metadata: None,
         bounty: None,
-        schedule: vec![42, 32, 49, 32, 42, 32, 42, 32, 42, 32, 42],
+        schedule: vec![42, 32, 42, 32, 42, 32, 49, 32, 42, 32, 42],
         max_container_params_len: Some(512),
         container_params: to_vec(&params)?,
     };
