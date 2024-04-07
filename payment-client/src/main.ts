@@ -68,15 +68,19 @@ async function purchase(productAddressString: string) {
     program.programId
   );
 
+  console.log("Program ID", program.programId.toBase58())
+
   console.log("product", product)
 
   console.log("purchase address ", purchaseAddress.toBase58());
   console.log("bump ", bump);
   const escrow = await getAssociatedTokenAddress(mint, purchaseAddress, true)
 
+  console.log("Proposal: ", proposal);
+
   const customer_ATA = await getAssociatedTokenAddress(
     mint,
-    wallet?.publicKey as PublicKey
+    wallet?.publicKey as PublicKey 
   )
   const url = `https://satik-redeemer-demo.onrender.com/mint?address=${customer_ATA.toBase58()}&amount=${product.totalAmount.toNumber()}`;
 
@@ -113,6 +117,7 @@ async function purchase(productAddressString: string) {
       .rpc();
     console.log(tx4);
     toast("Product purchased.", { autoClose: 2000, type: "success" });
+    location.href = `${proposal.redeemerUrl}?purchaseAddress=${purchaseAddress.toBase58()}&bump=${bump}`;
   }
   catch(error){
     console.log(error)

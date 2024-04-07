@@ -122,8 +122,8 @@ pub struct RedeemPurchase<'info> {
     pub brand_receiver: Account<'info, TokenAccount>,
     #[account(mut)]
     pub influencer_receiver: Account<'info, TokenAccount>,
-    #[account(mut)]
-    pub satik_receiver: Account<'info, TokenAccount>,
+    // #[account(mut)]
+    // pub satik_receiver: Account<'info, TokenAccount>,
 
     #[account(mut)]
     pub escrow: Account<'info, TokenAccount>,

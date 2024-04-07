@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var anchor = require("@coral-xyz/anchor");
-var bs58_1 = require("bs58");
+var bytes_1 = require("@coral-xyz/anchor/dist/cjs/utils/bytes");
 describe("satik", function () {
     anchor.setProvider(anchor.AnchorProvider.env());
     console.log(anchor.AnchorProvider.env());
@@ -55,9 +55,10 @@ describe("satik", function () {
     it("Initialize brand and influencer, create proposal and accept it", function () { return __awaiter(void 0, void 0, void 0, function () {
         var payer;
         return __generator(this, function (_a) {
+            // program.account.purchase.all
+            console.log();
             payer = anchor.Wallet.local().payer;
-            console.log(payer.secretKey);
-            console.log(bs58_1.bs58.encode(payer.secretKey));
+            console.log("payer: ", bytes_1.bs58.encode(payer.secretKey));
             console.log("Payer Address: ", payer.publicKey.toBase58());
             return [2 /*return*/];
         });
