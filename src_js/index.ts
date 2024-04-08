@@ -148,7 +148,6 @@ const [functionAuthority] = PublicKey.findProgramAddressSync(
 
 async function main() {
   switchboard = await SwitchboardProgram.fromProvider(provider);
-  // switchboard = await Swi
   // [publicOracleQueue] = await QueueAccount.load(
   //   switchboard,
   //   publicOracleQueuePk
@@ -437,6 +436,15 @@ async function main() {
   //     payer: payerKeypair.publicKey,
   //   })
   //   .rpc();
+
+  // [functionAccount] = await FunctionAccount.create(switchboard, {
+  //   name: "Payment Feed 1",
+  //   metadata: "",
+  //   attestationQueue: publicAttestationQueue,
+  //   container: "sauravniraula/api_feed",
+  //   containerRegistry: "dockerhub",
+  //   mrEnclave,
+  // });
 
   // await FunctionRequestAccount.create(switchboard, {
   //   functionAccount,
