@@ -170,4 +170,5 @@ watch(store.products, (newProducts) => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

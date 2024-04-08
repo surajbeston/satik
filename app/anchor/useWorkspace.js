@@ -1,7 +1,8 @@
 import { computed } from "vue";
-import { useAnchorWallet, useWallet } from "solana-wallets-vue";
-import { Connection, clusterApiUrl, PublicKey } from "@solana/web3.js";
+import { useAnchorWallet } from "solana-wallets-vue";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
+import { initWallet } from "solana-wallets-vue";
 
 import idl from "../../target/idl/satik.json";
 
@@ -10,7 +11,6 @@ const commitment = "confirmed";
 
 const programID = new PublicKey(idl.metadata.address);
 
-import { initWallet } from "solana-wallets-vue";
 
 const walletOptions = {
   wallets: [
@@ -22,7 +22,6 @@ const walletOptions = {
 };
 
 initWallet(walletOptions);
-const { publicKey, sendTransaction } = useWallet();
 
 function initWorkspace() {
   const wallet = useAnchorWallet();
