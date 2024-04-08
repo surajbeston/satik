@@ -305,9 +305,9 @@ pub mod satik {
         handle_schedule_feed(ctx)
     }
 
-    pub fn schedule_feed_mock(ctx: Context<ScheduleFeedMock>) -> Result<()> {
-        handle_schedule_feed_mock(ctx)
-    }
+    // pub fn schedule_feed_mock(ctx: Context<ScheduleFeedMock>) -> Result<()> {
+    //     handle_schedule_feed_mock(ctx)
+    // }
 
     pub fn scheduled_feed_callback(
         ctx: Context<ScheduledFeedCallback>,

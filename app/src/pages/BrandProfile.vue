@@ -286,8 +286,8 @@ async function getProducts(proposal) {
 }
 
 async function schedulePayment(dealPk) {
-  toast("Scheduling Payment...", {
-    autoClose: 3000,
+  toast("Scheduling Payment, It may take about a minute...", {
+    // autoClose: 3,
     type: 'info',
   });
   try {
