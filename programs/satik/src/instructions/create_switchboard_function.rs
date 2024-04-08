@@ -2,31 +2,33 @@ use anchor_lang::prelude::*;
 use anchor_lang::Result;
 use switchboard_solana::prelude::*;
 
-use crate::states::FunctionsOwner;
+use crate::states::SwitchboardFunctionAuthority;
 
 #[derive(Accounts)]
-pub struct CreateFunctionsOwner<'info> {
-    #[account(init,
-      payer=payer,
-      space= 8 + FunctionsOwner::INIT_SPACE,
-      seeds=[
-        FunctionsOwner::SEED,
-      ],
-      bump,
-    )]
-    pub functions_owner: Account<'info, FunctionsOwner>,
+#[instruction(name: String)]
+pub struct CreateSwitchboardFunction<'info> {
+    #[account(init, payer=payer, space=SwitchboardFunctionAuthority::INIT_SPACE + 8, seeds=[
+        SwitchboardFunctionAuthority::SEED,
+        name.as_bytes().as_ref(),
+    ], bump)]
+    pub function_authority: Account<'info, SwitchboardFunctionAuthority>,
 
-    pub function: AccountLoader<'info, FunctionAccountData>,
+    /// CHECK: Not Needed
+    #[account(mut)]
+    pub function: AccountInfo<'info>,
     /// CHECK: Not needed
+    #[account(mut)]
     pub address_lookup_table: AccountInfo<'info>,
     /// CHECK: Not needed
+    #[account(mut)]
     pub escrow_wallet: AccountInfo<'info>,
     /// CHECK: Not needed
+    #[account(mut)]
     pub escrow_token_wallet: AccountInfo<'info>,
     pub mint: Account<'info, Mint>,
 
     #[account(executable, address = SWITCHBOARD_ATTESTATION_PROGRAM_ID)]
-    /// CHECK: Not dangerous
+    /// CHECK: Not needed
     pub switchboard_attestation: AccountInfo<'info>,
     pub attestation_queue: AccountLoader<'info, AttestationQueueAccountData>,
 
@@ -39,20 +41,25 @@ pub struct CreateFunctionsOwner<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_create_functions_owner(
-    ctx: Context<CreateFunctionsOwner>,
+pub fn handle_create_switchboard_function(
+    ctx: Context<CreateSwitchboardFunction>,
     name: String,
     metadata: String,
     container: String,
     registry: String,
+    slot: u64,
     mr_enclave: [u8; 32],
 ) -> Result<()> {
-    ctx.accounts.functions_owner.bump = ctx.bumps.functions_owner;
+    ctx.accounts.function_authority.bump = ctx.bumps.function_authority;
+    ctx.accounts.function_authority.name = name.clone();
+    ctx.accounts.function_authority.function = ctx.accounts.function.key();
+    ctx.accounts.function_authority.escrow_wallet = ctx.accounts.escrow_wallet.key();
+    ctx.accounts.function_authority.escrow_token_wallet = ctx.accounts.escrow_token_wallet.key();
 
     let function_init = FunctionInit {
         function: ctx.accounts.function.to_account_info(),
         address_lookup_table: ctx.accounts.address_lookup_table.clone(),
-        authority: ctx.accounts.functions_owner.to_account_info(),
+        authority: ctx.accounts.function_authority.to_account_info(),
         attestation_queue: ctx.accounts.attestation_queue.to_account_info(),
         payer: ctx.accounts.payer.to_account_info(),
         escrow_wallet: ctx.accounts.escrow_wallet.clone(),
@@ -66,9 +73,9 @@ pub fn handle_create_functions_owner(
     };
 
     let params = FunctionInitParams {
-        recent_slot: Clock::get()?.slot,
-        creator_seed: None,
-        name: name.into_bytes(),
+        recent_slot: slot,
+        creator_seed: Some(ctx.accounts.function_authority.key().to_bytes()),
+        name: name.clone().into_bytes(),
         metadata: metadata.into_bytes(),
         container: container.into_bytes(),
         container_registry: registry.into_bytes(),
@@ -82,14 +89,17 @@ pub fn handle_create_functions_owner(
         routines_dev_fee: 0,
     };
 
-    let signer_seeds = &[FunctionsOwner::SEED, &[ctx.accounts.functions_owner.bump]];
+    let signer_seeds = &[
+        SwitchboardFunctionAuthority::SEED,
+        name.as_bytes().as_ref(),
+        &[ctx.accounts.function_authority.bump],
+    ];
 
-    // function_init.invoke_signed(
-    //     ctx.accounts.switchboard_attestation.clone(),
-    //     &params,
-    //     &[signer_seeds],
-    // )?;
-    function_init.invoke(ctx.accounts.switchboard_attestation.clone(), &params)?;
+    function_init.invoke_signed(
+        ctx.accounts.switchboard_attestation.clone(),
+        &params,
+        &[signer_seeds],
+    )?;
 
     Ok(())
 }

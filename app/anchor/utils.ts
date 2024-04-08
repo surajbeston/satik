@@ -351,22 +351,51 @@ export async function acceptCPMContract(
 }
 
 export async function scheduleCPMFeed(dealPk: PublicKey) {
-  // will be created by program on further updates
-  // currently brand backend schedules payment
+  let switchboard = await SwitchboardProgram.fromProvider(provider.value);
 
-  const url = "https://satik-redeemer-demo.onrender.com/";
+  // Function authority is PDA that has authority over all
+  // function account created via create_switchboard_function program's method
 
-  await fetch("url" + "?deal=" + dealPk);
+  const functionAuthorityName = "PaymentFunction";
+  const [functionAuthority] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("switchboard_function_authority"),
+      Buffer.from(functionAuthorityName),
+    ],
+    program.value.programId
+  );
 
-  // using mock for now
+  // Function account Pk, Escrow wallet and Escrow wallet token
+  // are created by calling create_switchboard_function
 
-  // const tx = await program.value.methods
-  //   .scheduleFeedMock()
-  //   .accounts({
-  //     deal: dealPk,
-  //     signer: wallet.value.publicKey,
-  //   })
-  //   .rpc();
+  let functionAccount = new PublicKey(
+    "9e6yosfW3c5jJEiDoFyeKoXFeqxcw4YPb635AdywnW7Y"
+  );
+  let escrowWallet = new PublicKey(
+    "4hM78xSxQBe139S2F3XqbkAzovynYW3TkWKzrLiVCJcy"
+  );
+
+  let sbRoutineKeypair = anchor.web3.Keypair.generate();
+
+  const tx = await program.value.methods
+    .scheduleFeed()
+    .accounts({
+      deal: dealPk,
+      switchboardAttestation: switchboard.attestationProgramId,
+      switchboardAttestationQueue: publicAttestationQueuePk,
+      switchboardFunction: functionAccount,
+      routine: sbRoutineKeypair.publicKey,
+      escrowWallet: escrowWallet,
+      escrowTokenWallet: anchor.utils.token.associatedAddress({
+        mint: NATIVE_MINT,
+        owner: escrowWallet,
+      }),
+      switchboardMint: NATIVE_MINT,
+      functionAuthority: functionAuthority,
+      payer: wallet.value.publicKey,
+    })
+    .signers([sbRoutineKeypair])
+    .rpc();
 
   console.log("CPM Feed Scheduled !");
 }

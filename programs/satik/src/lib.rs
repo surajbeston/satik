@@ -13,8 +13,7 @@ use states::{ApiFeedData, CreateDealData};
 
 use instructions::affiliate_instructions::*;
 
-declare_id!("HCbLy5R4323caot2m8sTdh567oRwmurE8QhHDYGJYDFm");
-
+declare_id!("FfGpqcXZqBsejdWA8tGgmpqSC4p531kupmEwQc3yJGof");
 
 #[program]
 pub mod satik {
@@ -282,15 +281,18 @@ pub mod satik {
         Ok(())
     }
 
-    pub fn create_functions_owner(
-        ctx: Context<CreateFunctionsOwner>,
+    pub fn create_switchboard_function(
+        ctx: Context<CreateSwitchboardFunction>,
         name: String,
         metadata: String,
         container: String,
         registry: String,
+        slot: u64,
         mr_enclave: [u8; 32],
     ) -> Result<()> {
-        handle_create_functions_owner(ctx, name, metadata, container, registry, mr_enclave)
+        handle_create_switchboard_function(
+            ctx, name, metadata, container, registry, slot, mr_enclave,
+        )
     }
 
     pub fn create_deal(ctx: Context<CreateDeal>, data: CreateDealData) -> Result<()> {

@@ -3,7 +3,7 @@ import fs from "node:fs"
 import { Connection, Keypair, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { AggregatorAccount, OracleAccount, QueueAccount, SwitchboardProgram } from "@switchboard-xyz/solana.js";
 import { OracleJob } from "@switchboard-xyz/common";
-import { payerKeypair } from "./constants";
+// import { payerKeypair } from "./constants";
 import { publicKey } from "@coral-xyz/anchor/dist/cjs/utils";
 
 
@@ -12,7 +12,7 @@ const connection = new Connection(clusterApiUrl("devnet"))
 async function main() {
     let program: SwitchboardProgram = await SwitchboardProgram.load(
         connection,
-        payerKeypair,
+        // payerKeypair,
     )
 
     const queueAccount = new QueueAccount(

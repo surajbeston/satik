@@ -25,6 +25,8 @@ pub fn handle_scheduled_feed_callback(
 ) -> Result<()> {
     msg!("Received callback {:?}", data);
 
+    // ******* remaining to close function routine account after deal ends ********
+
     let deal = &mut ctx.accounts.deal;
 
     // deal has ended and remaining token has been transfered

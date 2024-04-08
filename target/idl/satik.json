@@ -403,31 +403,31 @@
       ]
     },
     {
-      "name": "createFunctionsOwner",
+      "name": "createSwitchboardFunction",
       "accounts": [
         {
-          "name": "functionsOwner",
+          "name": "functionAuthority",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "function",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "addressLookupTable",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "escrowWallet",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "escrowTokenWallet",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -487,6 +487,10 @@
         {
           "name": "registry",
           "type": "string"
+        },
+        {
+          "name": "slot",
+          "type": "u64"
         },
         {
           "name": "mrEnclave",
@@ -602,6 +606,11 @@
           "isSigner": false
         },
         {
+          "name": "functionAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "routine",
           "isMut": true,
           "isSigner": true
@@ -637,11 +646,6 @@
           "isSigner": false
         },
         {
-          "name": "functionAccountAuthority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
           "name": "payer",
           "isMut": true,
           "isSigner": true
@@ -655,27 +659,6 @@
           "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "scheduleFeedMock",
-      "accounts": [
-        {
-          "name": "deal",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "signer",
-          "isMut": false,
-          "isSigner": true
         },
         {
           "name": "systemProgram",
@@ -1082,13 +1065,29 @@
       }
     },
     {
-      "name": "FunctionsOwner",
+      "name": "SwitchboardFunctionAuthority",
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "function",
+            "type": "publicKey"
+          },
+          {
+            "name": "escrowWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "escrowTokenWallet",
+            "type": "publicKey"
           }
         ]
       }
@@ -1245,6 +1244,6 @@
     }
   ],
   "metadata": {
-    "address": "HCbLy5R4323caot2m8sTdh567oRwmurE8QhHDYGJYDFm"
+    "address": "FfGpqcXZqBsejdWA8tGgmpqSC4p531kupmEwQc3yJGof"
   }
 }

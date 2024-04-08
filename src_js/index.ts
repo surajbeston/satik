@@ -3,7 +3,10 @@ import {
   LAMPORTS_PER_SOL,
   PublicKey,
   SystemInstruction,
+  SystemProgram,
+  Transaction,
   clusterApiUrl,
+  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import {
   SwitchboardProgram,
@@ -25,7 +28,6 @@ import {
   parseRawMrEnclave,
   parseCronSchedule,
 } from "@switchboard-xyz/common";
-import { payerKeypair } from "../src_js/constants";
 import { base64, bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import * as anchor from "@coral-xyz/anchor";
 import { Satik } from "../target/types/satik";
@@ -38,6 +40,7 @@ import {
   getAssociatedTokenAddress,
   getOrCreateAssociatedTokenAccount,
   mintTo,
+  syncNative,
 } from "@solana/spl-token";
 import { decimal } from "@solana/buffer-layout-utils";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
@@ -48,14 +51,19 @@ let switchboard: SwitchboardProgram;
 // const rpcUrl = clusterApiUrl("devnet");
 // let connection = new Connection(rpcUrl);
 
+let payerKeypair = SwitchboardTestContext.loadKeypair(
+  "/home/viristo/.config/solana/id.json"
+);
+
 const provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
 const program = anchor.workspace.Satik as anchor.Program<Satik>;
 
-// const mintKeypair = SwitchboardTestContext.loadKeypair("./keypairs/mint.json");
-const mintAddress = new PublicKey(
-  "8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy"
-);
+const mintKeypair = SwitchboardTestContext.loadKeypair("./keypairs/mint.json");
+const mintAddress = mintKeypair.publicKey;
+// const mintAddress = new PublicKey(
+//   "8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy"
+// );
 
 const addressLookupProgram = new PublicKey(
   "AddressLookupTab1e1111111111111111111111111"
@@ -98,11 +106,11 @@ let publicAttestationQueuePk = new PublicKey(
 
 let functionAccount: FunctionAccount;
 let functionAccountPk = new PublicKey(
-  "4PDoptYjQXogqKGq5mYGH6XUjWUZvH88vKgZWgSTbe3v"
+  "9e6yosfW3c5jJEiDoFyeKoXFeqxcw4YPb635AdywnW7Y"
 );
 
 let mrEnclave = parseRawMrEnclave(
-  "0x7c58b6258153d05036f09c02369e6246cd70d7b20d5379b0e6bbcaa0ad66a8b9"
+  "0x32e433ed9a2669039d0d2e0ac34126e5a3ef07806daaabc1fb41852002108766"
 );
 // console.log(mrEnclave);
 const brandUsername = "brand1";
@@ -117,7 +125,7 @@ const [influencerPDA] = PublicKey.findProgramAddressSync(
   program.programId
 );
 
-const dealId = "deal5";
+const dealId = "deal3";
 const [dealPDA] = PublicKey.findProgramAddressSync(
   [
     Buffer.from("deal_seed"),
@@ -127,10 +135,14 @@ const [dealPDA] = PublicKey.findProgramAddressSync(
   ],
   program.programId
 );
-console.log(dealPDA.toBase58());
+// console.log(dealPDA.toBase58());
 
-const [functionsOwner] = PublicKey.findProgramAddressSync(
-  [Buffer.from("functions_owner")],
+const functionAuthorityName = "PaymentFunction";
+const [functionAuthority] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from("switchboard_function_authority"),
+    Buffer.from(functionAuthorityName),
+  ],
   program.programId
 );
 
@@ -166,12 +178,21 @@ async function main() {
     influencerKeypair.publicKey
   );
 
+  const influencerWsolAta = await getOrCreateAssociatedTokenAccount(
+    provider.connection,
+    influencerKeypair,
+    NATIVE_MINT,
+    influencerKeypair.publicKey
+  );
+  // console.log(influencerWsolAta.address.toBase58());
+
   const dealUsdcAddress = await getAssociatedTokenAddress(
     mintAddress,
     dealPDA,
     true
   );
 
+  // console.log((await switchboard.attestationProgram).account);
   // await switchboard.verifyNewKeypair(sbRoutineKeypair);
 
   // const escrowWallet = SwitchboardWallet.fromSeed(
@@ -190,6 +211,24 @@ async function main() {
   //   functionRoutineAccountPk
   // );
 
+  // const transaction = new Transaction().add(
+  //   SystemProgram.transfer({
+  //     fromPubkey: payerKeypair.publicKey,
+  //     toPubkey: influencerWsolAta.address,
+  //     lamports: LAMPORTS_PER_SOL,
+  //   })
+  // );
+
+  // await sendAndConfirmTransaction(provider.connection, transaction, [
+  //   payerKeypair,
+  // ]);
+
+  // await syncNative(
+  //   provider.connection,
+  //   influencerKeypair,
+  //   influencerWsolAta.address
+  // );
+
   // const mint = await createMint(
   //   provider.connection,
   //   payerKeypair,
@@ -204,7 +243,7 @@ async function main() {
   //   provider.connection,
   //   payerKeypair,
   //   mintKeypair.publicKey,
-  //   payerUsdcAccount.address,
+  //   payerUsdcAddress,
   //   payerKeypair,
   //   1000000000
   // );
@@ -221,7 +260,6 @@ async function main() {
   //     usdcAta: payerUsdcAddress,
   //     signer: payerKeypair.publicKey,
   //   })
-  //   .signers([payerKeypair])
   //   .rpc();
 
   // const fetchedBrand = await program.account.brand.fetch(brandPDA);
@@ -232,7 +270,9 @@ async function main() {
   //     influencerUsername,
   //     "Swastima Khadka",
   //     "https://media.themoviedb.org/t/p/w500/pt0Kdyix9VxS9vv1YJzq17jFCQ4.jpg",
-  //     "I love influencing people in DARKNESS towards LIGHT"
+  //     "I love influencing people in DARKNESS towards LIGHT",
+  //     new BN(10000),
+  //     "https://www.instagram.com/swastimakhadka/?hl=en"
   //   )
   //   .accounts({
   //     influencer: influencerPDA,
@@ -254,7 +294,7 @@ async function main() {
   //     initialAmountOnReach: new BN(500),
   //     startsOn: new BN(Date.now() / 1000),
   //     startsOnReach: new BN(1000),
-  //     endsOn: new BN(Date.now() / 1000 + 1000000),
+  //     endsOn: new BN(Date.now() / 1000 + 500000),
   //     endsOnReach: new BN(10000),
   //     cpm: new BN(1000),
   //     // contentUrl: "",
@@ -269,11 +309,10 @@ async function main() {
   //     mint: mintAddress,
   //     payer: payerKeypair.publicKey,
   //   })
-  //   .signers([payerKeypair])
   //   .rpc();
 
   // const tx = await program.methods
-  //   .acceptDeal("https://eoo6aio1mbtg4nl.m.pipedream.net")
+  //   .acceptDeal("https://mocki.io/v1/09a2f633-42eb-4f4a-b511-d4b37bb99dd7")
   //   .accounts({
   //     influencer: influencerPDA,
   //     deal: dealPDA,
@@ -286,25 +325,21 @@ async function main() {
   // const fetchedDeal = await program.account.deal.fetch(dealPDA);
   // console.log(fetchedDeal);
 
-  // const tx = await program.methods
-  //   .scheduleFeed()
-  //   .accounts({
-  //     deal: dealPDA,
-  //     switchboardAttestation: switchboard.attestationProgramId,
-  //     switchboardAttestationState:
-  //       switchboard.attestationProgramState.publicKey,
-  //     switchboardAttestationQueue: publicAttestationQueuePk,
-  //     switchboardFunction: functionAccountPk,
-  //     switchboardRequest: sbRequestKeypair.publicKey,
-  //     switchboardRequestEscrow: anchor.utils.token.associatedAddress({
+  // const escrowWallet = SwitchboardWallet.fromSeed(
+  //   switchboard,
+  //   publicAttestationQueuePk,
+  //   functionAuthority,
+  //   functionAccountPk
+  // );
+  // console.log(escrowWallet.publicKey.toBase58());
+  // console.log(
+  //   anchor.utils.token
+  //     .associatedAddress({
   //       mint: NATIVE_MINT,
-  //       owner: sbRequestKeypair.publicKey,
-  //     }),
-  //     switchboardMint: switchboard.mint.address,
-  //     payer: payerKeypair.publicKey,
-  //   })
-  //   .signers([sbRequestKeypair, payerKeypair])
-  //   .rpc();
+  //       owner: escrowWallet.publicKey,
+  //     })
+  //     .toBase58()
+  // );
 
   // const tx = await program.methods
   //   .scheduleFeed()
@@ -320,13 +355,13 @@ async function main() {
   //       owner: escrowWallet.publicKey,
   //     }),
   //     switchboardMint: NATIVE_MINT,
-  //     functionAccountAuthority: functionAccountKeypair.publicKey,
+  //     functionAuthority: functionAuthority,
   //     payer: payerKeypair.publicKey,
   //   })
-  //   .signers([sbRoutineKeypair, functionAccountKeypair, payerKeypair])
+  //   .signers([sbRoutineKeypair, payerKeypair])
   //   .rpc();
 
-  console.log(Buffer.from(parseCronSchedule("* * * 1 * *")));
+  // console.log(Buffer.from(parseCronSchedule("* * * 1 * *")));
 
   // const tx = await program.methods
   //   .scheduledFeedCallback({
@@ -341,65 +376,58 @@ async function main() {
   //   .signers([payerKeypair])
   //   .rpc();
   // console.log(tx);
-  // [functionAccount] = await FunctionAccount.createInstruction(
+
+  // let [wallet] = await SwitchboardWallet.create(
   //   switchboard,
+  //   publicAttestationQueuePk,
   //   payerKeypair.publicKey,
-  //   {
-  //     attestationQueue: publicAttestationQueue,
-  //     container: "sauravniraula/api_feed",
-  //     containerRegistry: "dockerhub",
-  //     name: "Payment Feed",
-  //     authority: functionsOwner,
-  //     mrEnclave,
-  //   }
+  //   // functionsOwner,
+  //   "SatikWallet",
+  //   16,
   // );
+  // console.log(wallet.publicKey.toBase58());
+  // console.log(functionAuthority.toBase58());
 
   // const recentSlot = new BN(
   //   await provider.connection.getSlot({
   //     commitment: "finalized",
   //   })
   // );
+
   // functionAccount = FunctionAccount.fromSeed(
   //   switchboard,
-  //   // payerKeypair.publicKey.toBuffer(),
-  //   functionsOwner.toBytes(),
+  //   functionAuthority.toBytes(),
   //   recentSlot
   // );
-  // console.log(functionAccount.publicKey.toBase58());
-
-  // const escrowWallet = SwitchboardWallet.fromSeed(
-  //   switchboard,
-  //   publicAttestationQueuePk,
-  //   // payerKeypair.publicKey,
-  //   functionsOwner,
-  //   functionAccount.publicKey
-  // );
-
-  // console.log((await escrowWallet.loadData()).authority);
 
   // const [addressLookupTable] = PublicKey.findProgramAddressSync(
   //   [functionAccount.publicKey.toBuffer(), recentSlot.toBuffer("le", 8)],
   //   addressLookupProgram
   // );
 
-  // console.log(functionAccount.publicKey);
-  // console.log(functionsOwner);
+  // const wallet = SwitchboardWallet.fromSeed(
+  //   switchboard,
+  //   publicAttestationQueuePk,
+  //   functionAuthority,
+  //   functionAccount.publicKey
+  // );
 
   // const tx = await program.methods
-  //   .createFunctionsOwner(
-  //     "Payment Feed",
+  //   .createSwitchboardFunction(
+  //     functionAuthorityName,
   //     "",
   //     "sauravniraula/api_feed",
   //     "dockerhub",
-  //     Array(32).fill(1)
+  //     recentSlot,
+  //     Array.from(mrEnclave)
   //   )
   //   .accounts({
   //     function: functionAccount.publicKey,
-  //     functionsOwner: functionsOwner,
-  //     escrowWallet: escrowWallet.publicKey,
+  //     functionAuthority: functionAuthority,
+  //     escrowWallet: wallet.publicKey,
   //     escrowTokenWallet: anchor.utils.token.associatedAddress({
   //       mint: NATIVE_MINT,
-  //       owner: escrowWallet.publicKey,
+  //       owner: wallet.publicKey,
   //     }),
   //     mint: NATIVE_MINT,
   //     addressLookupTable: addressLookupTable,

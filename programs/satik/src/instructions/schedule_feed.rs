@@ -1,16 +1,21 @@
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::system_instruction;
 use anchor_lang::Result;
+use anchor_spl::token::sync_native;
+use anchor_spl::token::SyncNative;
 use switchboard_solana::borsh::to_vec;
 use switchboard_solana::prelude::*;
 
 use crate::states::CustomError;
 use crate::states::Deal;
 use crate::states::SbApiFeedParams;
+use crate::states::SwitchboardFunctionAuthority;
 
 #[derive(Accounts)]
 pub struct ScheduleFeed<'info> {
     #[account(mut)]
     pub deal: Account<'info, Deal>,
+    pub function_authority: Account<'info, SwitchboardFunctionAuthority>,
 
     #[account(mut)]
     /// CHECK: Not needed
@@ -25,15 +30,12 @@ pub struct ScheduleFeed<'info> {
     #[account(executable, address = SWITCHBOARD_ATTESTATION_PROGRAM_ID)]
     /// CHECK: Not dangerous
     pub switchboard_attestation: AccountInfo<'info>,
-    // pub switchboard_attestation_state: AccountLoader<'info, AttestationProgramState>,
     pub switchboard_attestation_queue: AccountLoader<'info, AttestationQueueAccountData>,
     #[account(mut)]
     pub switchboard_function: AccountLoader<'info, FunctionAccountData>,
     #[account(address = anchor_spl::token::spl_token::native_mint::ID)]
     pub switchboard_mint: Account<'info, Mint>,
 
-    #[account(mut)]
-    pub function_account_authority: Signer<'info>,
     #[account(mut)]
     pub payer: Signer<'info>,
     pub token_program: Program<'info, Token>,
@@ -42,30 +44,53 @@ pub struct ScheduleFeed<'info> {
 }
 
 pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
-    if ctx.accounts.deal.feed_scheduled {
+    let deal = &mut ctx.accounts.deal;
+
+    if deal.feed_scheduled {
         return err!(CustomError::FeedAlreadyScheduled);
     }
-    if !ctx.accounts.deal.influencer_accepted {
+    if !deal.influencer_accepted {
         return err!(CustomError::DealNotAccepted);
     }
-    // let request_init = FunctionRequestInitAndTrigger {
-    //     request: ctx.accounts.switchboard_request.clone(),
-    //     authority: ctx.accounts.deal.to_account_info(),
-    //     function: ctx.accounts.switchboard_function.to_account_info(),
-    //     function_authority: None,
-    //     escrow: ctx.accounts.switchboard_request_escrow.to_account_info(),
-    //     state: ctx.accounts.switchboard_attestation_state.to_account_info(),
-    //     mint: ctx.accounts.switchboard_mint.to_account_info(),
-    //     attestation_queue: ctx.accounts.switchboard_attestation_queue.to_account_info(),
-    //     payer: ctx.accounts.payer.to_account_info(),
-    //     token_program: ctx.accounts.token_program.to_account_info(),
-    //     associated_token_program: ctx.accounts.associated_token_program.to_account_info(),
-    //     system_program: ctx.accounts.system_program.to_account_info(),
-    // };
 
+    // transfer required WSOL to escrow wallet
+
+    // Not true value
+    let cost_per_call = 10000000;
+
+    let total_routine_calls: u64 = ((deal.ends_on - deal.starts_on) / 86400 + 2) as u64;
+    let total_routine_cost = total_routine_calls * cost_per_call;
+    msg!("Total routine calls {}", total_routine_calls);
+    msg!("Total routine cost {}", total_routine_cost);
+
+    if ctx.accounts.payer.lamports() < total_routine_cost {
+        return err!(CustomError::InsufficientSOL);
+    }
+
+    let transfer_ix = system_instruction::transfer(
+        &ctx.accounts.payer.key(),
+        &ctx.accounts.escrow_token_wallet.key(),
+        total_routine_cost,
+    );
+    solana_program::program::invoke(
+        &transfer_ix,
+        &[
+            ctx.accounts.payer.to_account_info(),
+            ctx.accounts.escrow_token_wallet.clone(),
+            ctx.accounts.system_program.to_account_info(),
+        ],
+    )?;
+
+    let cpi_program = ctx.accounts.token_program.to_account_info();
+    let cpi_accounts = SyncNative {
+        account: ctx.accounts.escrow_token_wallet.clone(),
+    };
+    sync_native(CpiContext::new(cpi_program, cpi_accounts))?;
+
+    // schedule payment
     let routine_init = FunctionRoutineInit {
         routine: ctx.accounts.routine.to_account_info(),
-        authority: ctx.accounts.function_account_authority.to_account_info(),
+        authority: ctx.accounts.function_authority.to_account_info(),
         function: ctx.accounts.switchboard_function.to_account_info(),
         function_authority: None,
         escrow_wallet: ctx.accounts.escrow_wallet.clone(),
@@ -81,23 +106,20 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
 
     let params = SbApiFeedParams {
         program_id: crate::id(),
-        deal_pk: ctx.accounts.deal.key(),
-        deal_ata: ctx.accounts.deal.deal_usdc_ata,
-        influencer_ata: ctx.accounts.deal.influencer_ata,
-        brand_ata: ctx.accounts.deal.brand_ata,
-        url: ctx.accounts.deal.content_url.clone().unwrap(),
+        deal_pk: deal.key(),
+        deal_ata: deal.deal_usdc_ata,
+        influencer_ata: deal.influencer_ata,
+        brand_ata: deal.brand_ata,
+        url: deal.content_url.clone().unwrap(),
     };
 
-    msg!(&ctx.accounts.deal.content_url.clone().unwrap());
+    msg!(&deal.content_url.clone().unwrap());
 
-    // seeds of deal account. (Deal has authority of this request)
-    // let seeds = &[
-    //     Deal::SEED,
-    //     ctx.accounts.deal.id_seed.as_bytes().as_ref(),
-    //     ctx.accounts.deal.brand.as_ref(),
-    //     ctx.accounts.deal.influencer.as_ref(),
-    //     &[ctx.accounts.deal.bump],
-    // ];
+    let seeds = &[
+        SwitchboardFunctionAuthority::SEED,
+        ctx.accounts.function_authority.name.as_bytes().as_ref(),
+        &[ctx.accounts.function_authority.bump],
+    ];
 
     let routine_params = FunctionRoutineInitParams {
         name: None,
@@ -108,29 +130,13 @@ pub fn handle_schedule_feed(ctx: Context<ScheduleFeed>) -> Result<()> {
         container_params: to_vec(&params)?,
     };
 
-    // routine_init.invoke_signed(
-    //     ctx.accounts.switchboard_attestation.clone(),
-    //     &routine_params,
-    //     &[seeds],
-    // )?;
-
-    routine_init.invoke(
+    routine_init.invoke_signed(
         ctx.accounts.switchboard_attestation.clone(),
         &routine_params,
+        &[seeds],
     )?;
 
-    // request_init.invoke_signed(
-    //     ctx.accounts.switchboard_attestation.clone(),
-    //     None,
-    //     None,
-    //     Some(512),
-    //     Some(to_vec(&params)?),
-    //     None,
-    //     None,
-    //     &[seeds],
-    // )?;
-
-    ctx.accounts.deal.feed_scheduled = true;
+    deal.feed_scheduled = true;
 
     Ok(())
 }

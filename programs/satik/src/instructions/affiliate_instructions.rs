@@ -34,7 +34,6 @@ pub struct InitializeInfluencer<'info> {
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub rent: Sysvar<'info, Rent>,
 
-
     #[account(mut)]
     pub signer: Signer<'info>,
     pub system_program: Program<'info, System>,
@@ -60,7 +59,7 @@ pub struct AddWebpage<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -124,7 +123,6 @@ pub struct RedeemPurchase<'info> {
     pub influencer_receiver: Account<'info, TokenAccount>,
     // #[account(mut)]
     // pub satik_receiver: Account<'info, TokenAccount>,
-
     #[account(mut)]
     pub escrow: Account<'info, TokenAccount>,
     pub token_program: Program<'info, Token>,
@@ -134,5 +132,3 @@ pub struct RedeemPurchase<'info> {
     pub signer: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
-
-

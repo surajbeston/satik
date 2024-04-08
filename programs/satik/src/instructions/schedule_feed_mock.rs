@@ -2,6 +2,8 @@ use anchor_lang::prelude::*;
 
 use crate::states::Deal;
 
+// Just to test
+
 #[derive(Accounts)]
 pub struct ScheduleFeedMock<'info> {
     #[account(mut)]

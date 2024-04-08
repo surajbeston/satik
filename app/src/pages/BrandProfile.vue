@@ -46,23 +46,23 @@
             class="mt-10 border-zinc-700 shadow-lg shadow-[#2c3438d0] rounded-xl border p-6">
             <div class="flex flex-col md:flex-row gap-8 pb-8">
               <div @click="
-              $router.push(`/brand/${proposal.account.influencer.username}`)
-              " class="w-full md:w-auto min-w-[120px]">
+                $router.push(`/brand/${proposal.account.influencer.username}`)
+                " class="w-full md:w-auto min-w-[120px]">
                 <img class="w-full md:w-[200px] max-h-[300px] rounded-xl h-full"
                   :src="proposal.account.influencer.profileImage" :alt="proposal.account.influencer.name" />
               </div>
               <div class="space-y-3 w-full md:w-auto">
                 <p @click="
-              $router.push(
-                `/influencer/${proposal.account.influencer.username}`
-              )
-              " class="text-2xl font-bold cursor-pointer text-secondaryLight-30 underline underline-offset-4">
+                  $router.push(
+                    `/influencer/${proposal.account.influencer.username}`
+                  )
+                  " class="text-2xl font-bold cursor-pointer text-secondaryLight-30 underline underline-offset-4">
                   {{ proposal.account.influencer.name }}
                 </p>
                 <p :class="proposal.account.accepted
-              ? 'text-green-400'
-              : 'text-red-400'
-              " class="font-bold">
+                  ? 'text-green-400'
+                  : 'text-red-400'
+                  " class="font-bold">
                   {{ proposal.account.accepted ? "Accepted" : "Pending" }}
                 </p>
 
@@ -82,8 +82,8 @@
                 <p class="text-xl font-medium text-neutral-20">
                   Sent date-time:
                   <span class="font-bold text-base block">{{
-              formatDate(proposal.account.datetime?.toString())
-            }}</span>
+                    formatDate(proposal.account.datetime?.toString())
+                  }}</span>
                 </p>
               </div>
             </div>
@@ -143,8 +143,8 @@
             </div>
             <div class="space-y-3 w-full md:w-auto">
               <p @click="
-              $router.push(`/brand/${deal.account.influencer.username}`)
-              " class="text-2xl font-bold cursor-pointer text-secondaryLight-30 underline underline-offset-4">
+                $router.push(`/brand/${deal.account.influencer.username}`)
+                " class="text-2xl font-bold cursor-pointer text-secondaryLight-30 underline underline-offset-4">
                 {{ deal.account.influencer.name }}
               </p>
               <p class="text-base text-neutral-10 line-clamp-3">
@@ -286,8 +286,8 @@ async function getProducts(proposal) {
 }
 
 async function schedulePayment(dealPk) {
-  toast("Scheduling Payment, It may take about a minute...", {
-    // autoClose: 3,
+  toast("Scheduling Payment...", {
+    autoClose: 3000,
     type: 'info',
   });
   try {
