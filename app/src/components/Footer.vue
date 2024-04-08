@@ -5,8 +5,7 @@
         <img class="w-full h-full" src="../assets/icons/logo.svg" alt="logo" />
       </div>
       <p class="font-semibold text-lg text-neutral-10">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Harum,
-        deserunt.
+        Satik helps create on-chain contracts between influencers and brands where influencers are paid for both views and sales they bring for brands, on the fly. 
       </p>
     </div>
     <div class="flex gap-10 w-full justify-center md:justify-end">

@@ -21,35 +21,17 @@ import initWorkspace from "./useWorkspace";
 
 import {
   Keypair,
-  LAMPORTS_PER_SOL,
-  sendAndConfirmTransaction,
-  Transaction,
 } from "@solana/web3.js";
 
-import {
-  AttestationQueueAccount,
-  FunctionAccount,
-  SwitchboardProgram,
-  SwitchboardWallet,
-  TransactionObject,
-} from "@switchboard-xyz/solana.js";
+
 import { parseRawMrEnclave } from "@switchboard-xyz/common";
 
-import { useAnchorWallet, AnchorWallet, useWallet } from "solana-wallets-vue";
+import {  AnchorWallet, useWallet } from "solana-wallets-vue";
 import {
   Connection,
-  clusterApiUrl,
   PublicKey,
-  sendAndConfirmRawTransaction,
 } from "@solana/web3.js";
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
-
-type returnType = {
-  wallet: ComputedRef<AnchorWallet>;
-  connection: ComputedRef<Connection>;
-  provider: ComputedRef<AnchorProvider>;
-  program: ComputedRef<Program>;
-};
 
 import { Buffer } from "buffer";
 import { ComputedRef } from "vue";
@@ -59,14 +41,16 @@ import { CreateCPMContractParams } from "../src/types";
 const mintAddress = new PublicKey(
   "8TYBs78yzk662G5oDv84um73Xthy51nu4mkgKNYcZjzy"
 );
-let publicAttestationQueuePk = new PublicKey(
-  "CkvizjVnm2zA5Wuwan34NhVT3zFc7vqUyGnA6tuEF5aE"
-);
-let mrEnclave = parseRawMrEnclave(
-  "0x7c58b6258153d05036f09c02369e6246cd70d7b20d5379b0e6bbcaa0ad66a8b9"
-);
 
-const { wallet, connection, provider, program }: returnType = initWorkspace();
+const { wallet, program }: returnType = initWorkspace();
+
+
+type returnType = {
+  wallet: ComputedRef<AnchorWallet>;
+  connection: ComputedRef<Connection>;
+  provider: ComputedRef<AnchorProvider>;
+  program: ComputedRef<Program>;
+};
 
 export async function createInfluencerAccount(
   username: String,
